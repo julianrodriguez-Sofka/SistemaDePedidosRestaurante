@@ -33,9 +33,8 @@ services:
       context: ./orders-producer-python
       dockerfile: Dockerfile
     container_name: python-ms
-    environment:
-      - CLOUDAMQP_URL=amqp://guest:guest@rabbitmq:5672/
-      - ORDERS_QUEUE=orders.new
+    env_file:
+      - ./orders-producer-python/.env
     depends_on:
       rabbitmq:
         condition: service_healthy
@@ -47,16 +46,8 @@ services:
       context: ./orders-producer-node
       dockerfile: Dockerfile
     container_name: node-ms
-    environment:
-      - AMQP_CONNECTION_TYPE=local
-      - AMQP_LOCAL_HOST=rabbitmq
-      - AMQP_LOCAL_PORT=5672
-      - AMQP_LOCAL_USER=guest
-      - AMQP_LOCAL_PASS=guest
-      - AMQP_LOCAL_PROTOCOL=amqp
-      - USE_MONGO=true
-      - MONGO_URI=mongodb://mongo:27017/
-      - MONGO_DB=orders_db
+    env_file:
+      - ./orders-producer-node/.env
     depends_on:
       rabbitmq:
         condition: service_healthy
@@ -71,13 +62,8 @@ services:
       context: ./api-gateway
       dockerfile: Dockerfile
     container_name: api-gateway
-    environment:
-      - PORT=3000
-      - PYTHON_MS_URL=http://python-ms:8000
-      - NODE_MS_URL=http://node-ms:3002
-      - REQUEST_TIMEOUT=30000
-      - RETRY_ATTEMPTS=3
-      - CORS_ORIGIN=http://localhost:5173
+    env_file:
+      - ./api-gateway/.env
     depends_on:
       - python-ms
       - node-ms
@@ -88,9 +74,10 @@ services:
     build:
       context: ./orders-producer-frontend
     container_name: front
+    env_file:
+      - ./orders-producer-frontend/.env
     depends_on:
-      - python-ms
-      - node-ms
+      - api-gateway
     ports:
       - "5173:5173"
 
