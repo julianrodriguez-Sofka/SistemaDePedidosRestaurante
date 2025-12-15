@@ -1,0 +1,85 @@
+import axios from 'axios';
+import type { User, Product, Table, Config, Order, LoginResponse, ApiResponse } from '../types';
+
+const API_URL = import.meta.env.VITE_ADMIN_API_URL || 'http://localhost:4000/api';
+
+const api = axios.create({
+  baseURL: API_URL,
+  headers: {
+    'Content-Type': 'application/json'
+  }
+});
+
+// Interceptor para agregar el token en cada petición
+api.interceptors.request.use(
+  (config) => {
+    const token = localStorage.getItem('adminToken');
+    if (token) {
+      config.headers.Authorization = `Bearer ${token}`;
+    }
+    return config;
+  },
+  (error) => Promise.reject(error)
+);
+
+// Interceptor para manejar errores de autenticación
+api.interceptors.response.use(
+  (response) => response,
+  (error) => {
+    if (error.response?.status === 401) {
+      localStorage.removeItem('adminToken');
+      window.location.href = '/';
+    }
+    return Promise.reject(error);
+  }
+);
+
+// Auth
+export const authAPI = {
+  login: (credentials: { username: string; password: string }) =>
+    api.post<LoginResponse>('/auth/login', credentials),
+};
+
+// Users
+export const usersAPI = {
+  getAll: () => api.get<ApiResponse<User[]>>('/users'),
+  getById: (id: string) => api.get<ApiResponse<User>>(`/users/${id}`),
+  create: (data: Partial<User>) => api.post<ApiResponse<User>>('/users', data),
+  update: (id: string, data: Partial<User>) => api.put<ApiResponse<User>>(`/users/${id}`, data),
+  delete: (id: string) => api.delete<ApiResponse<void>>(`/users/${id}`),
+  assignRole: (id: string, roles: string[]) => api.put<ApiResponse<User>>(`/users/${id}/role`, { roles }),
+};
+
+// Products
+export const productsAPI = {
+  getAll: () => api.get<ApiResponse<Product[]>>('/products'),
+  getById: (id: number) => api.get<ApiResponse<Product>>(`/products/${id}`),
+  create: (data: Partial<Product>) => api.post<ApiResponse<Product>>('/products', data),
+  update: (id: number, data: Partial<Product>) => api.put<ApiResponse<Product>>(`/products/${id}`, data),
+  delete: (id: number) => api.delete<ApiResponse<void>>(`/products/${id}`),
+};
+
+// Tables
+export const tablesAPI = {
+  getAll: () => api.get<ApiResponse<Table[]>>('/tables'),
+  getById: (id: string) => api.get<ApiResponse<Table>>(`/tables/${id}`),
+  create: (data: Partial<Table>) => api.post<ApiResponse<Table>>('/tables', data),
+  update: (id: string, data: Partial<Table>) => api.put<ApiResponse<Table>>(`/tables/${id}`, data),
+  updateStatus: (id: string, status: string) => api.put<ApiResponse<Table>>(`/tables/${id}/status`, { status }),
+  delete: (id: string) => api.delete<ApiResponse<void>>(`/tables/${id}`),
+};
+
+// Config
+export const configAPI = {
+  get: () => api.get<ApiResponse<Config>>('/config'),
+  update: (data: Partial<Config>) => api.put<ApiResponse<Config>>('/config', data),
+};
+
+// Orders
+export const ordersAPI = {
+  getActive: () => api.get<ApiResponse<Order[]>>('/orders/active'),
+  getAll: () => api.get<ApiResponse<Order[]>>('/orders'),
+};
+
+export default api;
+

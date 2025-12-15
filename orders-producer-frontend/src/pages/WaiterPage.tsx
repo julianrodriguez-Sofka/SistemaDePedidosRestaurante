@@ -11,6 +11,7 @@ import type { ActiveOrder } from '../hooks/useActiveOrders';
 import { updateOrder } from '../services/orderService';
 import type { Product, OrderPayload } from '../types/order';
 import { useWebSocket } from '@/hooks/useWebSocket';
+import { LogoutButton } from '../components/LogoutButton';
 
 const initialProducts: Product[] = [
   { id: 1, name: "Hamburguesa",    price: 10500, desc: "Hamburguesa", image: "/images/burguer_pic.jpg" },
@@ -223,7 +224,11 @@ useEffect(() => {
         open={isViewDialogOpen}
         onClose={handleCloseViewDialog}
       />
+
+      {/* Logout Button */}
+      <div className="fixed bottom-4 right-4">
+        <LogoutButton />
+      </div>
     </div>
-    
   );
 }
