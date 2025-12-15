@@ -1,4 +1,5 @@
 import { useState, useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
 import ProductCard from '../components/ProductCard';
 import OrderSidebar from '../components/OrderSidebar';
 import { EditOrderDialog } from '../components/EditOrderDialog';
@@ -11,6 +12,9 @@ import type { ActiveOrder } from '../hooks/useActiveOrders';
 import { updateOrder } from '../services/orderService';
 import type { Product, OrderPayload } from '../types/order';
 import { useWebSocket } from '@/hooks/useWebSocket';
+import { useAuth } from '../contexts/AuthContext';
+import { Button } from '../components/ui/button';
+import { LogOut } from 'lucide-react';
 
 const initialProducts: Product[] = [
   { id: 1, name: "Hamburguesa",    price: 10500, desc: "Hamburguesa", image: "/images/burguer_pic.jpg" },
@@ -22,6 +26,8 @@ const initialProducts: Product[] = [
 type OrderStatusFilter = 'all' | 'pending' | 'preparing' | 'ready' | 'completed';
 
 export function WaiterPage() {
+  const navigate = useNavigate();
+  const { user, logout } = useAuth();
   const [products] = useState<Product[]>(initialProducts);
   const [orderStatus, setOrderStatus] = useState<OrderStatusFilter>('all');
   const [searchQuery] = useState<string>('');
@@ -35,6 +41,11 @@ export function WaiterPage() {
   const { submitOrder, successMsg } = useOrderSubmission();
   const { activeOrders, setActiveOrders, loading: ordersLoading, refetch: refetchOrders } = useActiveOrders();
   const { lastMessage } = useWebSocket();
+
+  const handleLogout = () => {
+    logout();
+    navigate('/', { replace: true });
+  };
 
   // Refetch orders after successful order submission
   useEffect(() => {
@@ -162,6 +173,18 @@ useEffect(() => {
 
   return (
     <div className="flex h-screen bg-gray-50">
+      {/* Logout Button - Top Right */}
+      <div className="absolute top-4 right-4 z-50">
+        <Button 
+          variant="outline" 
+          onClick={handleLogout}
+          className="flex items-center gap-2 bg-white shadow-md hover:bg-gray-50"
+        >
+          <LogOut className="w-4 h-4" />
+          Logout ({user?.name})
+        </Button>
+      </div>
+
       {/* Main Content */}
       <div className="flex-1 flex flex-col overflow-hidden">
         {/* Active Orders Section */}
