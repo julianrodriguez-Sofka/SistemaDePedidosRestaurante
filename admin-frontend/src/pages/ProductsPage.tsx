@@ -7,6 +7,7 @@ import { Table } from '../components/ui/Table';
 import { Modal } from '../components/ui/Modal';
 import { Input } from '../components/ui/Input';
 import { productsAPI } from '../services/api';
+import wsService from '../services/websocket.service';
 import type { Product } from '../types';
 
 export function ProductsPage() {
@@ -23,6 +24,34 @@ export function ProductsPage() {
 
   useEffect(() => {
     loadProducts();
+    
+    // Suscribirse a eventos de productos en tiempo real
+    const handleProductCreated = (product: Product) => {
+      console.log('[Products] New product created:', product);
+      setProducts((prev) => [...prev, product]);
+    };
+    
+    const handleProductUpdated = (product: Product) => {
+      console.log('[Products] Product updated:', product);
+      setProducts((prev) => 
+        prev.map((p) => p.id === product.id ? product : p)
+      );
+    };
+    
+    const handleProductDeleted = ({ id }: { id: number }) => {
+      console.log('[Products] Product deleted:', id);
+      setProducts((prev) => prev.filter((p) => p.id !== id));
+    };
+    
+    wsService.on('product.created', handleProductCreated);
+    wsService.on('product.updated', handleProductUpdated);
+    wsService.on('product.deleted', handleProductDeleted);
+    
+    return () => {
+      wsService.off('product.created', handleProductCreated);
+      wsService.off('product.updated', handleProductUpdated);
+      wsService.off('product.deleted', handleProductDeleted);
+    };
   }, []);
 
   const loadProducts = async () => {

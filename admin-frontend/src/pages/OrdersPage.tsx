@@ -8,6 +8,9 @@ import { Modal } from '../components/ui/Modal';
 import { ordersAPI } from '../services/api';
 import type { Order } from '../types';
 
+// 🔥 WebSocket connection for real-time orders
+let ordersWebSocket: WebSocket | null = null;
+
 export function OrdersPage() {
   const [orders, setOrders] = useState<Order[]>([]);
   const [filteredOrders, setFilteredOrders] = useState<Order[]>([]);
@@ -18,6 +21,50 @@ export function OrdersPage() {
 
   useEffect(() => {
     loadOrders();
+
+    // 🔥 Connect to orders WebSocket (orders-producer-node on port 4000)
+    console.log('[Admin] 🔌 Connecting to orders WebSocket...');
+    ordersWebSocket = new WebSocket('ws://localhost:4000');
+
+    ordersWebSocket.onopen = () => {
+      console.log('[Admin] ✅ Connected to orders WebSocket');
+    };
+
+    ordersWebSocket.onmessage = (event) => {
+      try {
+        const message = JSON.parse(event.data);
+        console.log('[Admin] 📨 Received order event:', message);
+
+        if (message.type === 'ORDER_STATUS_CHANGED' && message.order) {
+          console.log('[Admin] 🔄 Order status changed:', message.order);
+          setOrders(prev => prev.map(o => 
+            o.id === message.order.id || o.orderNumber === message.order.id
+              ? { ...o, status: message.order.status }
+              : o
+          ));
+        } else if (message.type === 'ORDER_NEW' && message.order) {
+          console.log('[Admin] 🆕 New order created:', message.order);
+          loadOrders(); // Reload to get full order data
+        }
+      } catch (error) {
+        console.error('[Admin] ❌ Error parsing WebSocket message:', error);
+      }
+    };
+
+    ordersWebSocket.onerror = (error) => {
+      console.error('[Admin] ❌ WebSocket error:', error);
+    };
+
+    ordersWebSocket.onclose = () => {
+      console.log('[Admin] 🔌 Disconnected from orders WebSocket');
+    };
+
+    return () => {
+      if (ordersWebSocket) {
+        ordersWebSocket.close();
+        ordersWebSocket = null;
+      }
+    };
   }, []);
 
   useEffect(() => {

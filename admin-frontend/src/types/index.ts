@@ -26,6 +26,7 @@ export interface Table {
   status: 'available' | 'occupied' | 'reserved' | 'cleaning';
   capacity: number;
   location: string;
+  currentOrder?: string;
   createdAt: string;
   updatedAt: string;
 }

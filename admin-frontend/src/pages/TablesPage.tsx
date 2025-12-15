@@ -1,12 +1,14 @@
 import { useState, useEffect } from 'react';
-import { Plus, Edit2, Trash2, CheckCircle } from 'lucide-react';
+import { Plus, Edit2, Trash2, CheckCircle, Map, List } from 'lucide-react';
 import { AdminLayout } from '../components/layout/AdminLayout';
 import { Card } from '../components/ui/Card';
 import { Button } from '../components/ui/Button';
 import { Table } from '../components/ui/Table';
 import { Modal } from '../components/ui/Modal';
 import { Input } from '../components/ui/Input';
+import { TableMap } from '../components/tables/TableMap';
 import { tablesAPI } from '../services/api';
+import wsService from '../services/websocket.service';
 import type { Table as TableType } from '../types';
 
 export function TablesPage() {
@@ -14,6 +16,7 @@ export function TablesPage() {
   const [loading, setLoading] = useState(true);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [editingTable, setEditingTable] = useState<TableType | null>(null);
+  const [viewMode, setViewMode] = useState<'map' | 'list'>('map');
   const [formData, setFormData] = useState({
     number: 0,
     capacity: 0,
@@ -22,6 +25,43 @@ export function TablesPage() {
 
   useEffect(() => {
     loadTables();
+    
+    // Suscribirse a eventos de mesas en tiempo real
+    const handleTableCreated = (table: TableType) => {
+      console.log('[Tables] New table created:', table);
+      setTables((prev) => [...prev, table]);
+    };
+    
+    const handleTableUpdated = (table: TableType) => {
+      console.log('[Tables] Table updated:', table);
+      setTables((prev) => 
+        prev.map((t) => t._id === table._id ? table : t)
+      );
+    };
+    
+    const handleTableStatusChanged = (table: TableType) => {
+      console.log('[Tables] Table status changed:', table);
+      setTables((prev) => 
+        prev.map((t) => t._id === table._id ? table : t)
+      );
+    };
+    
+    const handleTableDeleted = ({ id }: { id: string }) => {
+      console.log('[Tables] Table deleted:', id);
+      setTables((prev) => prev.filter((t) => t._id !== id));
+    };
+    
+    wsService.on('table.created', handleTableCreated);
+    wsService.on('table.updated', handleTableUpdated);
+    wsService.on('table.statusChanged', handleTableStatusChanged);
+    wsService.on('table.deleted', handleTableDeleted);
+    
+    return () => {
+      wsService.off('table.created', handleTableCreated);
+      wsService.off('table.updated', handleTableUpdated);
+      wsService.off('table.statusChanged', handleTableStatusChanged);
+      wsService.off('table.deleted', handleTableDeleted);
+    };
   }, []);
 
   const loadTables = async () => {
@@ -160,15 +200,41 @@ export function TablesPage() {
             <h1 className="text-3xl font-bold text-gray-900">Tables</h1>
             <p className="text-gray-600 mt-2">Manage restaurant tables and their status</p>
           </div>
-          <Button
-            onClick={() => {
-              resetForm();
-              setIsModalOpen(true);
-            }}
-          >
-            <Plus className="w-4 h-4 mr-2" />
-            Add Table
-          </Button>
+          <div className="flex gap-2">
+            <div className="flex bg-gray-100 rounded-lg p-1">
+              <button
+                onClick={() => setViewMode('map')}
+                className={`px-4 py-2 rounded-md flex items-center gap-2 transition-all ${
+                  viewMode === 'map'
+                    ? 'bg-white shadow-sm text-blue-600'
+                    : 'text-gray-600 hover:text-gray-900'
+                }`}
+              >
+                <Map className="w-4 h-4" />
+                Map View
+              </button>
+              <button
+                onClick={() => setViewMode('list')}
+                className={`px-4 py-2 rounded-md flex items-center gap-2 transition-all ${
+                  viewMode === 'list'
+                    ? 'bg-white shadow-sm text-blue-600'
+                    : 'text-gray-600 hover:text-gray-900'
+                }`}
+              >
+                <List className="w-4 h-4" />
+                List View
+              </button>
+            </div>
+            <Button
+              onClick={() => {
+                resetForm();
+                setIsModalOpen(true);
+              }}
+            >
+              <Plus className="w-4 h-4 mr-2" />
+              Add Table
+            </Button>
+          </div>
         </div>
 
         <div className="grid grid-cols-4 gap-4">
@@ -218,9 +284,17 @@ export function TablesPage() {
           </Card>
         </div>
 
-        <Card>
-          <Table data={tables} columns={columns} />
-        </Card>
+        {viewMode === 'map' ? (
+          <TableMap
+            tables={tables}
+            onTableClick={openEditModal}
+            onStatusChange={handleStatusChange}
+          />
+        ) : (
+          <Card>
+            <Table data={tables} columns={columns} />
+          </Card>
+        )}
       </div>
 
       <Modal

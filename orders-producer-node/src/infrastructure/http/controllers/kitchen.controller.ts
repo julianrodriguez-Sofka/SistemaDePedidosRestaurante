@@ -40,6 +40,14 @@ export async function addKitchenOrder(order: KitchenOrder): Promise<void> {
   }
   order.status = "pending"; // Estado inicial: pending (esperando que cocina lo inicie)
   await repo.create(order);
+  
+  // 🔥 Notify clients about new order
+  console.log(`📢 Enviando notificación WebSocket para nueva orden ${order.id}...`);
+  notifyClients({ 
+    type: "ORDER_NEW", 
+    order 
+  });
+  console.log(`✅ Notificación enviada: Nueva orden ${order.id}`);
 }
 
 export async function markOrderReady(id: string): Promise<boolean> {

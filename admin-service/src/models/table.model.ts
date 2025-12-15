@@ -4,6 +4,8 @@ export interface ITable extends Document {
   number: number;
   status: 'available' | 'occupied' | 'reserved' | 'cleaning';
   capacity: number;
+  location: string;
+  currentOrder?: string;
   createdAt: Date;
   updatedAt: Date;
 }
@@ -17,7 +19,9 @@ const TableSchema: Schema = new Schema(
       enum: ['available', 'occupied', 'reserved', 'cleaning'],
       default: 'available'
     },
-    capacity: { type: Number, required: true, min: 1, default: 4 }
+    capacity: { type: Number, required: true, min: 1, default: 4 },
+    location: { type: String, required: true },
+    currentOrder: { type: String }
   },
   { timestamps: true }
 );

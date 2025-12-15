@@ -1,5 +1,6 @@
 import { Request, Response, NextFunction } from 'express';
 import { ProductService } from '../services/product.service';
+import { broadcastEvent } from '../services/websocket.service';
 
 export class ProductController {
   private productService: ProductService;
@@ -11,6 +12,13 @@ export class ProductController {
   createProduct = async (req: Request, res: Response, next: NextFunction): Promise<void> => {
     try {
       const product = await this.productService.createProduct(req.body);
+      
+      // Emitir evento de producto creado
+      broadcastEvent({
+        type: 'product.created',
+        data: product
+      });
+      
       res.status(201).json({ success: true, data: product });
     } catch (error) {
       next(error);
@@ -48,6 +56,13 @@ export class ProductController {
         res.status(404).json({ success: false, message: 'Product not found' });
         return;
       }
+      
+      // Emitir evento de producto actualizado
+      broadcastEvent({
+        type: 'product.updated',
+        data: product
+      });
+      
       res.status(200).json({ success: true, data: product });
     } catch (error) {
       next(error);
@@ -62,6 +77,13 @@ export class ProductController {
         res.status(404).json({ success: false, message: 'Product not found' });
         return;
       }
+      
+      // Emitir evento de producto eliminado
+      broadcastEvent({
+        type: 'product.deleted',
+        data: { id }
+      });
+      
       res.status(200).json({ success: true, message: 'Product deleted successfully' });
     } catch (error) {
       next(error);

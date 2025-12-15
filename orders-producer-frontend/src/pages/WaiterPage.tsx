@@ -12,6 +12,7 @@ import { updateOrder } from '../services/orderService';
 import type { Product, OrderPayload } from '../types/order';
 import { useWebSocket } from '@/hooks/useWebSocket';
 import { LogoutButton } from '../components/LogoutButton';
+import { wsService } from '../services/websocket.service';
 
 const initialProducts: Product[] = [
   { id: 1, name: "Hamburguesa",    price: 10500, desc: "Hamburguesa", image: "/images/burguer_pic.jpg" },
@@ -23,7 +24,7 @@ const initialProducts: Product[] = [
 type OrderStatusFilter = 'all' | 'pending' | 'preparing' | 'ready' | 'completed';
 
 export function WaiterPage() {
-  const [products] = useState<Product[]>(initialProducts);
+  const [products, setProducts] = useState<Product[]>(initialProducts);
   const [orderStatus, setOrderStatus] = useState<OrderStatusFilter>('all');
   const [searchQuery] = useState<string>('');
   const [editingOrder, setEditingOrder] = useState<ActiveOrder | null>(null);
@@ -36,6 +37,55 @@ export function WaiterPage() {
   const { submitOrder, successMsg } = useOrderSubmission();
   const { activeOrders, setActiveOrders, loading: ordersLoading, refetch: refetchOrders } = useActiveOrders();
   const { lastMessage } = useWebSocket();
+
+  // 🔥 Connect to admin-service WebSocket for real-time products
+  useEffect(() => {
+    console.log('[Waiter] 🔌 Connecting to admin-service WebSocket...');
+    wsService.connect('ws://localhost:4001/ws');
+
+    // Listen for product events
+    const handleProductCreated = (data: any) => {
+      console.log('[Waiter] ➕ Product created:', data);
+      setProducts(prev => [...prev, {
+        id: data._id,
+        name: data.name,
+        price: data.price,
+        desc: data.description || data.name,
+        image: data.image || '/images/default_pic.jpg'
+      }]);
+    };
+
+    const handleProductUpdated = (data: any) => {
+      console.log('[Waiter] ✏️ Product updated:', data);
+      setProducts(prev => prev.map(p => 
+        p.id === data._id 
+          ? {
+              ...p,
+              name: data.name,
+              price: data.price,
+              desc: data.description || data.name,
+              image: data.image || p.image
+            }
+          : p
+      ));
+    };
+
+    const handleProductDeleted = (data: any) => {
+      console.log('[Waiter] ❌ Product deleted:', data);
+      setProducts(prev => prev.filter(p => p.id !== data._id));
+    };
+
+    wsService.on('product.created', handleProductCreated);
+    wsService.on('product.updated', handleProductUpdated);
+    wsService.on('product.deleted', handleProductDeleted);
+
+    return () => {
+      console.log('[Waiter] 🔌 Disconnecting from admin-service WebSocket...');
+      wsService.off('product.created', handleProductCreated);
+      wsService.off('product.updated', handleProductUpdated);
+      wsService.off('product.deleted', handleProductDeleted);
+    };
+  }, []);
 
   // Refetch orders after successful order submission
   useEffect(() => {

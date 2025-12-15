@@ -1,5 +1,6 @@
 import { Request, Response, NextFunction } from 'express';
 import { TableService } from '../services/table.service';
+import { broadcastEvent } from '../services/websocket.service';
 
 export class TableController {
   private tableService: TableService;
@@ -11,6 +12,13 @@ export class TableController {
   createTable = async (req: Request, res: Response, next: NextFunction): Promise<void> => {
     try {
       const table = await this.tableService.createTable(req.body);
+      
+      // Emitir evento de mesa creada
+      broadcastEvent({
+        type: 'table.created',
+        data: table
+      });
+      
       res.status(201).json({ success: true, data: table });
     } catch (error) {
       next(error);
@@ -46,6 +54,13 @@ export class TableController {
         res.status(404).json({ success: false, message: 'Table not found' });
         return;
       }
+      
+      // Emitir evento de mesa actualizada
+      broadcastEvent({
+        type: 'table.updated',
+        data: table
+      });
+      
       res.status(200).json({ success: true, data: table });
     } catch (error) {
       next(error);
@@ -60,6 +75,13 @@ export class TableController {
         res.status(404).json({ success: false, message: 'Table not found' });
         return;
       }
+      
+      // Emitir evento de cambio de estado de mesa
+      broadcastEvent({
+        type: 'table.statusChanged',
+        data: table
+      });
+      
       res.status(200).json({ success: true, data: table });
     } catch (error) {
       next(error);
@@ -73,6 +95,13 @@ export class TableController {
         res.status(404).json({ success: false, message: 'Table not found' });
         return;
       }
+      
+      // Emitir evento de mesa eliminada
+      broadcastEvent({
+        type: 'table.deleted',
+        data: { id: req.params.id }
+      });
+      
       res.status(200).json({ success: true, message: 'Table deleted successfully' });
     } catch (error) {
       next(error);

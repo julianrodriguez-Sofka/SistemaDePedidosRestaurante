@@ -14,21 +14,40 @@ const api = axios.create({
 api.interceptors.request.use(
   (config) => {
     const token = localStorage.getItem('adminToken');
+    console.log('[API] Making request to:', config.url);
+    console.log('[API] Token present:', !!token);
+    console.log('[API] Token value:', token ? token.substring(0, 50) + '...' : 'NO TOKEN');
     if (token) {
       config.headers.Authorization = `Bearer ${token}`;
+      console.log('[API] Authorization header set');
+    } else {
+      console.warn('[API] NO TOKEN FOUND IN LOCALSTORAGE');
     }
     return config;
   },
-  (error) => Promise.reject(error)
+  (error) => {
+    console.error('[API] Request interceptor error:', error);
+    return Promise.reject(error);
+  }
 );
 
 // Interceptor para manejar errores de autenticación
 api.interceptors.response.use(
-  (response) => response,
+  (response) => {
+    console.log('[API] Response received:', response.status, response.config.url);
+    return response;
+  },
   (error) => {
+    console.error('[API] Response error:', error.response?.status, error.config?.url);
+    console.error('[API] Error details:', error.response?.data);
     if (error.response?.status === 401) {
+      console.warn('[API] 401 Unauthorized - Clearing token and redirecting');
       localStorage.removeItem('adminToken');
+      localStorage.removeItem('adminUser');
       window.location.href = '/';
+    } else if (error.response?.status === 403) {
+      console.error('[API] 403 Forbidden - Check user permissions');
+      console.error('[API] Current token:', localStorage.getItem('adminToken')?.substring(0, 50));
     }
     return Promise.reject(error);
   }
