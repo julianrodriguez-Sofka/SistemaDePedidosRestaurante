@@ -6,6 +6,7 @@ import { errorHandler } from './middlewares/error.middleware';
 import authRoutes from './routes/auth.routes';
 import userRoutes from './routes/user.routes';
 import productRoutes from './routes/product.routes';
+import categoryRoutes from './routes/category.routes';
 import tableRoutes from './routes/table.routes';
 import configRoutes from './routes/config.routes';
 import orderRoutes from './routes/order.routes';
@@ -29,6 +30,7 @@ export function createApp(): Application {
   app.use('/api/auth', authRoutes);
   app.use('/api/users', userRoutes);
   app.use('/api/products', productRoutes);
+  app.use('/api/categories', categoryRoutes);
   app.use('/api/tables', tableRoutes);
   app.use('/api/config', configRoutes);
   app.use('/api/orders', orderRoutes);

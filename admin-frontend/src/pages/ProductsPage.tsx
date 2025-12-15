@@ -6,24 +6,27 @@ import { Button } from '../components/ui/Button';
 import { Table } from '../components/ui/Table';
 import { Modal } from '../components/ui/Modal';
 import { Input } from '../components/ui/Input';
-import { productsAPI } from '../services/api';
+import { productsAPI, categoriesAPI } from '../services/api';
 import wsService from '../services/websocket.service';
-import type { Product } from '../types';
+import type { Product, Category } from '../types';
 
 export function ProductsPage() {
   const [products, setProducts] = useState<Product[]>([]);
+  const [categories, setCategories] = useState<Category[]>([]);
   const [loading, setLoading] = useState(true);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [editingProduct, setEditingProduct] = useState<Product | null>(null);
   const [formData, setFormData] = useState({
     name: '',
     price: 0,
+    category: '',
     desc: '',
     image: '',
   });
 
   useEffect(() => {
     loadProducts();
+    loadCategories();
     
     // Suscribirse a eventos de productos en tiempo real
     const handleProductCreated = (product: Product) => {
@@ -65,6 +68,15 @@ export function ProductsPage() {
     }
   };
 
+  const loadCategories = async () => {
+    try {
+      const response = await categoriesAPI.getAll();
+      setCategories(response.data.data || []);
+    } catch (error) {
+      console.error('Error loading categories:', error);
+    }
+  };
+
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     try {
@@ -93,7 +105,7 @@ export function ProductsPage() {
   };
 
   const resetForm = () => {
-    setFormData({ name: '', price: 0, desc: '', image: '' });
+    setFormData({ name: '', price: 0, category: '', desc: '', image: '' });
     setEditingProduct(null);
   };
 
@@ -102,6 +114,7 @@ export function ProductsPage() {
     setFormData({
       name: product.name,
       price: product.price,
+      category: product.category,
       desc: product.desc,
       image: product.image,
     });
@@ -115,6 +128,7 @@ export function ProductsPage() {
       header: 'Price',
       accessor: (row: Product) => `$${row.price.toFixed(2)}`,
     },
+    { header: 'Category', accessor: 'category' as keyof Product },
     { header: 'Description', accessor: 'desc' as keyof Product },
     {
       header: 'Status',
@@ -212,6 +226,24 @@ export function ProductsPage() {
             onChange={(e) => setFormData({ ...formData, price: parseFloat(e.target.value) })}
             required
           />
+          <div>
+            <label className="block text-sm font-medium text-gray-700 mb-2">
+              Category <span className="text-red-500">*</span>
+            </label>
+            <select
+              value={formData.category}
+              onChange={(e) => setFormData({ ...formData, category: e.target.value })}
+              className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500"
+              required
+            >
+              <option value="">Select a category</option>
+              {categories.map((cat) => (
+                <option key={cat.id} value={cat.name}>
+                  {cat.name}
+                </option>
+              ))}
+            </select>
+          </div>
           <div>
             <label className="block text-sm font-medium text-gray-700 mb-2">Description</label>
             <textarea

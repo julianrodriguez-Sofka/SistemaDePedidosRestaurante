@@ -1,6 +1,7 @@
 import mongoose from 'mongoose';
 import bcrypt from 'bcryptjs';
 import { UserModel } from '../models/user.model';
+import { CategoryModel } from '../models/category.model';
 import { connectDatabase } from '../config/database';
 import dotenv from 'dotenv';
 import path from 'path';
@@ -84,6 +85,28 @@ const seedAdminUser = async () => {
     console.log('Username: waiter1');
     console.log('Password: waiter123');
     console.log('━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━');
+
+    // Crear categorías por defecto para HU-004
+    console.log('\n📁 Creating default categories...');
+    const defaultCategories = [
+      { id: 1, name: 'Platos Fuertes', description: 'Platos principales del menú', enabled: true },
+      { id: 2, name: 'Bebidas', description: 'Bebidas frías y calientes', enabled: true },
+      { id: 3, name: 'Entradas', description: 'Aperitivos y entradas', enabled: true },
+      { id: 4, name: 'Postres', description: 'Postres y dulces', enabled: true },
+      { id: 5, name: 'General', description: 'Categoría general', enabled: true },
+    ];
+
+    for (const categoryData of defaultCategories) {
+      const existingCategory = await CategoryModel.findOne({ name: categoryData.name });
+      if (!existingCategory) {
+        await CategoryModel.create(categoryData);
+        console.log(`✅ Category created: ${categoryData.name}`);
+      } else {
+        console.log(`⚠️  Category already exists: ${categoryData.name}`);
+      }
+    }
+
+    console.log('\n✅ Categories setup complete!');
 
   } catch (error) {
     console.error('❌ Error seeding database:', error);

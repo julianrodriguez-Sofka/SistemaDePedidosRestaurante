@@ -7,6 +7,7 @@ import { ActiveOrdersTracker } from '@/components/ActiveOrdersTracker';
 import { useOrderManagement } from '../hooks/useOrderManagement';
 import { useOrderSubmission } from '../hooks/useOrderSubmission';
 import { useActiveOrders } from '../hooks/useActiveOrders';
+import { useOrderCaptureTracking } from '../hooks/useOrderCaptureTracking';
 import type { ActiveOrder } from '../hooks/useActiveOrders';
 import { updateOrder } from '../services/orderService';
 import type { Product, OrderPayload } from '../types/order';
@@ -37,6 +38,16 @@ export function WaiterPage() {
   const { submitOrder, successMsg } = useOrderSubmission();
   const { activeOrders, setActiveOrders, loading: ordersLoading, refetch: refetchOrders } = useActiveOrders();
   const { lastMessage } = useWebSocket();
+  
+  // 📊 Track order capture time for US-001 compliance
+  const { 
+    startTracking, 
+    stopTracking, 
+    resetTracking, 
+    isTracking,
+    getElapsedTime,
+    isExceedingThreshold 
+  } = useOrderCaptureTracking();
 
   // 🔥 Connect to admin-service WebSocket for real-time products
   useEffect(() => {
@@ -86,6 +97,13 @@ export function WaiterPage() {
       wsService.off('product.deleted', handleProductDeleted);
     };
   }, []);
+
+  // 📊 Start tracking when first item is added to order
+  useEffect(() => {
+    if (order.items.length === 1 && !isTracking) {
+      startTracking();
+    }
+  }, [order.items.length, isTracking, startTracking]);
 
   // Refetch orders after successful order submission
   useEffect(() => {
@@ -153,7 +171,12 @@ useEffect(() => {
     const success = await submitOrder(payload);
     
     if (success) {
+      // 📊 Stop tracking and record metrics
+      const tableNumber = parseInt(table, 10) || 0;
+      stopTracking(order.items.length, tableNumber);
+      
       clearOrder();
+      resetTracking(); // Reset for next order
     }
   };
 
@@ -256,6 +279,9 @@ useEffect(() => {
           onAddNote={addNoteToItem}
           onSend={handleSend}
           successMsg={successMsg}
+          isTracking={isTracking}
+          isExceedingThreshold={isExceedingThreshold(order.items.length)}
+          elapsedTime={getElapsedTime()}
         />
       </div>
 

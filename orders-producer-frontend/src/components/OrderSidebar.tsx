@@ -17,6 +17,9 @@ interface OrderSidebarProps {
   onAddNote: (productId: number, note: string) => void;
   onSend: (table: string, clientName: string) => Promise<void>;
   successMsg: string | null;
+  isTracking?: boolean;
+  isExceedingThreshold?: boolean;
+  elapsedTime?: number;
 }
 
 export default function OrderSidebar({
@@ -25,7 +28,10 @@ export default function OrderSidebar({
   onChangeQty,
   onAddNote,
   onSend,
-  successMsg
+  successMsg,
+  isTracking = false,
+  isExceedingThreshold = false,
+  elapsedTime = 0
 }: OrderSidebarProps) {
   const [customerName, setCustomerName] = useState('');
   const [selectedTable, setSelectedTable] = useState('');
@@ -51,6 +57,15 @@ export default function OrderSidebar({
 
       {/* Order Details */}
       <div className="flex-1 overflow-y-auto p-6 space-y-4">
+        {/* Performance Warning - US-001 Criterion 5 */}
+        {isTracking && isExceedingThreshold && order.items.length >= 5 && (
+          <Alert className="bg-yellow-50 border-yellow-300">
+            <AlertDescription className="text-yellow-800 text-sm">
+              ⚠️ Order capture time exceeding 45s threshold ({Math.round(elapsedTime / 1000)}s)
+            </AlertDescription>
+          </Alert>
+        )}
+
         {/* Customer Info */}
         <div className="space-y-3">
           <div>

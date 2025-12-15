@@ -1,6 +1,6 @@
 import { ReactNode } from 'react';
 import { Link, useLocation } from 'react-router-dom';
-import { Home, Users, Package, Table2, Settings, ShoppingCart } from 'lucide-react';
+import { Home, Users, Package, Table2, Settings, ShoppingCart, FolderTree } from 'lucide-react';
 import { LogoutButton } from '../LogoutButton';
 
 interface AdminLayoutProps {
@@ -11,6 +11,7 @@ const menuItems = [
   { path: '/admin/dashboard', icon: Home, label: 'Dashboard' },
   { path: '/admin/users', icon: Users, label: 'Users' },
   { path: '/admin/products', icon: Package, label: 'Products' },
+  { path: '/admin/categories', icon: FolderTree, label: 'Categories' },
   { path: '/admin/tables', icon: Table2, label: 'Tables' },
   { path: '/admin/orders', icon: ShoppingCart, label: 'Orders' },
   { path: '/admin/config', icon: Settings, label: 'Config' },

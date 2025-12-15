@@ -13,8 +13,19 @@ export interface Product {
   id: number;
   name: string;
   price: number;
+  category: string;
   desc: string;
   image: string;
+  enabled: boolean;
+  createdAt: string;
+  updatedAt: string;
+}
+
+export interface Category {
+  _id: string;
+  id: number;
+  name: string;
+  description: string;
   enabled: boolean;
   createdAt: string;
   updatedAt: string;

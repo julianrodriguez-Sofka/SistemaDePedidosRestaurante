@@ -1,5 +1,5 @@
 import axios from 'axios';
-import type { User, Product, Table, Config, Order, LoginResponse, ApiResponse } from '../types';
+import type { User, Product, Table, Config, Order, Category, LoginResponse, ApiResponse } from '../types';
 
 const API_URL = import.meta.env.VITE_ADMIN_API_URL || 'http://localhost:4000/api';
 
@@ -76,6 +76,16 @@ export const productsAPI = {
   create: (data: Partial<Product>) => api.post<ApiResponse<Product>>('/products', data),
   update: (id: number, data: Partial<Product>) => api.put<ApiResponse<Product>>(`/products/${id}`, data),
   delete: (id: number) => api.delete<ApiResponse<void>>(`/products/${id}`),
+};
+
+// Categories
+export const categoriesAPI = {
+  getAll: () => api.get<ApiResponse<Category[]>>('/categories'),
+  getById: (id: number) => api.get<ApiResponse<Category>>(`/categories/${id}`),
+  create: (data: Partial<Category>) => api.post<ApiResponse<Category>>('/categories', data),
+  update: (id: number, data: Partial<Category>) => api.put<ApiResponse<Category>>(`/categories/${id}`, data),
+  delete: (id: number) => api.delete<ApiResponse<void>>(`/categories/${id}`),
+  getProductCount: (name: string) => api.get<ApiResponse<{ count: number }>>(`/categories/name/${name}/products/count`),
 };
 
 // Tables
