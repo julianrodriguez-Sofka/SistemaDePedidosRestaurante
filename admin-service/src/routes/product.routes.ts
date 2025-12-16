@@ -5,13 +5,13 @@ import { authenticate, authorize } from '../middlewares/auth.middleware';
 const router = Router();
 const productController = new ProductController();
 
-// Todas las rutas requieren autenticación y rol de admin
-router.use(authenticate, authorize(['admin']));
-
-router.post('/', productController.createProduct);
+// GET routes públicas (meseros necesitan ver productos)
 router.get('/', productController.getAllProducts);
 router.get('/:id', productController.getProductById);
-router.put('/:id', productController.updateProduct);
-router.delete('/:id', productController.deleteProduct);
+
+// Rutas que modifican datos requieren autenticación y rol admin
+router.post('/', authenticate, authorize(['admin']), productController.createProduct);
+router.put('/:id', authenticate, authorize(['admin']), productController.updateProduct);
+router.delete('/:id', authenticate, authorize(['admin']), productController.deleteProduct);
 
 export default router;

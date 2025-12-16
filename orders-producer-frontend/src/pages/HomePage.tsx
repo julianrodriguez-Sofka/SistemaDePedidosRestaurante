@@ -2,7 +2,7 @@ import { useState, FormEvent } from 'react';
 import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
 
-const API_URL = import.meta.env.VITE_ADMIN_API_URL || 'http://localhost:4000/api';
+const API_URL = import.meta.env.VITE_ADMIN_API_URL || 'http://localhost:4001/api';
 
 export function HomePage() {
   const [username, setUsername] = useState('');

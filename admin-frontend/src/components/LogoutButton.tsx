@@ -5,8 +5,14 @@ export function LogoutButton() {
   const navigate = useNavigate();
 
   const handleLogout = () => {
+    // Limpiar todos los tokens
     localStorage.removeItem('authToken');
+    localStorage.removeItem('adminToken');
     localStorage.removeItem('currentUser');
+    localStorage.removeItem('user');
+    localStorage.removeItem('adminUser');
+    
+    // Redirigir al login del admin panel
     navigate('/');
   };
 

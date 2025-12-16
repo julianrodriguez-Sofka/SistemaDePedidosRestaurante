@@ -6,6 +6,8 @@ class WebSocketService {
   private maxReconnectAttempts = 5;
   private reconnectDelay = 3000;
   private listeners: Map<string, Set<Function>> = new Map();
+  private shouldReconnect = true;
+  private currentUrl = '';
 
   connect(url: string): void {
     if (this.ws?.readyState === WebSocket.OPEN) {
@@ -13,6 +15,8 @@ class WebSocketService {
       return;
     }
 
+    this.currentUrl = url;
+    this.shouldReconnect = true;
     console.log('[WS] Connecting to:', url);
     
     try {
@@ -39,7 +43,9 @@ class WebSocketService {
 
       this.ws.onclose = () => {
         console.log('[WS] 🔌 Connection closed');
-        this.reconnect(url);
+        if (this.shouldReconnect) {
+          this.reconnect(this.currentUrl);
+        }
       };
     } catch (error) {
       console.error('[WS] Failed to create connection:', error);
@@ -93,6 +99,7 @@ class WebSocketService {
   }
 
   disconnect(): void {
+    this.shouldReconnect = false;
     if (this.ws) {
       this.ws.close();
       this.ws = null;
@@ -108,9 +115,5 @@ class WebSocketService {
 
 // Singleton instance
 export const wsService = new WebSocketService();
-
-// Auto-connect to admin-service WebSocket
-const ADMIN_WS_URL = 'ws://localhost:4001/ws';
-wsService.connect(ADMIN_WS_URL);
 
 export default wsService;

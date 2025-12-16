@@ -11,8 +11,8 @@ export function LogoutButton() {
     localStorage.removeItem('user');
     localStorage.removeItem('adminUser');
     
-    // Redirigir al login
-    navigate('/');
+    // Redirigir al login del admin panel
+    window.location.href = 'http://localhost:5174';
   };
 
   return (

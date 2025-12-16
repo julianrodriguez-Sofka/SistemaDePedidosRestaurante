@@ -13,18 +13,15 @@ import type { Product, OrderPayload } from '../types/order';
 import { useWebSocket } from '@/hooks/useWebSocket';
 import { LogoutButton } from '../components/LogoutButton';
 import { wsService } from '../services/websocket.service';
+import axios from 'axios';
 
-const initialProducts: Product[] = [
-  { id: 1, name: "Hamburguesa",    price: 10500, desc: "Hamburguesa", image: "/images/burguer_pic.jpg" },
-  { id: 2, name: "Papas fritas",   price: 12000, desc: "Papas",       image: "/images/fries_pic.jpg" },
-  { id: 3, name: "Perro caliente", price: 8000,  desc: "Perro",       image: "/images/hotdog_pic.jpg" },
-  { id: 4, name: "Refresco",       price: 7000,  desc: "Refresco",    image: "/images/drink_pic.jpg" }
-];
+const ADMIN_API_URL = import.meta.env.VITE_ADMIN_API_URL || 'http://localhost:4001/api';
 
 type OrderStatusFilter = 'all' | 'pending' | 'preparing' | 'ready' | 'completed';
 
 export function WaiterPage() {
-  const [products, setProducts] = useState<Product[]>(initialProducts);
+  const [products, setProducts] = useState<Product[]>([]);
+  const [loadingProducts, setLoadingProducts] = useState(true);
   const [orderStatus, setOrderStatus] = useState<OrderStatusFilter>('all');
   const [searchQuery] = useState<string>('');
   const [editingOrder, setEditingOrder] = useState<ActiveOrder | null>(null);
@@ -38,6 +35,36 @@ export function WaiterPage() {
   const { activeOrders, setActiveOrders, loading: ordersLoading, refetch: refetchOrders } = useActiveOrders();
   const { lastMessage } = useWebSocket();
 
+  // 🔥 Load products from API on mount
+  useEffect(() => {
+    const loadProducts = async () => {
+      try {
+        console.log('[Waiter] 📦 Loading products from API...');
+        const token = localStorage.getItem('authToken') || localStorage.getItem('adminToken');
+        const response = await axios.get(`${ADMIN_API_URL}/products`, {
+          headers: token ? { Authorization: `Bearer ${token}` } : {}
+        });
+        
+        const apiProducts = response.data.data.map((p: any) => ({
+          id: p.id,
+          name: p.name,
+          price: p.price,
+          desc: p.desc || p.description || p.name,
+          image: p.image || '/images/default_pic.jpg'
+        }));
+        
+        setProducts(apiProducts);
+        console.log('[Waiter] ✅ Loaded', apiProducts.length, 'products from API');
+      } catch (error) {
+        console.error('[Waiter] ❌ Error loading products:', error);
+      } finally {
+        setLoadingProducts(false);
+      }
+    };
+
+    loadProducts();
+  }, []);
+
   // 🔥 Connect to admin-service WebSocket for real-time products
   useEffect(() => {
     console.log('[Waiter] 🔌 Connecting to admin-service WebSocket...');
@@ -47,10 +74,10 @@ export function WaiterPage() {
     const handleProductCreated = (data: any) => {
       console.log('[Waiter] ➕ Product created:', data);
       setProducts(prev => [...prev, {
-        id: data._id,
+        id: data.id,
         name: data.name,
         price: data.price,
-        desc: data.description || data.name,
+        desc: data.desc || data.name,
         image: data.image || '/images/default_pic.jpg'
       }]);
     };
@@ -58,12 +85,12 @@ export function WaiterPage() {
     const handleProductUpdated = (data: any) => {
       console.log('[Waiter] ✏️ Product updated:', data);
       setProducts(prev => prev.map(p => 
-        p.id === data._id 
+        p.id === data.id 
           ? {
               ...p,
               name: data.name,
               price: data.price,
-              desc: data.description || data.name,
+              desc: data.desc || data.name,
               image: data.image || p.image
             }
           : p
@@ -72,7 +99,7 @@ export function WaiterPage() {
 
     const handleProductDeleted = (data: any) => {
       console.log('[Waiter] ❌ Product deleted:', data);
-      setProducts(prev => prev.filter(p => p.id !== data._id));
+      setProducts(prev => prev.filter(p => p.id !== data.id));
     };
 
     wsService.on('product.created', handleProductCreated);
@@ -80,7 +107,7 @@ export function WaiterPage() {
     wsService.on('product.deleted', handleProductDeleted);
 
     return () => {
-      console.log('[Waiter] 🔌 Disconnecting from admin-service WebSocket...');
+      console.log('[Waiter] 🔌 Cleaning up WebSocket listeners...');
       wsService.off('product.created', handleProductCreated);
       wsService.off('product.updated', handleProductUpdated);
       wsService.off('product.deleted', handleProductDeleted);
@@ -227,23 +254,38 @@ useEffect(() => {
 
         {/* Menu Section */}
         <div className="flex-1 overflow-y-auto px-6 py-12">
+          {/* Header with Logout */}
+          <div className="flex justify-between items-center mb-6">
+            <h2 className="text-2xl font-bold text-gray-800">Menú</h2>
+            <LogoutButton />
+          </div>
 
           {/* Products Grid */}
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-            {filteredProducts.map((product) => {
-              const itemInCart = order.items.find(item => item.id === product.id);
-              const quantity = itemInCart?.qty || 0;
-              
-              return (
-                <ProductCard
-                  key={product.id}
-                  product={product}
-                  onAdd={addToOrder}
-                  quantity={quantity}
-                />
-              );
-            })}
-          </div>
+          {loadingProducts ? (
+            <div className="flex justify-center items-center h-64">
+              <div className="text-gray-500">Cargando productos...</div>
+            </div>
+          ) : products.length === 0 ? (
+            <div className="flex justify-center items-center h-64">
+              <div className="text-gray-500">No hay productos disponibles</div>
+            </div>
+          ) : (
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+              {filteredProducts.map((product) => {
+                const itemInCart = order.items.find(item => item.id === product.id);
+                const quantity = itemInCart?.qty || 0;
+                
+                return (
+                  <ProductCard
+                    key={product.id}
+                    product={product}
+                    onAdd={addToOrder}
+                    quantity={quantity}
+                  />
+                );
+              })}
+            </div>
+          )}
         </div>
       </div>
 
@@ -274,11 +316,7 @@ useEffect(() => {
         open={isViewDialogOpen}
         onClose={handleCloseViewDialog}
       />
-
-      {/* Logout Button */}
-      <div className="fixed bottom-4 right-4">
-        <LogoutButton />
-      </div>
     </div>
+    
   );
 }

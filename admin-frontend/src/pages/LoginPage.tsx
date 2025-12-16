@@ -45,11 +45,43 @@ export function LoginPage() {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-gray-800 to-gray-900 flex items-center justify-center p-4">
-      <div className="bg-white rounded-lg shadow-2xl p-8 w-full max-w-md">
+    <div className="min-h-screen flex items-center justify-center relative overflow-hidden">
+      {/* Three colored sections as background */}
+      <div className="absolute inset-0 flex">
+        {/* Chef Section - Orange */}
+        <div className="flex-1 bg-gradient-to-br from-orange-500 to-orange-600 flex flex-col items-center justify-center text-white">
+          <h2 className="text-6xl font-bold mb-12">I'm a Chef</h2>
+          <img 
+            src="/images/chef-image.png" 
+            alt="Chef" 
+            className="w-80 h-80 object-contain drop-shadow-2xl"
+            style={{ filter: 'drop-shadow(0 10px 20px rgba(0,0,0,0.5))' }}
+          />
+        </div>
+        
+        {/* Admin Section - Green */}
+        <div className="flex-1 bg-gradient-to-br from-emerald-500 to-emerald-600 flex flex-col items-center justify-center text-white">
+          <h2 className="text-6xl font-bold mb-12">I'm Admin</h2>
+          <div className="text-9xl drop-shadow-2xl">👔</div>
+        </div>
+        
+        {/* Waiter Section - Blue */}
+        <div className="flex-1 bg-gradient-to-br from-blue-400 to-blue-500 flex flex-col items-center justify-center text-white">
+          <h2 className="text-6xl font-bold mb-12">I'm a Waiter</h2>
+          <img 
+            src="/images/waiter_image.png" 
+            alt="Waiter" 
+            className="w-80 h-80 object-contain drop-shadow-2xl"
+            style={{ filter: 'drop-shadow(0 10px 20px rgba(0,0,0,0.5))' }}
+          />
+        </div>
+      </div>
+
+      {/* Login Form - Centered with backdrop */}
+      <div className="relative z-10 bg-white/95 backdrop-blur-sm rounded-2xl shadow-2xl p-8 w-full max-w-md mx-4">
         <div className="text-center mb-8">
-          <h1 className="text-3xl font-bold text-gray-800">Admin Panel</h1>
-          <p className="text-gray-600 mt-2">Sign in to manage your restaurant</p>
+          <h1 className="text-3xl font-bold text-gray-800">Welcome User</h1>
+          <p className="text-gray-600 mt-2">If you are an admin, waiter or chef, log in here.</p>
         </div>
 
         <form onSubmit={handleSubmit} className="space-y-6">
@@ -68,7 +100,7 @@ export function LoginPage() {
               type="text"
               value={username}
               onChange={(e) => setUsername(e.target.value)}
-              className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+              className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-emerald-500 focus:border-transparent"
               required
             />
           </div>
@@ -82,7 +114,7 @@ export function LoginPage() {
               type="password"
               value={password}
               onChange={(e) => setPassword(e.target.value)}
-              className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+              className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-emerald-500 focus:border-transparent"
               required
             />
           </div>
@@ -90,7 +122,7 @@ export function LoginPage() {
           <button
             type="submit"
             disabled={loading}
-            className="w-full bg-blue-600 hover:bg-blue-700 text-white font-semibold py-3 rounded-lg transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+            className="w-full bg-emerald-600 hover:bg-emerald-700 text-white font-semibold py-3 rounded-lg transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
           >
             {loading ? 'Signing in...' : 'Sign In'}
           </button>
