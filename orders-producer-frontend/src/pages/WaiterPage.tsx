@@ -10,25 +10,19 @@ import { useOrderSubmission } from '../hooks/useOrderSubmission';
 import { useActiveOrders } from '../hooks/useActiveOrders';
 import type { ActiveOrder } from '../hooks/useActiveOrders';
 import { updateOrder } from '../services/orderService';
+import { getProducts } from '../services/productService';
 import type { Product, OrderPayload } from '../types/order';
 import { useWebSocket } from '@/hooks/useWebSocket';
 import { useAuth } from '../contexts/AuthContext';
 import { Button } from '../components/ui/button';
 import { LogOut } from 'lucide-react';
 
-const initialProducts: Product[] = [
-  { id: 1, name: "Hamburguesa",    price: 10500, desc: "Hamburguesa", image: "/images/burguer_pic.jpg" },
-  { id: 2, name: "Papas fritas",   price: 12000, desc: "Papas",       image: "/images/fries_pic.jpg" },
-  { id: 3, name: "Perro caliente", price: 8000,  desc: "Perro",       image: "/images/hotdog_pic.jpg" },
-  { id: 4, name: "Refresco",       price: 7000,  desc: "Refresco",    image: "/images/drink_pic.jpg" }
-];
-
 type OrderStatusFilter = 'all' | 'pending' | 'preparing' | 'ready' | 'completed';
 
 export function WaiterPage() {
   const navigate = useNavigate();
   const { user, logout } = useAuth();
-  const [products] = useState<Product[]>(initialProducts);
+  const [products, setProducts] = useState<Product[]>([]);
   const [orderStatus, setOrderStatus] = useState<OrderStatusFilter>('all');
   const [searchQuery] = useState<string>('');
   const [editingOrder, setEditingOrder] = useState<ActiveOrder | null>(null);
@@ -46,6 +40,15 @@ export function WaiterPage() {
     logout();
     navigate('/', { replace: true });
   };
+
+  // Load products from backend
+  useEffect(() => {
+    const loadProducts = async () => {
+      const productsData = await getProducts();
+      setProducts(productsData);
+    };
+    loadProducts();
+  }, []);
 
   // Refetch orders after successful order submission
   useEffect(() => {

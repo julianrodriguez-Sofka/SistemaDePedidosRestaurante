@@ -5,9 +5,11 @@ import { Button } from '../components/ui/button';
 import { Input } from '../components/ui/input';
 
 export function LoginPage() {
-  const [name, setName] = useState('');
+  const [email, setEmail] = useState('');
+  const [password, setPassword] = useState('');
   const [selectedRole, setSelectedRole] = useState<UserRole | ''>('');
   const [error, setError] = useState('');
+  const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
   const { login } = useAuth();
 
@@ -16,11 +18,16 @@ export function LoginPage() {
     setError('');
   };
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     
-    if (!name.trim()) {
-      setError('Por favor ingresa tu nombre');
+    if (!email.trim()) {
+      setError('Por favor ingresa tu email');
+      return;
+    }
+    
+    if (!password.trim()) {
+      setError('Por favor ingresa tu contraseña');
       return;
     }
     
@@ -29,13 +36,15 @@ export function LoginPage() {
       return;
     }
 
-    const startTime = performance.now();
-    
-    // Realizar login
-    login(name.trim(), selectedRole);
-    
-    // Simular procesamiento asíncrono mínimo
-    requestAnimationFrame(() => {
+    setLoading(true);
+    setError('');
+
+    try {
+      const startTime = performance.now();
+      
+      // Realizar login con autenticación
+      await login(email.trim(), password.trim(), selectedRole);
+      
       const redirectTime = performance.now() - startTime;
       
       // Verificar SLO de 1.5 segundos
@@ -47,7 +56,10 @@ export function LoginPage() {
       
       // Redirigir a la ruta correspondiente
       navigate(`/${selectedRole}`, { replace: true });
-    });
+    } catch (err: any) {
+      setError(err.message || 'Error al iniciar sesión');
+      setLoading(false);
+    }
   };
 
   return (
@@ -127,21 +139,37 @@ export function LoginPage() {
             <h3 className="text-2xl font-bold text-gray-900 mb-2">
               {selectedRole === 'cocina' ? '👨‍🍳 Chef Login' : '🧑‍💼 Waiter Login'}
             </h3>
-            <p className="text-gray-600 mb-6">Enter your name to continue</p>
+            <p className="text-gray-600 mb-6">Enter your credentials to continue</p>
             
             <form onSubmit={handleSubmit} className="space-y-4">
               <div>
-                <label htmlFor="name" className="block text-sm font-medium text-gray-700 mb-1">
-                  Name
+                <label htmlFor="email" className="block text-sm font-medium text-gray-700 mb-1">
+                  Email
                 </label>
                 <Input
-                  id="name"
-                  type="text"
-                  value={name}
-                  onChange={(e) => setName(e.target.value)}
-                  placeholder="Enter your name"
+                  id="email"
+                  type="email"
+                  value={email}
+                  onChange={(e) => setEmail(e.target.value)}
+                  placeholder="your@email.com"
                   className="w-full"
                   autoFocus
+                  disabled={loading}
+                />
+              </div>
+
+              <div>
+                <label htmlFor="password" className="block text-sm font-medium text-gray-700 mb-1">
+                  Password
+                </label>
+                <Input
+                  id="password"
+                  type="password"
+                  value={password}
+                  onChange={(e) => setPassword(e.target.value)}
+                  placeholder="••••••••"
+                  className="w-full"
+                  disabled={loading}
                 />
               </div>
 
@@ -158,9 +186,11 @@ export function LoginPage() {
                   onClick={() => {
                     setSelectedRole('');
                     setError('');
-                    setName('');
+                    setEmail('');
+                    setPassword('');
                   }}
                   className="flex-1"
+                  disabled={loading}
                 >
                   Cancel
                 </Button>
@@ -171,8 +201,9 @@ export function LoginPage() {
                       ? 'bg-orange-500 hover:bg-orange-600' 
                       : 'bg-blue-500 hover:bg-blue-600'
                   }`}
+                  disabled={loading}
                 >
-                  Continue
+                  {loading ? 'Loading...' : 'Continue'}
                 </Button>
               </div>
             </form>
