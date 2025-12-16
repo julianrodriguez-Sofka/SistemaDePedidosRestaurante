@@ -1,5 +1,5 @@
-import { Input } from './ui/input';
-import { Search } from 'lucide-react';
+import { useEffect, useState } from 'react';
+import { LogoutButton } from './LogoutButton';
 
 interface KitchenHeaderProps {
   currentDate?: string;
@@ -11,6 +11,21 @@ export function KitchenHeader({ currentDate = new Date().toLocaleDateString('en-
   day: 'numeric', 
   year: 'numeric' 
 }) }: KitchenHeaderProps) {
+  const [chefName, setChefName] = useState<string>('');
+
+  useEffect(() => {
+    const userStr = localStorage.getItem('user') || localStorage.getItem('adminUser');
+    if (userStr) {
+      try {
+        const user = JSON.parse(userStr);
+        setChefName(user.username || 'Chef');
+      } catch (error) {
+        console.error('[Kitchen] Error parsing user:', error);
+        setChefName('Chef');
+      }
+    }
+  }, []);
+
   return (
     <div className="bg-white border-b border-gray-200">
       <div className="max-w-[1600px] mx-auto px-6 py-6">
@@ -18,16 +33,14 @@ export function KitchenHeader({ currentDate = new Date().toLocaleDateString('en-
           <div>
             <h1 className="text-2xl font-bold text-gray-900">Hi, here are today's orders!</h1>
             <p className="text-sm text-gray-500 mt-1">{currentDate}</p>
+            {chefName && (
+              <p className="text-sm text-gray-600 mt-1">
+                Chef: <span className="font-semibold text-orange-600">{chefName}</span>
+              </p>
+            )}
           </div>
           
-          <div className="relative w-64">
-            <Search className="absolute left-3 top-1/2 -translate-y-1/2 size-4 text-muted-foreground" />
-            <Input
-              type="text"
-              placeholder="Search..."
-              className="pl-10"
-            />
-          </div>
+          <LogoutButton />
         </div>
       </div>
     </div>

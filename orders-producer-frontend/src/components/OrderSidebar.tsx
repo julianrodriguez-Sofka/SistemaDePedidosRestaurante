@@ -18,6 +18,7 @@ interface OrderSidebarProps {
   onSend: (table: string, clientName: string) => Promise<void>;
   successMsg: string | null;
   tables?: any[];
+  userName?: string;
 }
 
 export default function OrderSidebar({
@@ -27,16 +28,17 @@ export default function OrderSidebar({
   onAddNote,
   onSend,
   successMsg,
-  tables = []
+  tables = [],
+  userName = ''
 }: OrderSidebarProps) {
-  const [customerName, setCustomerName] = useState('');
+  const [customerName, setCustomerName] = useState(userName);
   const [selectedTable, setSelectedTable] = useState('');
   const [orderType, setOrderType] = useState<'dine-in' | 'takeaway'>('dine-in');
 
   const handleSubmit = async () => {
     if (!selectedTable && orderType === 'dine-in') return;
-    await onSend(selectedTable || 'Takeaway', customerName);
-    setCustomerName('');
+    await onSend(selectedTable || 'Takeaway', userName || customerName);
+    setCustomerName(userName);
     setSelectedTable('');
   };
 
@@ -49,26 +51,33 @@ export default function OrderSidebar({
       {/* Header */}
       <div className="bg-white border-b p-6">
         <h2 className="text-xl font-semibold text-gray-800">Current Order</h2>
+        {userName && (
+          <p className="text-sm text-gray-600 mt-1">
+            Atendido por: <span className="font-semibold text-blue-600">{userName}</span>
+          </p>
+        )}
       </div>
 
       {/* Order Details */}
       <div className="flex-1 overflow-y-auto p-6 space-y-4">
         {/* Customer Info */}
         <div className="space-y-3">
-          <div>
-            <Label htmlFor="customer-name" className="text-sm font-medium text-gray-700">
-              Customer name <span className="text-red-500">*</span>
-            </Label>
-            <Input
-              id="customer-name"
-              type="text"
-              placeholder="Enter customer name (required)"
-              value={customerName}
-              onChange={(e) => setCustomerName(e.target.value)}
-              className="mt-1"
-              required
-            />
-          </div>
+          {!userName && (
+            <div>
+              <Label htmlFor="customer-name" className="text-sm font-medium text-gray-700">
+                Customer name <span className="text-red-500">*</span>
+              </Label>
+              <Input
+                id="customer-name"
+                type="text"
+                placeholder="Enter customer name (required)"
+                value={customerName}
+                onChange={(e) => setCustomerName(e.target.value)}
+                className="mt-1"
+                required
+              />
+            </div>
+          )}
 
           <div>
             <Label className="text-sm font-medium text-gray-700 mb-2 block">
@@ -211,7 +220,7 @@ export default function OrderSidebar({
 
         <Button
           onClick={handleSubmit}
-          disabled={order.items.length === 0 || (orderType === 'dine-in' && !selectedTable) || !customerName.trim()}
+          disabled={order.items.length === 0 || (orderType === 'dine-in' && !selectedTable) || (!userName && !customerName.trim())}
           className="w-full bg-blue-500 hover:bg-blue-600 h-12 text-base"
         >
           <Send className="w-5 h-5 mr-2" />

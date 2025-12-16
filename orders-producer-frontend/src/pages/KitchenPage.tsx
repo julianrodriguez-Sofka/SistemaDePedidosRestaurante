@@ -3,7 +3,6 @@ import { KitchenHeader } from '../components/KitchenHeader';
 import { KitchenTabs, type TabType } from '../components/KitchenTabs';
 import { KitchenOrderCard } from '../components/KitchenOrderCard';
 import { useKitchenOrders } from '../hooks/useKitchenOrders';
-import { LogoutButton } from '../components/LogoutButton'
 
 export function KitchenPage() {
   const [activeTab, setActiveTab] = useState<TabType>('All');
@@ -77,11 +76,6 @@ export function KitchenPage() {
             )}
           </>
         )}
-      </div>
-
-      {/* Logout Button */}
-      <div className="fixed bottom-4 right-4">
-        <LogoutButton />
       </div>
     </div>
   );

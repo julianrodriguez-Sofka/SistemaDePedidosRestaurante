@@ -30,6 +30,22 @@ export function WaiterPage() {
   const [viewingOrder, setViewingOrder] = useState<ActiveOrder | null>(null);
   const [isEditDialogOpen, setIsEditDialogOpen] = useState(false);
   const [isViewDialogOpen, setIsViewDialogOpen] = useState(false);
+  
+  // Get logged-in user name
+  const [userName, setUserName] = useState<string>('');
+  
+  useEffect(() => {
+    const userStr = localStorage.getItem('user') || localStorage.getItem('adminUser');
+    if (userStr) {
+      try {
+        const user = JSON.parse(userStr);
+        setUserName(user.username || 'Mesero');
+      } catch (error) {
+        console.error('[Waiter] Error parsing user:', error);
+        setUserName('Mesero');
+      }
+    }
+  }, []);
 
   
   const { order, addToOrder, changeQty, addNoteToItem, total, clearOrder } = useOrderManagement();
@@ -302,7 +318,14 @@ useEffect(() => {
         <div className="flex-1 overflow-y-auto px-6 py-12">
           {/* Header with Logout */}
           <div className="flex justify-between items-center mb-6">
-            <h2 className="text-2xl font-bold text-gray-800">Menú</h2>
+            <div>
+              <h2 className="text-2xl font-bold text-gray-800">Menú</h2>
+              {userName && (
+                <p className="text-sm text-gray-600 mt-1">
+                  Mesero: <span className="font-semibold text-gray-800">{userName}</span>
+                </p>
+              )}
+            </div>
             <LogoutButton />
           </div>
 
@@ -345,6 +368,7 @@ useEffect(() => {
           onSend={handleSend}
           successMsg={successMsg}
           tables={tables}
+          userName={userName}
         />
       </div>
 
