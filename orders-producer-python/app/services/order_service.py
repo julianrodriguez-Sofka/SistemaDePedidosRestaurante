@@ -1,10 +1,13 @@
 from uuid import uuid4
-from datetime import datetime
+from datetime import datetime, timezone, timedelta
 from typing import Optional
 
 from app.models.order import OrderIn, OrderMessage
 from app.messaging.messaging import publish_order
 from app.repositories.order_repository import OrderRepository
+
+# Timezone de Colombia (UTC-5)
+COLOMBIA_TZ = timezone(timedelta(hours=-5))
 
 class OrderService:
     def __init__(self, repository: OrderRepository):
@@ -16,7 +19,7 @@ class OrderService:
             customerName=order_in.customerName,
             table=order_in.table,
             items=order_in.items,
-            createdAt=datetime.utcnow(),
+            createdAt=datetime.now(COLOMBIA_TZ),
             status="pendiente"
         )
         self.repository.add(order_msg)

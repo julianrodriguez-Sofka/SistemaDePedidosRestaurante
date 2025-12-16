@@ -11,6 +11,7 @@ interface Product {
   name: string;
   quantity: number;
   price: number;
+  note?: string | null;
 }
 
 interface Order {
@@ -71,11 +72,16 @@ export function KitchenOrderCard({ order, onStartCooking, onMarkAsReady, onCompl
 
         <div className="space-y-2">
           {order.products.map((product, idx) => (
-            <div key={idx} className="flex items-center justify-between text-sm">
-              <span className="text-gray-700">
-                {product.quantity}x {product.name}
-              </span>
-              <span className="font-medium text-gray-900">{formatCOP(product.price)}</span>
+            <div key={idx} className="text-sm">
+              <div className="flex items-center justify-between">
+                <span className="text-gray-700">
+                  {product.quantity}x {product.name}
+                </span>
+                <span className="font-medium text-gray-900">{formatCOP(product.price)}</span>
+              </div>
+              {product.note && (
+                <p className="text-xs text-gray-500 italic mt-1 ml-4">Note: {product.note}</p>
+              )}
             </div>
           ))}
         </div>

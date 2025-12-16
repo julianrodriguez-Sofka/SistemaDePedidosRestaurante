@@ -17,6 +17,7 @@ export interface KitchenOrder {
     name: string;
     quantity: number;
     price: number;
+    note?: string | null;
   }[];
   total: number;
   status: OrderStatus;
@@ -60,6 +61,7 @@ const mapApiOrderToKitchenOrder = (order: ApiOrder): KitchenOrder => {
     name: item.productName,
     quantity: item.quantity,
     price: item.unitPrice,
+    note: item.note || null,
   }));
 
   const total = products.reduce((acc, p) => acc + (p.price * p.quantity), 0);

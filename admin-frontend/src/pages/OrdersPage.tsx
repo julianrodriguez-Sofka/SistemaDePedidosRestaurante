@@ -12,6 +12,7 @@ interface OrderItem {
   productName: string;
   quantity: number;
   unitPrice: number;
+  note?: string | null;
 }
 
 interface Order {
@@ -323,12 +324,19 @@ export function OrdersPage() {
                   </thead>
                   <tbody className="divide-y">
                     {selectedOrder.items.map((item, index) => (
-                      <tr key={index}>
-                        <td className="px-4 py-2">{item.productName}</td>
-                        <td className="px-4 py-2 text-center">{item.quantity}</td>
-                        <td className="px-4 py-2 text-right">${item.unitPrice.toFixed(2)}</td>
-                        <td className="px-4 py-2 text-right">${(item.quantity * item.unitPrice).toFixed(2)}</td>
-                      </tr>
+                      <>
+                        <tr key={index}>
+                          <td className="px-4 py-2">
+                            {item.productName}
+                            {item.note && (
+                              <p className="text-xs text-gray-500 italic mt-1">Note: {item.note}</p>
+                            )}
+                          </td>
+                          <td className="px-4 py-2 text-center">{item.quantity}</td>
+                          <td className="px-4 py-2 text-right">${item.unitPrice.toFixed(2)}</td>
+                          <td className="px-4 py-2 text-right">${(item.quantity * item.unitPrice).toFixed(2)}</td>
+                        </tr>
+                      </>
                     ))}
                   </tbody>
                   <tfoot className="bg-gray-50">

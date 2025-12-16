@@ -2,6 +2,7 @@ export interface OrderItem {
   productName: string;
   quantity: number;
   unitPrice: number;
+  note?: string | null;
 }
 
 export interface OrderMessage {

@@ -8,6 +8,7 @@ class OrderItem(BaseModel):
     productName: str
     quantity: conint(gt=0)        # cantidad > 0
     unitPrice: confloat(ge=0)     # precio >= 0
+    note: str | None = None       # nota opcional del item
 
 
 class OrderIn(BaseModel):
