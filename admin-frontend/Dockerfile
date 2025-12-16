@@ -9,6 +9,5 @@ ENV VITE_ADMIN_API_URL=$VITE_ADMIN_API_URL
 COPY package*.json ./
 RUN npm install
 COPY . .
-RUN npm run build
 EXPOSE 5174
-CMD ["npm", "run", "preview"]
+CMD ["npm", "run", "dev", "--", "--host", "0.0.0.0", "--port", "5174"]

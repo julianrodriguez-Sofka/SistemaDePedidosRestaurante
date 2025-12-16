@@ -1,14 +1,16 @@
 import { useState } from 'react';
 import type { FormEvent } from 'react';
+import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
 
-const API_URL = 'http://localhost:4001/api';
+const API_URL = import.meta.env.VITE_ADMIN_API_URL || 'http://localhost:4001/api';
 
-export function LoginPage() {
+export function ChefLoginPage() {
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
   const [error, setError] = useState('');
   const [loading, setLoading] = useState(false);
+  const navigate = useNavigate();
 
   const handleSubmit = async (e: FormEvent) => {
     e.preventDefault();
@@ -16,44 +18,41 @@ export function LoginPage() {
     setLoading(true);
 
     try {
-      const response = await axios.post(`${API_URL}/auth/login`, {
-        username,
-        password
-      });
-
+      const response = await axios.post(`${API_URL}/auth/login`, { username, password });
       const { token, user } = response.data.data;
 
-      // Verificar que el usuario sea administrador
-      if (!user.roles.includes('admin')) {
-        setError('Access denied. This login is only for administrators.');
+      // Verificar que el usuario tenga rol de chef
+      if (!user.roles.includes('chef')) {
+        setError('Access denied. This login is only for chefs.');
         setLoading(false);
         return;
       }
 
-      // Guardar en localStorage
-      localStorage.setItem('adminToken', token);
-      localStorage.setItem('adminUser', JSON.stringify(user));
+      // Guardar token y usuario en localStorage
+      localStorage.setItem('authToken', token);
+      localStorage.setItem('user', JSON.stringify(user));
 
-      // Redirigir al dashboard
-      window.location.href = '/admin/dashboard';
+      // Redirigir a la cocina
+      navigate('/cocina');
     } catch (err: any) {
       setError(err.response?.data?.message || 'Login failed. Please check your credentials.');
+    } finally {
       setLoading(false);
     }
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-emerald-500 to-emerald-600 flex items-center justify-center p-4">
+    <div className="min-h-screen bg-gradient-to-br from-orange-500 to-orange-600 flex items-center justify-center p-4">
       <div className="bg-white rounded-2xl shadow-2xl p-8 w-full max-w-md">
         <div className="text-center mb-8">
-          <div className="text-6xl mb-4">👔</div>
-          <h1 className="text-4xl font-bold text-gray-800 mb-2">Admin Login</h1>
-          <p className="text-gray-600">Sign in to manage the restaurant</p>
+          <div className="text-6xl mb-4">👨‍🍳</div>
+          <h1 className="text-4xl font-bold text-gray-800 mb-2">Chef Login</h1>
+          <p className="text-gray-600">Sign in to access the kitchen</p>
         </div>
 
         <form onSubmit={handleSubmit} className="space-y-6">
           {error && (
-            <div className="bg-red-50 border border-red-200 text-red-700 px-4 py-3 rounded">
+            <div className="bg-red-50 border border-red-200 text-red-700 px-4 py-3 rounded-lg">
               {error}
             </div>
           )}
@@ -67,7 +66,7 @@ export function LoginPage() {
               type="text"
               value={username}
               onChange={(e) => setUsername(e.target.value)}
-              className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-emerald-500 focus:border-transparent transition-all"
+              className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-transparent transition-all"
               placeholder="Enter your username"
               required
               autoFocus
@@ -83,7 +82,7 @@ export function LoginPage() {
               type="password"
               value={password}
               onChange={(e) => setPassword(e.target.value)}
-              className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-emerald-500 focus:border-transparent transition-all"
+              className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-transparent transition-all"
               placeholder="Enter your password"
               required
             />
@@ -92,7 +91,7 @@ export function LoginPage() {
           <button
             type="submit"
             disabled={loading}
-            className="w-full bg-gradient-to-r from-emerald-500 to-emerald-600 hover:from-emerald-600 hover:to-emerald-700 text-white font-semibold py-3 rounded-lg transition-all transform hover:scale-105 disabled:opacity-50 disabled:cursor-not-allowed disabled:transform-none"
+            className="w-full bg-gradient-to-r from-orange-500 to-orange-600 hover:from-orange-600 hover:to-orange-700 text-white font-semibold py-3 rounded-lg transition-all transform hover:scale-105 disabled:opacity-50 disabled:cursor-not-allowed disabled:transform-none"
           >
             {loading ? (
               <span className="flex items-center justify-center gap-2">
@@ -103,12 +102,20 @@ export function LoginPage() {
                 Signing in...
               </span>
             ) : (
-              'Sign In as Admin'
+              'Sign In as Chef'
             )}
           </button>
         </form>
+
+        <div className="mt-6 text-center">
+          <button
+            onClick={() => navigate('/')}
+            className="text-sm text-gray-600 hover:text-gray-800 underline"
+          >
+            ← Back to selection
+          </button>
+        </div>
       </div>
     </div>
   );
 }
-

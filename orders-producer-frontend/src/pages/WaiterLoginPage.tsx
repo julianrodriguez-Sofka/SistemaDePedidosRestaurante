@@ -1,10 +1,11 @@
-import { useState, FormEvent } from 'react';
+import { useState } from 'react';
+import type { FormEvent } from 'react';
 import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
 
 const API_URL = import.meta.env.VITE_ADMIN_API_URL || 'http://localhost:4001/api';
 
-export function HomePage() {
+export function WaiterLoginPage() {
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
   const [error, setError] = useState('');
@@ -18,27 +19,21 @@ export function HomePage() {
 
     try {
       const response = await axios.post(`${API_URL}/auth/login`, { username, password });
-      const { token, user } = response.data.data; // Acceder a response.data.data
+      const { token, user } = response.data.data;
 
-      // Guardar token y usuario en localStorage (compatible con admin-frontend)
-      localStorage.setItem('authToken', token);
-      localStorage.setItem('adminToken', token); // Para admin-frontend
-      localStorage.setItem('user', JSON.stringify(user));
-      localStorage.setItem('adminUser', JSON.stringify(user)); // Para admin-frontend
-
-      // Redirigir según el rol (priorizar roles específicos)
-      if (user.roles.includes('chef') && !user.roles.includes('waiter')) {
-        // Solo chef, sin rol de mesero
-        navigate('/cocina');
-      } else if (user.roles.includes('waiter') && !user.roles.includes('chef')) {
-        // Solo mesero, sin rol de chef
-        navigate('/mesero');
-      } else if (user.roles.includes('admin')) {
-        // Admin o usuarios con múltiples roles
-        window.location.href = 'http://localhost:5174/admin/dashboard';
-      } else {
-        setError('No valid role assigned to this user');
+      // Verificar que el usuario tenga rol de waiter
+      if (!user.roles.includes('waiter')) {
+        setError('Access denied. This login is only for waiters.');
+        setLoading(false);
+        return;
       }
+
+      // Guardar token y usuario en localStorage
+      localStorage.setItem('authToken', token);
+      localStorage.setItem('user', JSON.stringify(user));
+
+      // Redirigir a la página del mesero
+      navigate('/mesero');
     } catch (err: any) {
       setError(err.response?.data?.message || 'Login failed. Please check your credentials.');
     } finally {
@@ -47,11 +42,12 @@ export function HomePage() {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-blue-500 to-purple-600 flex items-center justify-center p-4">
+    <div className="min-h-screen bg-gradient-to-br from-blue-400 to-blue-500 flex items-center justify-center p-4">
       <div className="bg-white rounded-2xl shadow-2xl p-8 w-full max-w-md">
         <div className="text-center mb-8">
-          <h1 className="text-4xl font-bold text-gray-800 mb-2">Restaurant System</h1>
-          <p className="text-gray-600">Sign in to access your workspace</p>
+          <div className="text-6xl mb-4">🍽️</div>
+          <h1 className="text-4xl font-bold text-gray-800 mb-2">Waiter Login</h1>
+          <p className="text-gray-600">Sign in to take orders</p>
         </div>
 
         <form onSubmit={handleSubmit} className="space-y-6">
@@ -95,7 +91,7 @@ export function HomePage() {
           <button
             type="submit"
             disabled={loading}
-            className="w-full bg-gradient-to-r from-blue-500 to-purple-600 hover:from-blue-600 hover:to-purple-700 text-white font-semibold py-3 rounded-lg transition-all transform hover:scale-105 disabled:opacity-50 disabled:cursor-not-allowed disabled:transform-none"
+            className="w-full bg-gradient-to-r from-blue-400 to-blue-500 hover:from-blue-500 hover:to-blue-600 text-white font-semibold py-3 rounded-lg transition-all transform hover:scale-105 disabled:opacity-50 disabled:cursor-not-allowed disabled:transform-none"
           >
             {loading ? (
               <span className="flex items-center justify-center gap-2">
@@ -106,13 +102,18 @@ export function HomePage() {
                 Signing in...
               </span>
             ) : (
-              'Sign In'
+              'Sign In as Waiter'
             )}
           </button>
         </form>
 
-        <div className="mt-6 text-center text-sm text-gray-600">
-          <p>👨‍🍳 Chef | 🍽️ Waiter | 👔 Admin</p>
+        <div className="mt-6 text-center">
+          <button
+            onClick={() => navigate('/')}
+            className="text-sm text-gray-600 hover:text-gray-800 underline"
+          >
+            ← Back to selection
+          </button>
         </div>
       </div>
     </div>

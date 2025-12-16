@@ -94,10 +94,70 @@ export const configAPI = {
   update: (data: Partial<Config>) => api.put<ApiResponse<Config>>('/config', data),
 };
 
+// Helper function to transform backend order to frontend format
+const transformOrder = (backendOrder: any): Order => {
+  console.log('[API Transform] Input order:', backendOrder);
+  
+  // Extract table number from "Table X" string
+  const tableNumber = typeof backendOrder.table === 'string' 
+    ? parseInt(backendOrder.table.replace(/\D/g, '')) || 0
+    : backendOrder.tableNumber || 0;
+
+  // Transform items to match frontend format
+  const items = (backendOrder.items || []).map((item: any) => ({
+    productName: item.productName || item.name,
+    quantity: item.quantity || 1,
+    price: item.unitPrice || item.price || 0,
+    unitPrice: item.unitPrice || item.price || 0,
+    note: item.note || null
+  }));
+
+  // Calculate total
+  const total = items.reduce((sum: number, item: any) => sum + (item.price * item.quantity), 0);
+
+  const transformed = {
+    id: backendOrder.id || backendOrder._id,
+    orderNumber: backendOrder.orderNumber || backendOrder.id || backendOrder._id,
+    customerName: backendOrder.customerName || 'Unknown',
+    table: backendOrder.table || `Table ${tableNumber}`,
+    tableNumber,
+    status: backendOrder.status || 'pending',
+    items,
+    total,
+    notes: backendOrder.notes || backendOrder.note,
+    createdAt: backendOrder.createdAt || new Date().toISOString()
+  };
+  
+  console.log('[API Transform] Output order:', transformed);
+  return transformed;
+};
+
 // Orders
 export const ordersAPI = {
-  getActive: () => api.get<ApiResponse<Order[]>>('/orders/active'),
-  getAll: () => api.get<ApiResponse<Order[]>>('/orders'),
+  getActive: () => api.get<ApiResponse<Order[]>>('/orders/active').then(response => {
+    console.log('[API ordersAPI] getActive raw response:', response.data);
+    if (response.data.data) {
+      console.log('[API ordersAPI] Transforming', response.data.data.length, 'orders');
+      response.data.data = response.data.data.map(transformOrder);
+      console.log('[API ordersAPI] Transformed orders:', response.data.data);
+    }
+    return response;
+  }),
+  getAll: () => {
+    console.log('[API ordersAPI] getAll called');
+    return api.get<ApiResponse<Order[]>>('/orders').then(response => {
+      console.log('[API ordersAPI] getAll raw response:', response.data);
+      if (response.data.data) {
+        console.log('[API ordersAPI] Transforming', response.data.data.length, 'orders');
+        response.data.data = response.data.data.map(transformOrder);
+        console.log('[API ordersAPI] Transformed orders:', response.data.data);
+      }
+      return response;
+    }).catch(error => {
+      console.error('[API ordersAPI] getAll error:', error);
+      throw error;
+    });
+  },
 };
 
 export default api;

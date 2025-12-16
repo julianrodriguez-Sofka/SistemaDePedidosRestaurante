@@ -1,5 +1,7 @@
 import { BrowserRouter, Routes, Route } from 'react-router-dom';
-import { HomePage } from './pages/HomePage';
+import { RoleSelectionPage } from './pages/RoleSelectionPage';
+import { ChefLoginPage } from './pages/ChefLoginPage';
+import { WaiterLoginPage } from './pages/WaiterLoginPage';
 import { KitchenPage } from './pages/KitchenPage';
 import { WaiterPage } from './pages/WaiterPage';
 import { ProtectedRoute } from './components/ProtectedRoute';
@@ -8,8 +10,14 @@ function App() {
   return (
     <BrowserRouter>
       <Routes>
-        <Route path="/" element={<HomePage />} />
+        {/* Página de selección de rol */}
+        <Route path="/" element={<RoleSelectionPage />} />
         
+        {/* Páginas de login por rol */}
+        <Route path="/login/chef" element={<ChefLoginPage />} />
+        <Route path="/login/waiter" element={<WaiterLoginPage />} />
+        
+        {/* Rutas protegidas para chef */}
         <Route 
           path="/cocina" 
           element={
@@ -19,21 +27,12 @@ function App() {
           } 
         />
         
+        {/* Rutas protegidas para waiter */}
         <Route 
           path="/mesero" 
           element={
             <ProtectedRoute allowedRoles={['waiter']}>
               <WaiterPage />
-            </ProtectedRoute>
-          } 
-        />
-        
-        {/* Rutas de admin protegidas */}
-        <Route 
-          path="/admin/*" 
-          element={
-            <ProtectedRoute allowedRoles={['admin']}>
-              {/* Aquí irán las rutas del admin frontend */}
             </ProtectedRoute>
           } 
         />

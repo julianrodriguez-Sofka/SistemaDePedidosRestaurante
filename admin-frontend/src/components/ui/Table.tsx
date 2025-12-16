@@ -37,16 +37,30 @@ export function Table<T extends { _id?: string; id?: string | number }>({
               onClick={() => onRowClick?.(row)}
               className={onRowClick ? 'cursor-pointer hover:bg-gray-50' : ''}
             >
-              {columns.map((column, colIdx) => (
-                <td
-                  key={colIdx}
-                  className={`px-6 py-4 whitespace-nowrap text-sm text-gray-900 ${column.className || ''}`}
-                >
-                  {typeof column.accessor === 'function'
-                    ? column.accessor(row)
-                    : String(row[column.accessor])}
-                </td>
-              ))}
+              {columns.map((column, colIdx) => {
+                try {
+                  return (
+                    <td
+                      key={colIdx}
+                      className={`px-6 py-4 whitespace-nowrap text-sm text-gray-900 ${column.className || ''}`}
+                    >
+                      {typeof column.accessor === 'function'
+                        ? column.accessor(row)
+                        : String(row[column.accessor] ?? '')}
+                    </td>
+                  );
+                } catch (error) {
+                  console.error('[Table] Error rendering cell:', error, { row, column, colIdx });
+                  return (
+                    <td
+                      key={colIdx}
+                      className={`px-6 py-4 whitespace-nowrap text-sm text-red-600 ${column.className || ''}`}
+                    >
+                      Error
+                    </td>
+                  );
+                }
+              })}
             </tr>
           ))}
         </tbody>

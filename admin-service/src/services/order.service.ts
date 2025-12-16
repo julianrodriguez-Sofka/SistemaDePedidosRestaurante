@@ -26,7 +26,7 @@ export class OrderService {
 
   async getActiveOrders(): Promise<Order[]> {
     try {
-      const response = await axios.get(`${this.nodeServiceUrl}/orders/active`);
+      const response = await axios.get(`${this.nodeServiceUrl}/kitchen/orders`);
       return response.data;
     } catch (error) {
       console.error('Error fetching active orders:', error);
@@ -36,7 +36,7 @@ export class OrderService {
 
   async getAllOrders(): Promise<Order[]> {
     try {
-      const response = await axios.get(`${this.nodeServiceUrl}/orders`);
+      const response = await axios.get(`${this.nodeServiceUrl}/kitchen/orders`);
       return response.data;
     } catch (error) {
       console.error('Error fetching all orders:', error);
