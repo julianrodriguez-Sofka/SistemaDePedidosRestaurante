@@ -1,10 +1,12 @@
 from uuid import uuid4
 from datetime import datetime, timezone, timedelta
 from typing import Optional
+import asyncio
 
 from app.models.order import OrderIn, OrderMessage
 from app.messaging.messaging import publish_order
 from app.repositories.order_repository import OrderRepository
+from app.services.table_service import update_table_status
 
 # Timezone de Colombia (UTC-5)
 COLOMBIA_TZ = timezone(timedelta(hours=-5))
@@ -13,7 +15,7 @@ class OrderService:
     def __init__(self, repository: OrderRepository):
         self.repository = repository
 
-    def create_order(self, order_in: OrderIn) -> OrderMessage:
+    async def create_order(self, order_in: OrderIn) -> OrderMessage:
         order_msg = OrderMessage(
             id=str(uuid4()),
             customerName=order_in.customerName,
@@ -24,6 +26,15 @@ class OrderService:
         )
         self.repository.add(order_msg)
         publish_order(order_msg)
+        
+        # Actualizar estado de mesa a "occupied"
+        try:
+            print(f"🔄 Actualizando mesa {order_in.table} a estado 'occupied'...")
+            await update_table_status(order_in.table, 'occupied', order_msg.id)
+            print(f"✅ Mesa {order_in.table} actualizada a 'occupied'")
+        except Exception as e:
+            print(f"❌ Error actualizando mesa {order_in.table}: {str(e)}")
+        
         return order_msg
 
     def get_order(self, order_id: str) -> Optional[OrderMessage]:

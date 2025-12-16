@@ -13,8 +13,8 @@ order_repository = InMemoryOrderRepository()
 order_service = OrderService(order_repository)
 
 @router.post("/", response_model=OrderMessage, status_code=201)
-def create_order_endpoint(order_in: OrderIn):
-    return order_service.create_order(order_in)
+async def create_order_endpoint(order_in: OrderIn):
+    return await order_service.create_order(order_in)
 
 @router.get("/{order_id}", response_model=OrderMessage)
 def get_order_endpoint(order_id: str):

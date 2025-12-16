@@ -66,7 +66,7 @@ export async function removeOrderFromKitchen(id: string): Promise<void> {
 
 // Endpoint HTTP para actualizar estado de orden manualmente
 export async function updateOrderStatus(req: Request, res: Response, next: NextFunction) {
-  console.log('🔵 updateOrderStatus llamado con:', req.params.id, req.body.status); // 👈 AGREGA ESTE LOG
+  console.log('🔵 updateOrderStatus llamado con:', req.params.id, req.body.status);
   try {
     if (!repo) {
       return res.status(500).json({ error: "Repository no inicializado" });
@@ -104,6 +104,15 @@ export async function updateOrderStatus(req: Request, res: Response, next: NextF
         order: updatedOrder 
       });
       console.log(`✅ Notificación enviada: Orden ${id} cambió a estado ${status}`);
+      
+      // 🧹 Si la orden se completó, activar limpieza de mesa
+      if (status === 'completed' && updatedOrder.table) {
+        console.log(`🏁 Orden completada en mesa ${updatedOrder.table}, activando limpieza...`);
+        const { triggerTableCleaning } = await import('../../../services/table.service');
+        triggerTableCleaning(updatedOrder.table).catch(err => 
+          console.error('Error al activar limpieza:', err)
+        );
+      }
     } else {
       console.log(`⚠️ No se encontró la orden ${id} después de actualizar`);
     }
