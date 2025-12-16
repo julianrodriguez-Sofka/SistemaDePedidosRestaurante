@@ -17,6 +17,7 @@ interface OrderSidebarProps {
   onAddNote: (productId: number, note: string) => void;
   onSend: (table: string, clientName: string) => Promise<void>;
   successMsg: string | null;
+  tables?: any[];
 }
 
 export default function OrderSidebar({
@@ -25,7 +26,8 @@ export default function OrderSidebar({
   onChangeQty,
   onAddNote,
   onSend,
-  successMsg
+  successMsg,
+  tables = []
 }: OrderSidebarProps) {
   const [customerName, setCustomerName] = useState('');
   const [selectedTable, setSelectedTable] = useState('');
@@ -100,11 +102,19 @@ export default function OrderSidebar({
                   <SelectValue placeholder="Select table" />
                 </SelectTrigger>
                 <SelectContent>
-                  {[1, 2, 3, 4, 5, 6, 7, 8].map((num) => (
-                    <SelectItem key={num} value={`Table ${num}`}>
-                      Table {num}
+                  {tables.length > 0 ? (
+                    tables
+                      .filter((table: any) => table.status === 'available')
+                      .map((table: any) => (
+                        <SelectItem key={table._id || table.id} value={`Table ${table.number}`}>
+                          Table {table.number} {table.capacity && `(${table.capacity} seats)`}
+                        </SelectItem>
+                      ))
+                  ) : (
+                    <SelectItem value="no-tables" disabled>
+                      No available tables
                     </SelectItem>
-                  ))}
+                  )}
                 </SelectContent>
               </Select>
             </div>

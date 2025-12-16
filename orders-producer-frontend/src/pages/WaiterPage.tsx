@@ -22,6 +22,8 @@ type OrderStatusFilter = 'all' | 'pending' | 'preparing' | 'ready' | 'completed'
 export function WaiterPage() {
   const [products, setProducts] = useState<Product[]>([]);
   const [loadingProducts, setLoadingProducts] = useState(true);
+  const [tables, setTables] = useState<any[]>([]);
+  const [loadingTables, setLoadingTables] = useState(true);
   const [orderStatus, setOrderStatus] = useState<OrderStatusFilter>('all');
   const [searchQuery] = useState<string>('');
   const [editingOrder, setEditingOrder] = useState<ActiveOrder | null>(null);
@@ -65,7 +67,30 @@ export function WaiterPage() {
     loadProducts();
   }, []);
 
-  // 🔥 Connect to admin-service WebSocket for real-time products
+  // 🔥 Load tables from API on mount
+  useEffect(() => {
+    const loadTables = async () => {
+      try {
+        console.log('[Waiter] 🪑 Loading tables from API...');
+        const token = localStorage.getItem('authToken') || localStorage.getItem('adminToken');
+        const response = await axios.get(`${ADMIN_API_URL}/tables`, {
+          headers: token ? { Authorization: `Bearer ${token}` } : {}
+        });
+        
+        const apiTables = response.data.data || [];
+        setTables(apiTables);
+        console.log('[Waiter] ✅ Loaded', apiTables.length, 'tables from API');
+      } catch (error) {
+        console.error('[Waiter] ❌ Error loading tables:', error);
+      } finally {
+        setLoadingTables(false);
+      }
+    };
+
+    loadTables();
+  }, []);
+
+  // 🔥 Connect to admin-service WebSocket for real-time products and tables
   useEffect(() => {
     console.log('[Waiter] 🔌 Connecting to admin-service WebSocket...');
     wsService.connect('ws://localhost:4001/ws');
@@ -102,15 +127,36 @@ export function WaiterPage() {
       setProducts(prev => prev.filter(p => p.id !== data.id));
     };
 
+    const handleTableCreated = (data: any) => {
+      console.log('[Waiter] 🪑 Table created:', data);
+      setTables(prev => [...prev, data]);
+    };
+
+    const handleTableUpdated = (data: any) => {
+      console.log('[Waiter] ✏️ Table updated:', data);
+      setTables(prev => prev.map(t => t.id === data.id ? { ...t, ...data } : t));
+    };
+
+    const handleTableDeleted = (data: any) => {
+      console.log('[Waiter] ❌ Table deleted:', data);
+      setTables(prev => prev.filter(t => t.id !== data.id));
+    };
+
     wsService.on('product.created', handleProductCreated);
     wsService.on('product.updated', handleProductUpdated);
     wsService.on('product.deleted', handleProductDeleted);
+    wsService.on('table.created', handleTableCreated);
+    wsService.on('table.updated', handleTableUpdated);
+    wsService.on('table.deleted', handleTableDeleted);
 
     return () => {
       console.log('[Waiter] 🔌 Cleaning up WebSocket listeners...');
       wsService.off('product.created', handleProductCreated);
       wsService.off('product.updated', handleProductUpdated);
       wsService.off('product.deleted', handleProductDeleted);
+      wsService.off('table.created', handleTableCreated);
+      wsService.off('table.updated', handleTableUpdated);
+      wsService.off('table.deleted', handleTableDeleted);
     };
   }, []);
 
@@ -298,6 +344,7 @@ useEffect(() => {
           onAddNote={addNoteToItem}
           onSend={handleSend}
           successMsg={successMsg}
+          tables={tables}
         />
       </div>
 
