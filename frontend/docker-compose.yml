@@ -1,0 +1,31 @@
+services:
+  admin-frontend:
+    build:
+      context: ./admin-frontend
+      dockerfile: Dockerfile
+      args:
+        - VITE_ADMIN_API_URL=http://localhost:4001/api
+    container_name: admin-frontend
+    ports:
+      - "5174:5174"
+    networks:
+      - app-network
+
+  orders-producer-frontend:
+    build:
+      context: ./orders-producer-frontend
+      dockerfile: Dockerfile
+      args:
+        - VITE_ADMIN_API_URL=http://localhost:4001/api
+        - VITE_API_GATEWAY_URL=http://localhost:3000
+        - VITE_WS_URL=ws://localhost:4000
+    container_name: orders-producer-frontend
+    ports:
+      - "5173:5173"
+    networks:
+      - app-network
+
+networks:
+  app-network:
+    name: restaurant-network
+    external: true

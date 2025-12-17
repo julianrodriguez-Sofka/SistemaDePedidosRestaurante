@@ -1,8 +1,4 @@
-# Orquestador principal - levanta backend y frontend
-# Para usar: docker-compose up -d
-
 services:
-  # Backend Services
   rabbitmq:
     image: rabbitmq:3-management
     container_name: rabbitmq
@@ -38,11 +34,11 @@ services:
 
   python-ms:
     build:
-      context: ./backend/orders-producer-python
+      context: ./orders-producer-python
       dockerfile: Dockerfile
     container_name: python-ms
     env_file:
-      - ./backend/orders-producer-python/.env
+      - ./orders-producer-python/.env
     depends_on:
       rabbitmq:
         condition: service_healthy
@@ -53,11 +49,11 @@ services:
 
   node-ms:
     build:
-      context: ./backend/orders-producer-node
+      context: ./orders-producer-node
       dockerfile: Dockerfile
     container_name: node-ms
     env_file:
-      - ./backend/orders-producer-node/.env
+      - ./orders-producer-node/.env
     depends_on:
       rabbitmq:
         condition: service_healthy
@@ -71,11 +67,11 @@ services:
 
   api-gateway:
     build:
-      context: ./backend/api-gateway
+      context: ./api-gateway
       dockerfile: Dockerfile
     container_name: api-gateway
     env_file:
-      - ./backend/api-gateway/.env
+      - ./api-gateway/.env
     depends_on:
       - python-ms
       - node-ms
@@ -86,48 +82,16 @@ services:
 
   admin-service:
     build:
-      context: ./backend/admin-service
+      context: ./admin-service
       dockerfile: Dockerfile
     container_name: admin-service
     env_file:
-      - ./backend/admin-service/.env
+      - ./admin-service/.env
     depends_on:
       mongo:
         condition: service_healthy
     ports:
       - "4001:4000"
-    networks:
-      - app-network
-
-  # Frontend Services
-  admin-frontend:
-    build:
-      context: ./frontend/admin-frontend
-      dockerfile: Dockerfile
-      args:
-        - VITE_ADMIN_API_URL=http://localhost:4001/api
-    container_name: admin-frontend
-    depends_on:
-      - admin-service
-    ports:
-      - "5174:5174"
-    networks:
-      - app-network
-
-  orders-producer-frontend:
-    build:
-      context: ./frontend/orders-producer-frontend
-      dockerfile: Dockerfile
-      args:
-        - VITE_ADMIN_API_URL=http://localhost:4001/api
-        - VITE_API_GATEWAY_URL=http://localhost:3000
-        - VITE_WS_URL=ws://localhost:4000
-    container_name: orders-producer-frontend
-    depends_on:
-      - api-gateway
-      - admin-service
-    ports:
-      - "5173:5173"
     networks:
       - app-network
 

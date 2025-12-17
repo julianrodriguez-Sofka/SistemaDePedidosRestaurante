@@ -1,7 +1,72 @@
 # Sistema de Pedidos de Restaurante – Arquitectura Distribuida
 
+## 🏗️ Estructura del Proyecto
+
+El proyecto está organizado en dos directorios principales:
+
+```
+SistemaDePedidosRestaurante/
+├── backend/              # Todos los microservicios y APIs
+│   ├── api-gateway/      # Gateway principal (puerto 3000)
+│   ├── admin-service/    # Servicio de administración (puerto 4001)
+│   ├── orders-producer-python/  # FastAPI - Pedidos (puerto 8000)
+│   ├── orders-producer-node/    # Node.js - Cocina + WebSocket (puertos 3002/4000)
+│   └── docker-compose.yml       # Backend + infraestructura
+│
+├── frontend/             # Aplicaciones de usuario
+│   ├── orders-producer-frontend/  # UI Meseros (puerto 5173)
+│   ├── admin-frontend/            # Panel Admin (puerto 5174)
+│   └── docker-compose.yml         # Frontend apps
+│
+└── docker-compose.yml    # Orquestador completo (backend + frontend)
+```
+
+## 🚀 Inicio Rápido
+
+### Opción 1: Levantar todo el sistema (Recomendado)
+
+```bash
+# Desde la raíz del proyecto
+docker-compose up -d
+```
+
+### Opción 2: Levantar Backend y Frontend por separado
+
+```bash
+# Terminal 1 - Backend
+cd backend
+docker-compose up -d
+
+# Terminal 2 - Frontend (requiere backend corriendo)
+cd frontend
+docker-compose up -d
+```
+
+### Opción 3: Solo Backend
+
+```bash
+cd backend
+docker-compose up -d
+```
+
+### Opción 4: Solo Frontend (requiere backend corriendo)
+
+```bash
+cd frontend
+docker-compose up -d
+```
+
+## 📦 Acceso a las Aplicaciones
+
+- **Toma de Pedidos (Meseros):** http://localhost:5173
+- **Panel de Administración:** http://localhost:5174
+- **API Gateway:** http://localhost:3000
+- **Admin Service API:** http://localhost:4001/api
+- **Python Orders API:** http://localhost:8000
+- **RabbitMQ Management:** http://localhost:15672 (guest/guest)
+
 ## 1. Descripción general
-Este proyecto, contenido en la carpeta raíz `sistemdepedidosrestaurante`, implementa un sistema distribuid gestión de pedidos para un restaurante de comidas rápidas.
+Este proyecto implementa un sistema distribuido de gestión de pedidos para un restaurante de comidas rápidas.
 La solución está pensada para un escenario real de operación en sala, donde:
 - El **mesero** toma el pedido desde una tablet.
 - El pedido viaja a un **microservicio Python (FastAPI)** que lo valida y lo envía a **RabbitMQ**.
