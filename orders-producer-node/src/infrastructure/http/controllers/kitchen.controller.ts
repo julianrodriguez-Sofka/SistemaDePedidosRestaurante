@@ -3,6 +3,46 @@ import { Request, Response, NextFunction } from "express";
 import { OrderRepository } from "../../../domain/interfaces/order.interface";
 import { KitchenOrder } from "../../../domain/models/order";
 import { notifyClients } from "../../websocket/ws-server";
+import axios from "axios";
+
+const ADMIN_SERVICE_URL = process.env.ADMIN_SERVICE_URL || "http://admin-service:4000/api";
+
+// Función helper para actualizar el estado de una mesa
+async function updateTableStatus(tableNumber: string, status: string, orderId?: string | null): Promise<void> {
+  try {
+    // Extraer el número de mesa (puede venir como "Table 1" o "1")
+    const tableNum = tableNumber.replace(/\D/g, '');
+    if (!tableNum) {
+      console.log(`[TableService] ⚠️ No se pudo extraer número de mesa de: ${tableNumber}`);
+      return;
+    }
+
+    // Obtener todas las mesas
+    const tablesResponse = await axios.get(`${ADMIN_SERVICE_URL}/tables`);
+    const tables = tablesResponse.data.data || [];
+    
+    // Buscar la mesa por número
+    const table = tables.find((t: any) => String(t.number) === tableNum);
+    
+    if (!table) {
+      console.log(`[TableService] ⚠️ Mesa ${tableNum} no encontrada`);
+      return;
+    }
+    
+    const tableId = table._id || table.id;
+    
+    // Actualizar el estado de la mesa
+    const updateData: any = { status };
+    if (orderId !== undefined) {
+      updateData.currentOrder = orderId;
+    }
+    
+    await axios.put(`${ADMIN_SERVICE_URL}/tables/internal/${tableId}/status`, updateData);
+    console.log(`[TableService] ✅ Mesa ${tableNum} actualizada a estado: ${status}`);
+  } catch (error: any) {
+    console.error(`[TableService] ❌ Error actualizando mesa: ${error.message}`);
+  }
+}
 
 
 // Repository debe ser inyectado desde index.ts (siempre MongoOrderRepository)
@@ -221,6 +261,11 @@ export async function deleteOrder(req: Request, res: Response, next: NextFunctio
         order: cancelledOrder 
       });
       console.log(`✅ Notificación enviada: Orden ${id} cancelada`);
+      
+      // Liberar la mesa cuando se cancela el pedido
+      console.log(`🔄 Liberando mesa ${cancelledOrder.table} por cancelación...`);
+      await updateTableStatus(cancelledOrder.table, 'available', null);
+      console.log(`✅ Mesa ${cancelledOrder.table} liberada`);
     }
 
     return res.json({ 

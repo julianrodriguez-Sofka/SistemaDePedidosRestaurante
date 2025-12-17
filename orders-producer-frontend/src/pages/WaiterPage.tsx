@@ -3,6 +3,7 @@ import ProductCard from '../components/ProductCard';
 import OrderSidebar from '../components/OrderSidebar';
 import { EditOrderDialog } from '../components/EditOrderDialog';
 import { ViewOrderDialog } from '@/components/ViewOrderDialog';
+import { CancelOrderDialog } from '@/components/CancelOrderDialog';
 import { ActiveOrdersTracker } from '@/components/ActiveOrdersTracker';
 import { useOrderManagement } from '../hooks/useOrderManagement';
 import { useOrderSubmission } from '../hooks/useOrderSubmission';
@@ -28,8 +29,10 @@ export function WaiterPage() {
   const [searchQuery] = useState<string>('');
   const [editingOrder, setEditingOrder] = useState<ActiveOrder | null>(null);
   const [viewingOrder, setViewingOrder] = useState<ActiveOrder | null>(null);
+  const [cancelingOrder, setCancelingOrder] = useState<ActiveOrder | null>(null);
   const [isEditDialogOpen, setIsEditDialogOpen] = useState(false);
   const [isViewDialogOpen, setIsViewDialogOpen] = useState(false);
+  const [isCancelDialogOpen, setIsCancelDialogOpen] = useState(false);
   
   // Get logged-in user name
   const [userName, setUserName] = useState<string>('');
@@ -311,22 +314,36 @@ useEffect(() => {
     }
   };
 
-  const handleCancelOrder = async (order: ActiveOrder) => {
-    if (!confirm(`¿Estás seguro de cancelar el pedido ${order.id} de la mesa ${order.table}?`)) {
-      return;
-    }
+  const handleCancelOrder = (order: ActiveOrder) => {
+    setCancelingOrder(order);
+    setIsCancelDialogOpen(true);
+  };
+
+  const handleConfirmCancel = async () => {
+    if (!cancelingOrder) return;
 
     try {
-      console.log(`🚫 Cancelando pedido ${order.fullId}...`);
-      await cancelOrder(order.fullId);
+      console.log(`🚫 Cancelando pedido ${cancelingOrder.fullId}...`);
+      await cancelOrder(cancelingOrder.fullId);
       console.log(`✅ Pedido cancelado exitosamente`);
+      
+      // Close dialog and reset state
+      setIsCancelDialogOpen(false);
+      setCancelingOrder(null);
       
       // Refetch orders to update the list
       await refetchOrders();
     } catch (error) {
       console.error('❌ Error al cancelar pedido:', error);
       alert(error instanceof Error ? error.message : 'Error al cancelar el pedido');
+      setIsCancelDialogOpen(false);
+      setCancelingOrder(null);
     }
+  };
+
+  const handleCancelDialogClose = () => {
+    setIsCancelDialogOpen(false);
+    setCancelingOrder(null);
   };
 
   return (
@@ -416,6 +433,14 @@ useEffect(() => {
         order={viewingOrder}
         open={isViewDialogOpen}
         onClose={handleCloseViewDialog}
+      />
+
+      {/* Cancel Order Dialog */}
+      <CancelOrderDialog
+        order={cancelingOrder}
+        open={isCancelDialogOpen}
+        onConfirm={handleConfirmCancel}
+        onCancel={handleCancelDialogClose}
       />
     </div>
     
