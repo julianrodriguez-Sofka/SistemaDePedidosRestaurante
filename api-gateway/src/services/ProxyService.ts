@@ -25,17 +25,29 @@ export abstract class ProxyService implements IProxyService {
     data?: any,
     headers?: Record<string, string>
   ): Promise<AxiosResponse> {
-    const requestConfig = {
-      method: method.toUpperCase(),
-      url: path,
-      data,
-      headers: {
-        ...headers,
-        'X-Forwarded-For': 'api-gateway',
-      },
-    };
-
-    return retryWithBackoff(() => this.axiosInstance.request(requestConfig));
+    const fullUrl = `${this.baseURL}${path}`;
+    console.log(`📤 Forwarding: ${method} ${fullUrl}`);
+    
+    try {
+      // Usar axios directo sin instancia para evitar problemas de configuración
+      const response = await axios.request({
+        method: method.toUpperCase(),
+        url: fullUrl,
+        data,
+        headers: {
+          ...headers,
+          'X-Forwarded-For': 'api-gateway',
+          'Content-Type': 'application/json',
+        },
+        timeout: 10000, // 10 segundos timeout
+      });
+      
+      console.log(`✅ Response: ${response.status}`);
+      return response;
+    } catch (error: any) {
+      console.log(`❌ Failed: ${error.message}`);
+      throw error;
+    }
   }
 
   getServiceName(): string {

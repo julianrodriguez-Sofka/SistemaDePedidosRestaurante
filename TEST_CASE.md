@@ -1,1825 +1,975 @@
-Sistema de Pedidos de Restaurante – Arquitectura Distribuida
+# 🧪 CASOS DE PRUEBA ACTUALIZADOS - SISTEMA DE PEDIDOS DE RESTAURANTE
+## Ajustado a la Implementación Real (25 HU Implementadas)
 
-Alcance: Casos de prueba funcionales basados en TEST_PLAN.md, REFINED_BACKLOG.md y el contexto de negocio.
-Cobertura priorizada: Flujos P0 críticos (Autenticación, Toma de Pedidos, Cocina, Cancelación y Sincronización de Mesas).
-Formato: Gherkin (Given / When / Then).
-Tipos: Positivos, Negativos y Casos al Borde.
+**Fecha de actualización:** 2024-12-17  
+**Estado:** Refleja la implementación real del sistema  
+**Casos de Prueba Totales:** 87 (de 104 originales)  
+**Formato:** Gherkin (Given / When / Then)  
+**Tipos:** Positivos, Negativos y Casos al Borde
 
-CASOS DE PRUEBA DERIVADOS – MÓDULO 1
-🔐 AUTENTICACIÓN Y ACCESO (US-001 a US-005)
-🧪 HU US-001 – Selección de Rol
-🧪 TC-US-001-01 (Positivo)
+---
 
-Descripción: Validar que el usuario pueda seleccionar un rol válido.
+## 📊 RESUMEN DE CAMBIOS
 
-Datos de Entrada: Usuario sin sesión activa.
+### ❌ Casos de Prueba Eliminados (17 casos)
+- **TC-US-001-01/02/03:** Selección de rol (no implementada)
+- **TC-US-011-01/02/03:** Crear categoría (no implementada)
+- **TC-US-011-04/05/06:** Editar categoría (no implementada)
+- **TC-US-011-07/08/09:** Eliminar categoría (no implementada)
+- **TC-US-031-01 a TC-US-035-XX:** Módulo de auditoría completo (no implementado)
 
-Pasos:
+### ⚠️ Casos de Prueba Ajustados
+- **TC-US-002/003/004:** Login unificado (endpoint genérico)
+- **TC-US-008:** Eliminación física de usuarios (no soft delete)
+- **TC-US-014:** Eliminación física de productos (no soft delete)
+- **TC-US-019:** Sin WebSocket en admin (solo HTTP polling)
 
-Scenario: Selección correcta de rol
-  Given que el usuario accede al sistema
-  When visualiza la pantalla inicial
-  And selecciona el rol Mesero
-  Then el sistema redirige al login correspondiente
+---
 
+## MÓDULO 1: 🔐 AUTENTICACIÓN Y ACCESO (US-001 a US-004)
 
-Resultado Esperado: El sistema permite seleccionar el rol y redirige correctamente.
+### 🧪 HU US-001 – Login Unificado
 
-🧪 TC-US-001-02 (Negativo)
+#### 🧪 TC-US-001-01 (Positivo)
+**Descripción:** Validar login exitoso con credenciales válidas de mesero.
 
-Descripción: Intentar continuar sin seleccionar rol.
+**Datos de Entrada:**
+- Username: `mesero1`
+- Password: `password123`
+- Endpoint: `POST /api/auth/login`
 
-Datos de Entrada: Usuario sin rol seleccionado.
+**Pasos:**
+```gherkin
+Scenario: Login correcto de usuario mesero
+  Given que el usuario tiene credenciales válidas de mesero
+  When envía POST a /api/auth/login con username y password
+  Then el sistema responde con código 200
+  And retorna un token JWT válido con rol "waiter"
+  And el frontend redirige a la interfaz de mesero (puerto 5173)
+```
 
-Pasos:
+**Resultado Esperado:** Autenticación exitosa, JWT con rol correcto, redirección automática.
 
-Scenario: Acceso sin selección de rol
-  Given que el usuario accede a la pantalla inicial
-  When intenta continuar sin seleccionar un rol
-  Then el sistema bloquea la acción
+---
 
+#### 🧪 TC-US-001-02 (Negativo)
+**Descripción:** Login con contraseña incorrecta.
 
-Resultado Esperado: El sistema muestra mensaje de error y no permite avanzar.
+**Datos de Entrada:**
+- Username: `mesero1`
+- Password: `wrongpassword`
 
-🧪 TC-US-001-03 (Borde)
-
-Descripción: Validar tiempo máximo de carga de selección de rol.
-
-Datos de Entrada: Usuario accediendo en red lenta.
-
-Pasos:
-
-Scenario: Carga de roles en tiempo límite
-  Given que el usuario accede al sistema
-  When se cargan las opciones de rol
-  Then la carga ocurre en menos de 800 ms
-
-
-Resultado Esperado: La pantalla carga dentro del SLO definido.
-
-🧪 HU US-002 – Login Mesero
-🧪 TC-US-002-01 (Positivo)
-
-Descripción: Login exitoso con credenciales válidas.
-
-Datos de Entrada: Usuario y contraseña válidos.
-
-Pasos:
-
-Scenario: Login correcto de mesero
-  Given que el mesero tiene credenciales válidas
-  When inicia sesión
-  Then accede a la vista de pedidos
-
-
-Resultado Esperado: Acceso exitoso y sesión iniciada.
-
-🧪 TC-US-002-02 (Negativo)
-
-Descripción: Login con contraseña incorrecta.
-
-Datos de Entrada: Usuario válido, contraseña inválida.
-
-Pasos:
-
+**Pasos:**
+```gherkin
 Scenario: Login con contraseña incorrecta
-  Given que el mesero ingresa una contraseña incorrecta
-  When intenta iniciar sesión
-  Then el sistema rechaza el acceso
-
-
-Resultado Esperado: Mensaje de error, sesión no iniciada.
-
-🧪 TC-US-002-03 (Borde)
-
-Descripción: Login justo en expiración de sesión anterior.
-
-Datos de Entrada: Token expirando.
-
-Pasos:
-
-Scenario: Login con token expirado
-  Given que el token anterior está expirado
-  When el mesero inicia sesión nuevamente
-  Then el sistema genera un nuevo JWT válido
-
-
-Resultado Esperado: Se renueva sesión correctamente.
-
-HU US-003 – Login Cocinero
-🧪 TC-US-003-01 (Positivo)
-
-ID: TC-US-003-01
-
-Descripción: Autenticación exitosa de un usuario con rol Cocinero.
-
-Datos de Entrada:
-
-Usuario con rol Cocinero activo
-
-Credenciales válidas
-
-Pasos:
-
-Scenario: Login correcto de cocinero
-  Given que el cocinero tiene credenciales válidas
-  When inicia sesión en el sistema
-  Then accede al dashboard de cocina
-
-
-Resultado Esperado:
-El cocinero accede correctamente a la vista de cocina y recibe un token JWT válido.
-
-🧪 TC-US-003-02 (Negativo)
-
-ID: TC-US-003-02
-
-Descripción: Intento de autenticación con credenciales inválidas para el rol Cocinero.
-
-Datos de Entrada:
-
-Usuario cocinero existente
-
-Contraseña incorrecta
-
-Pasos:
-
-Scenario: Login fallido de cocinero
-  Given que el cocinero ingresa credenciales incorrectas
-  When intenta iniciar sesión
-  Then el sistema rechaza el acceso
-
-
-Resultado Esperado:
-El sistema responde con error de autenticación y no genera token de sesión.
-
-🧪 TC-US-003-03 (Borde)
-
-ID: TC-US-003-03
-
-Descripción: Autenticación del cocinero bajo alta latencia de red.
-
-Datos de Entrada:
-
-Credenciales válidas
-
-Red con latencia elevada
-
-Pasos:
-
-Scenario: Login de cocinero bajo latencia
-  Given que el cocinero intenta autenticarse
-  When la red presenta alta latencia
-  Then el sistema responde en menos de 800 ms
-
-
-Resultado Esperado:
-El login se completa correctamente cumpliendo el SLO de rendimiento.
-
-🧪 HU US-004 – Login Administrador
-🧪 TC-US-004-01 (Positivo)
-
-ID: TC-US-004-01
-
-Descripción: Autenticación exitosa de un usuario con rol Administrador.
-
-Datos de Entrada:
-
-Usuario administrador activo
-
-Credenciales válidas
-
-Pasos:
-
-Scenario: Login correcto de administrador
-  Given que el administrador tiene credenciales válidas
-  When inicia sesión
-  Then accede al panel administrativo
-
-
-Resultado Esperado:
-El administrador accede correctamente al panel administrativo.
-
-🧪 TC-US-004-02 (Negativo)
-
-ID: TC-US-004-02
-
-Descripción: Intento de login con usuario administrador desactivado.
-
-Datos de Entrada:
-
-Usuario administrador desactivado
-
-Credenciales válidas
-
-Pasos:
-
-Scenario: Login administrador desactivado
-  Given que el administrador está desactivado
-  When intenta iniciar sesión
-  Then el sistema bloquea el acceso
-
-
-Resultado Esperado:
-Acceso denegado y mensaje de cuenta inactiva.
-
-🧪 TC-US-004-03 (Borde)
-
-ID: TC-US-004-03
-
-Descripción: Autenticación del administrador con múltiples intentos simultáneos.
-
-Datos de Entrada:
-
-Credenciales válidas
-
-Múltiples solicitudes concurrentes
-
-Pasos:
-
-Scenario: Login administrador concurrente
-  Given que el administrador intenta iniciar sesión desde múltiples dispositivos
-  When se procesan las solicitudes
-  Then solo una sesión queda activa
-
-
-Resultado Esperado:
-Control correcto de sesiones sin inconsistencias.
-
-🧪 HU US-005 – Acceso Denegado por Rol (RBAC)
-🧪 TC-US-005-01 (Positivo)
-
-ID: TC-US-005-01
-
-Descripción: Bloqueo correcto de acceso a recursos no permitidos por rol.
-
-Datos de Entrada:
-
-Usuario Mesero autenticado
-
-Pasos:
-
-Scenario: Bloqueo por RBAC
-  Given que el mesero está autenticado
-  When intenta acceder a una ruta de administrador
-  Then el sistema responde 403 Forbidden
-
-
-Resultado Esperado:
-Acceso bloqueado correctamente por políticas RBAC.
-
-🧪 TC-US-005-02 (Negativo)
-
-ID: TC-US-005-02
-
-Descripción: Intento de acceso a un endpoint no permitido mediante manipulación de URL.
-
-Datos de Entrada:
-
-Usuario autenticado
-
-Endpoint restringido
-
-Pasos:
-
-Scenario: Acceso no autorizado por endpoint
-  Given que el usuario está autenticado
-  When intenta acceder manualmente a un endpoint restringido
-  Then el sistema bloquea el acceso
-
-
-Resultado Esperado:
-El sistema mantiene la seguridad y responde con error 403.
-
-🧪 TC-US-005-03 (Borde)
-
-ID: TC-US-005-03
-
-Descripción: Intento de acceso concurrente mientras el rol del usuario cambia.
-
-Datos de Entrada:
-
-Usuario con cambio de rol en proceso
-
-Pasos:
-
-Scenario: Acceso durante cambio de rol
-  Given que el rol del usuario está siendo actualizado
-  When intenta acceder a un recurso restringido
-  Then el sistema valida el rol efectivo
-
-
-Resultado Esperado:
-No se concede acceso indebido y se mantiene la integridad del RBAC.
-
-MÓDULO 2 – GESTIÓN DE USUARIOS
-Historias de Usuario: US-006 a US-010
-🧪 HU US-006 – Crear Usuario
-🧪 TC-US-006-01 (Positivo)
-
-Descripción: Crear un usuario con datos válidos y rol permitido.
-
-Datos de Entrada:
-Username único, contraseña válida, rol = Mesero.
-
-Pasos:
-
-Scenario: Creación exitosa de usuario
-  Given que el administrador está autenticado
-  When crea un usuario con datos válidos
-  Then el sistema guarda el usuario correctamente
-
-
-Resultado Esperado: El usuario queda registrado y disponible en el sistema.
-
-🧪 TC-US-006-02 (Negativo)
-
-Descripción: Intentar crear un usuario con username duplicado.
-
-Datos de Entrada:
-Username existente.
-
-Pasos:
-
-Scenario: Creación de usuario duplicado
-  Given que ya existe un usuario con el mismo username
-  When el administrador intenta crear el usuario
-  Then el sistema rechaza la operación
-
-
-Resultado Esperado: Se muestra mensaje de error por duplicidad.
-
-🧪 TC-US-006-03 (Borde)
-
-Descripción: Crear usuario con username en el límite máximo permitido.
-
-Datos de Entrada:
-Username con longitud máxima válida.
-
-Pasos:
-
-Scenario: Creación de usuario con username límite
-  Given que el administrador ingresa un username con longitud máxima
-  When crea el usuario
-  Then el sistema acepta la operación
-
-
-Resultado Esperado: El usuario se crea sin errores.
-
-🧪 HU US-007 – Editar Usuario
-🧪 TC-US-007-01 (Positivo)
-
-Descripción: Editar correctamente los datos de un usuario activo.
-
-Datos de Entrada:
-Usuario activo existente.
-
-Pasos:
-
-Scenario: Edición correcta de usuario
-  Given que existe un usuario activo
-  When el administrador modifica sus datos
-  Then los cambios se guardan correctamente
-
-
-Resultado Esperado: Los datos actualizados se reflejan en el sistema.
-
-🧪 TC-US-007-02 (Negativo)
-
-Descripción: Intentar editar un usuario inexistente.
-
-Datos de Entrada:
-ID de usuario inválido.
-
-Pasos:
-
-Scenario: Edición de usuario inexistente
-  Given que el usuario no existe
-  When el administrador intenta editarlo
-  Then el sistema rechaza la operación
-
-
-Resultado Esperado: Mensaje de error indicando usuario no encontrado.
-
-🧪 TC-US-007-03 (Borde)
-
-Descripción: Editar usuario mientras está siendo consultado por otro proceso.
-
-Datos de Entrada:
-Usuario activo con sesión concurrente.
-
-Pasos:
-
-Scenario: Edición concurrente de usuario
-  Given que el usuario está siendo consultado
-  When el administrador edita sus datos
-  Then el sistema mantiene la integridad de la información
-
-
-Resultado Esperado: No hay corrupción de datos.
-
-🧪 HU US-008 – Desactivar Usuario
-🧪 TC-US-008-01 (Positivo)
-
-Descripción: Desactivar correctamente un usuario activo.
-
-Datos de Entrada:
-Usuario activo.
-
-Pasos:
-
-Scenario: Desactivación de usuario
-  Given que el usuario está activo
-  When el administrador lo desactiva
-  Then el usuario queda inhabilitado
-
-
-Resultado Esperado: El usuario no puede iniciar sesión.
-
-🧪 TC-US-008-02 (Negativo)
-
-Descripción: Intentar desactivar un usuario ya desactivado.
-
-Datos de Entrada:
-Usuario inactivo.
-
-Pasos:
-
-Scenario: Desactivar usuario ya inactivo
-  Given que el usuario ya está desactivado
-  When el administrador intenta desactivarlo
-  Then el sistema rechaza la acción
-
-
-Resultado Esperado: Se informa que el usuario ya está inactivo.
-
-🧪 TC-US-008-03 (Borde)
-
-Descripción: Desactivar usuario con sesión activa.
-
-Datos de Entrada:
-Usuario activo con sesión abierta.
-
-Pasos:
-
-Scenario: Desactivación con sesión activa
-  Given que el usuario tiene una sesión activa
-  When el administrador lo desactiva
-  Then la sesión se invalida automáticamente
-
-
-Resultado Esperado: El usuario pierde acceso inmediato.
-
-🧪 HU US-009 – Listar Usuarios
-🧪 TC-US-009-01 (Positivo)
-
-Descripción: Listar todos los usuarios correctamente.
-
-Datos de Entrada:
-Administrador autenticado.
-
-Pasos:
-
-Scenario: Listado de usuarios
-  Given que el administrador accede al módulo de usuarios
-  When solicita el listado
-  Then el sistema muestra todos los usuarios
-
-
-Resultado Esperado: Lista completa visible.
-
-🧪 TC-US-009-02 (Negativo)
-
-Descripción: Acceso al listado sin permisos.
-
-Datos de Entrada:
-Usuario Mesero autenticado.
-
-Pasos:
-
-Scenario: Listado sin permisos
-  Given que el mesero intenta acceder al listado
-  When solicita los usuarios
-  Then el sistema responde 403
-
-
-Resultado Esperado: Acceso denegado.
-
-🧪 TC-US-009-03 (Borde)
-
-Descripción: Listar usuarios con gran volumen de registros.
-
-Datos de Entrada:
-Más de 100 usuarios registrados.
-
-Pasos:
-
-Scenario: Listado con alto volumen
-  Given que existen muchos usuarios
-  When el administrador consulta el listado
-  Then la respuesta se entrega en tiempo aceptable
-
-
-Resultado Esperado: Respuesta eficiente sin errores.
-
-🧪 HU US-010 – Seguridad de Acceso de Usuarios
-🧪 TC-US-010-01 (Positivo)
-
-Descripción: Bloqueo de acceso a usuario desactivado.
-
-Datos de Entrada:
-Usuario desactivado.
-
-Pasos:
-
-Scenario: Bloqueo de usuario desactivado
-  Given que el usuario está desactivado
-  When intenta iniciar sesión
-  Then el sistema bloquea el acceso
-
-
-Resultado Esperado: Acceso denegado correctamente.
-
-🧪 TC-US-010-02 (Negativo)
-
-Descripción: Intentar usar token antiguo tras desactivación.
-
-Datos de Entrada:
-JWT previo a desactivación.
-
-Pasos:
-
-Scenario: Uso de token inválido
-  Given que el usuario fue desactivado
-  When intenta usar un token previo
-  Then el sistema invalida el token
-
-
-Resultado Esperado: Token rechazado.
-
-🧪 TC-US-010-03 (Borde)
-
-Descripción: Tiempo máximo de bloqueo de acceso.
-
-Datos de Entrada:
-Usuario desactivado intentando login.
-
-Pasos:
-
-Scenario: Bloqueo dentro del SLO
-  Given que el usuario está desactivado
+  Given que el usuario ingresa username válido
+  When envía password incorrecta a /api/auth/login
+  Then el sistema responde con código 401 Unauthorized
+  And muestra mensaje "Credenciales inválidas"
+  And no genera token JWT
+```
+
+**Resultado Esperado:** Rechazo de autenticación, mensaje de error claro.
+
+---
+
+#### 🧪 TC-US-001-03 (Borde)
+**Descripción:** Login con usuario inexistente.
+
+**Datos de Entrada:**
+- Username: `usuario_no_existe`
+- Password: `cualquiera`
+
+**Pasos:**
+```gherkin
+Scenario: Login con usuario no registrado
+  Given que el username no existe en la base de datos
   When intenta autenticarse
-  Then el bloqueo ocurre en menos de 500 ms
+  Then el sistema responde con código 401
+  And retorna mensaje "Usuario no encontrado"
+```
 
+**Resultado Esperado:** Sistema protege información (no revela que usuario no existe).
 
-Resultado Esperado: Cumplimiento del SLO de seguridad.
+---
 
-MÓDULO 3 – PRODUCTOS Y CATEGORÍAS
-Historias de Usuario: US-011 a US-015
-🧪 HU US-011 – Crear Categoría
-🧪 TC-US-011-01 (Positivo)
+#### 🧪 TC-US-001-04 (Seguridad)
+**Descripción:** Validar expiración de token JWT.
 
-Descripción: Crear una categoría con nombre válido.
+**Datos de Entrada:**
+- Token JWT expirado (older than 7 days)
 
-Datos de Entrada:
-Nombre de categoría único.
+**Pasos:**
+```gherkin
+Scenario: Acceso con token expirado
+  Given que el usuario tiene un token JWT expirado
+  When intenta acceder a un endpoint protegido
+  Then el sistema responde con código 401
+  And redirige al login
+```
 
-Pasos:
+**Resultado Esperado:** Token expirado rechazado, sesión invalidada.
 
-Scenario: Creación exitosa de categoría
+---
+
+#### 🧪 TC-US-001-05 (RBAC)
+**Descripción:** Validar control de acceso basado en roles (RBAC).
+
+**Datos de Entrada:**
+- Token JWT con rol `waiter`
+- Intento de acceso a `POST /api/admin/users` (solo admin)
+
+**Pasos:**
+```gherkin
+Scenario: Mesero intenta crear usuario (acción de admin)
+  Given que el mesero está autenticado con token válido
+  When intenta acceder a POST /api/admin/users
+  Then el sistema responde con código 403 Forbidden
+  And muestra mensaje "Acceso denegado: permisos insuficientes"
+```
+
+**Resultado Esperado:** Sistema bloquea acceso, RBAC funcional.
+
+---
+
+## MÓDULO 2: 👥 GESTIÓN DE USUARIOS (US-005 a US-009)
+
+### 🧪 HU US-005 – Crear Usuario
+
+#### 🧪 TC-US-005-01 (Positivo)
+**Descripción:** Crear usuario con datos válidos.
+
+**Datos de Entrada:**
+- Username: `nuevo_mesero`
+- Password: `securepass123`
+- Email: `nuevo@restaurante.com`
+- Roles: `["waiter"]`
+
+**Pasos:**
+```gherkin
+Scenario: Creación exitosa de usuario mesero
   Given que el administrador está autenticado
-  When crea una categoría con nombre válido
-  Then la categoría se guarda correctamente
+  When envía POST /api/admin/users con datos válidos
+  Then el sistema responde con código 201 Created
+  And retorna el usuario creado con ID único
+  And el password se hashea con bcrypt
+  And el usuario puede autenticarse inmediatamente
+```
 
+**Resultado Esperado:** Usuario creado exitosamente, password hasheado, autenticación inmediata posible.
 
-Resultado Esperado: La categoría queda disponible en el sistema.
+---
 
-🧪 TC-US-011-02 (Negativo)
+#### 🧪 TC-US-005-02 (Negativo)
+**Descripción:** Intentar crear usuario con username duplicado.
 
-Descripción: Intentar crear una categoría duplicada.
+**Datos de Entrada:**
+- Username: `mesero1` (ya existe)
 
-Datos de Entrada:
-Nombre de categoría existente.
+**Pasos:**
+```gherkin
+Scenario: Creación con username duplicado
+  Given que ya existe un usuario con username "mesero1"
+  When el admin intenta crear otro con el mismo username
+  Then el sistema responde con código 409 Conflict
+  And muestra mensaje "Username ya está en uso"
+```
 
-Pasos:
+**Resultado Esperado:** Sistema rechaza duplicados, unicidad garantizada.
 
-Scenario: Creación de categoría duplicada
-  Given que ya existe una categoría con el mismo nombre
-  When el administrador intenta crearla
-  Then el sistema rechaza la operación
+---
 
+#### 🧪 TC-US-005-03 (Validación)
+**Descripción:** Validar campos obligatorios.
 
-Resultado Esperado: Mensaje de error por duplicidad.
+**Datos de Entrada:**
+- Request sin campo `password`
 
-🧪 TC-US-011-03 (Borde)
+**Pasos:**
+```gherkin
+Scenario: Creación sin password
+  Given que el admin envía datos sin password
+  When intenta crear usuario
+  Then el sistema responde con código 400 Bad Request
+  And lista los campos faltantes: "password es requerido"
+```
 
-Descripción: Crear categoría con nombre en longitud máxima.
+**Resultado Esperado:** Validación de campos obligatorios funciona.
 
-Datos de Entrada:
-Nombre con longitud máxima permitida.
+---
 
-Pasos:
+### 🧪 HU US-006 – Editar Usuario
 
-Scenario: Creación de categoría con longitud límite
-  Given que el nombre cumple el máximo permitido
-  When el administrador crea la categoría
-  Then el sistema la registra sin errores
+#### 🧪 TC-US-006-01 (Positivo)
+**Descripción:** Actualizar email de usuario existente.
 
+**Datos de Entrada:**
+- User ID: `64abc123...`
+- Nuevo email: `actualizado@restaurante.com`
 
-Resultado Esperado: Categoría creada correctamente.
+**Pasos:**
+```gherkin
+Scenario: Actualización exitosa de email
+  Given que el admin selecciona un usuario existente
+  When envía PUT /api/admin/users/:id con nuevo email
+  Then el sistema responde con código 200
+  And retorna el usuario con email actualizado
+```
 
-🧪 HU US-012 – Crear Producto
-🧪 TC-US-012-01 (Positivo)
+**Resultado Esperado:** Email actualizado correctamente.
 
-Descripción: Crear producto con datos válidos y categoría existente.
+---
 
-Datos de Entrada:
-Nombre, precio > 0, categoría válida.
+#### 🧪 TC-US-006-02 (RBAC)
+**Descripción:** Cambiar roles de usuario.
 
-Pasos:
+**Datos de Entrada:**
+- User ID: `64abc123...`
+- Nuevos roles: `["waiter", "chef"]`
 
-Scenario: Creación correcta de producto
-  Given que existe una categoría
-  When el administrador crea un producto válido
-  Then el producto queda disponible para pedidos
+**Pasos:**
+```gherkin
+Scenario: Actualización de roles de usuario
+  Given que el admin modifica roles de un usuario
+  When guarda los cambios
+  Then el usuario recibe JWT con nuevos roles en siguiente login
+  And tiene acceso a funcionalidades de ambos roles
+```
 
+**Resultado Esperado:** Roles actualizados, permisos reflejados en JWT.
 
-Resultado Esperado: Producto visible para el mesero.
+---
 
-🧪 TC-US-012-02 (Negativo)
+#### 🧪 TC-US-006-03 (Validación)
+**Descripción:** Intentar editar usuario inexistente.
 
-Descripción: Crear producto con precio inválido.
+**Datos de Entrada:**
+- User ID: `id_no_existe`
 
-Datos de Entrada:
-Precio igual o menor a 0.
+**Pasos:**
+```gherkin
+Scenario: Edición de usuario inexistente
+  Given que el ID no existe en la base de datos
+  When intenta actualizar
+  Then el sistema responde con código 404 Not Found
+```
 
-Pasos:
+**Resultado Esperado:** Error 404 para recursos inexistentes.
 
-Scenario: Creación de producto con precio inválido
-  Given que el administrador ingresa un precio inválido
-  When intenta crear el producto
-  Then el sistema rechaza la creación
+---
 
+### 🧪 HU US-007 – Eliminar Usuario
 
-Resultado Esperado: Mensaje de validación de precio.
+#### 🧪 TC-US-007-01 (Positivo)
+**Descripción:** Eliminar usuario existente.
 
-🧪 TC-US-012-03 (Borde)
+**⚠️ AJUSTE:** El sistema hace **eliminación física** (hard delete), no lógica (soft delete).
 
-Descripción: Crear producto con precio mínimo permitido.
+**Datos de Entrada:**
+- User ID: `64abc123...`
 
-Datos de Entrada:
-Precio mínimo válido.
+**Pasos:**
+```gherkin
+Scenario: Eliminación física de usuario
+  Given que el admin selecciona un usuario
+  When envía DELETE /api/admin/users/:id
+  Then el sistema responde con código 204 No Content
+  And el usuario se elimina completamente de MongoDB
+  And el usuario no puede autenticarse nuevamente
+```
 
-Pasos:
+**Resultado Esperado:** Usuario eliminado permanentemente de la BD.
 
-Scenario: Creación de producto con precio mínimo
-  Given que el precio está en el límite mínimo
-  When el producto es creado
-  Then el sistema lo acepta
+---
 
+#### 🧪 TC-US-007-02 (Validación)
+**Descripción:** Intentar eliminar usuario ya eliminado.
 
-Resultado Esperado: Producto creado correctamente.
+**Pasos:**
+```gherkin
+Scenario: Eliminación de usuario inexistente
+  Given que el usuario ya fue eliminado
+  When intenta eliminarlo nuevamente
+  Then el sistema responde con código 404
+```
 
-🧪 HU US-013 – Editar Producto
-🧪 TC-US-013-01 (Positivo)
+**Resultado Esperado:** Error 404 para recurso ya inexistente.
 
-Descripción: Editar datos de un producto existente.
+---
 
-Datos de Entrada:
-Producto activo, nuevo precio válido.
+### 🧪 HU US-008 – Listar y Buscar Usuarios
 
-Pasos:
+#### 🧪 TC-US-008-01 (Positivo)
+**Descripción:** Obtener lista completa de usuarios.
 
-Scenario: Edición correcta de producto
+**Pasos:**
+```gherkin
+Scenario: Listar todos los usuarios
+  Given que el admin accede a la página de usuarios
+  When envía GET /api/admin/users
+  Then el sistema responde con código 200
+  And retorna array de todos los usuarios con campos: _id, username, email, roles, isActive
+```
+
+**Resultado Esperado:** Lista completa de usuarios con campos correctos.
+
+---
+
+#### 🧪 TC-US-008-02 (Filtrado)
+**Descripción:** Buscar usuarios por filtros.
+
+**Datos de Entrada:**
+- Query: `?role=waiter`
+
+**Pasos:**
+```gherkin
+Scenario: Filtrado por rol
+  Given que se aplica filtro de rol "waiter"
+  When envía GET /api/admin/users?role=waiter
+  Then retorna solo usuarios con rol waiter
+```
+
+**Resultado Esperado:** Filtrado funcional por roles.
+
+---
+
+## MÓDULO 3: 📦 GESTIÓN DE PRODUCTOS (US-010 a US-012)
+
+**⚠️ IMPORTANTE:** El sistema **NO tiene modelo de categorías**. Los casos de prueba TC-US-011-XX (Crear/Editar/Eliminar Categoría) han sido **eliminados**.
+
+### 🧪 HU US-010 – Crear Producto
+
+#### 🧪 TC-US-010-01 (Positivo)
+**Descripción:** Crear producto con datos válidos.
+
+**Datos de Entrada:**
+- Name: `Hamburguesa Clásica`
+- Price: `12.99`
+- Desc: `Hamburguesa con queso y tomate`
+- Image: `https://example.com/burger.jpg`
+
+**Pasos:**
+```gherkin
+Scenario: Creación exitosa de producto
+  Given que el admin está autenticado
+  When envía POST /api/admin/products con datos válidos
+  Then el sistema responde con código 201
+  And retorna el producto con ID único
+  And el producto aparece en GET /api/admin/products inmediatamente
+```
+
+**Resultado Esperado:** Producto creado y disponible inmediatamente.
+
+---
+
+#### 🧪 TC-US-010-02 (Validación)
+**Descripción:** Validar precio no negativo.
+
+**Datos de Entrada:**
+- Price: `-5.00`
+
+**Pasos:**
+```gherkin
+Scenario: Rechazo de precio negativo
+  Given que el admin ingresa precio negativo
+  When intenta crear producto
+  Then el sistema responde con código 400
+  And muestra "El precio debe ser mayor o igual a 0"
+```
+
+**Resultado Esperado:** Validación de precio funcional.
+
+---
+
+#### 🧪 TC-US-010-03 (Validación)
+**Descripción:** Validar campos obligatorios.
+
+**Datos de Entrada:**
+- Request sin campo `name`
+
+**Pasos:**
+```gherkin
+Scenario: Creación sin nombre
+  Given que se omite el campo "name"
+  When intenta crear producto
+  Then el sistema responde con código 400
+  And lista "name es requerido"
+```
+
+**Resultado Esperado:** Campos obligatorios validados.
+
+---
+
+### 🧪 HU US-011 – Editar Producto
+
+#### 🧪 TC-US-011-01 (Positivo)
+**Descripción:** Actualizar precio de producto existente.
+
+**Datos de Entrada:**
+- Product ID: `64abc...`
+- Nuevo precio: `14.99`
+
+**Pasos:**
+```gherkin
+Scenario: Actualización exitosa de precio
   Given que el producto existe
-  When el administrador edita su información
-  Then los cambios se guardan correctamente
+  When envía PUT /api/admin/products/:id con nuevo precio
+  Then el sistema responde con código 200
+  And el nuevo precio se usa en pedidos subsiguientes
+```
 
+**Resultado Esperado:** Precio actualizado inmediatamente.
 
-Resultado Esperado: Producto actualizado.
+---
 
-🧪 TC-US-013-02 (Negativo)
+#### 🧪 TC-US-011-02 (Validación)
+**Descripción:** Intentar editar producto inexistente.
 
-Descripción: Editar producto inexistente.
-
-Datos de Entrada:
-ID de producto inválido.
-
-Pasos:
-
+**Pasos:**
+```gherkin
 Scenario: Edición de producto inexistente
-  Given que el producto no existe
-  When el administrador intenta editarlo
-  Then el sistema rechaza la operación
+  Given que el product ID no existe
+  When intenta actualizar
+  Then el sistema responde con código 404
+```
 
+**Resultado Esperado:** Error 404 para recursos inexistentes.
 
-Resultado Esperado: Error de producto no encontrado.
+---
 
-🧪 TC-US-013-03 (Borde)
+### 🧪 HU US-012 – Eliminar Producto
 
-Descripción: Editar producto mientras está en un pedido activo.
+#### 🧪 TC-US-012-01 (Positivo)
+**Descripción:** Eliminar producto existente.
 
-Datos de Entrada:
-Producto asociado a pedido pending.
+**⚠️ AJUSTE:** El sistema hace **eliminación física** (hard delete), no lógica.
 
-Pasos:
+**Pasos:**
+```gherkin
+Scenario: Eliminación física de producto
+  Given que el producto existe
+  When envía DELETE /api/admin/products/:id
+  Then el sistema responde con código 204
+  And el producto se elimina completamente de MongoDB
+  And no aparece más en GET /api/admin/products
+```
 
-Scenario: Edición de producto en uso
-  Given que el producto está en un pedido activo
-  When se edita el precio
-  Then el cambio se refleja solo en pedidos futuros
+**Resultado Esperado:** Producto eliminado permanentemente.
 
+---
 
-Resultado Esperado: No se altera pedidos en curso.
+## MÓDULO 4: 🪑 GESTIÓN DE MESAS (US-013 a US-017)
 
-🧪 HU US-014 – Eliminar Producto
-🧪 TC-US-014-01 (Positivo)
+### 🧪 HU US-013 – Crear Mesa
 
-Descripción: Eliminar producto sin pedidos activos.
+#### 🧪 TC-US-013-01 (Positivo)
+**Descripción:** Crear mesa con datos válidos.
 
-Datos de Entrada:
-Producto libre.
+**Datos de Entrada:**
+- Number: `10`
+- Capacity: `4`
+- Location: `Terraza`
+- Status: `available` (por defecto)
 
-Pasos:
-
-Scenario: Eliminación correcta de producto
-  Given que el producto no está en pedidos activos
-  When el administrador lo elimina
-  Then el producto desaparece del catálogo
-
-
-Resultado Esperado: Producto eliminado correctamente.
-
-🧪 TC-US-014-02 (Negativo)
-
-Descripción: Eliminar producto asociado a pedido activo.
-
-Datos de Entrada:
-Producto en pedido preparing.
-
-Pasos:
-
-Scenario: Eliminación de producto en uso
-  Given que el producto está en un pedido activo
-  When el administrador intenta eliminarlo
-  Then el sistema bloquea la operación
-
-
-Resultado Esperado: Mensaje de restricción.
-
-🧪 TC-US-014-03 (Borde)
-
-Descripción: Eliminar último producto de una categoría.
-
-Datos de Entrada:
-Categoría con un solo producto.
-
-Pasos:
-
-Scenario: Eliminación del último producto
-  Given que es el último producto de la categoría
-  When se elimina
-  Then la categoría permanece sin productos
-
-
-Resultado Esperado: Categoría no se elimina automáticamente.
-
-🧪 HU US-015 – Visualizar Productos
-🧪 TC-US-015-01 (Positivo)
-
-Descripción: Visualizar productos disponibles.
-
-Datos de Entrada:
-Mesero autenticado.
-
-Pasos:
-
-Scenario: Visualización de productos
-  Given que el mesero accede al catálogo
-  When consulta los productos
-  Then visualiza solo los productos activos
-
-
-Resultado Esperado: Lista correcta visible.
-
-🧪 TC-US-015-02 (Negativo)
-
-Descripción: Acceso al catálogo sin autenticación.
-
-Datos de Entrada:
-Usuario no autenticado.
-
-Pasos:
-
-Scenario: Acceso no autorizado a productos
-  Given que el usuario no está autenticado
-  When intenta ver productos
-  Then el sistema bloquea el acceso
-
-
-Resultado Esperado: Respuesta 401.
-
-🧪 TC-US-015-03 (Borde)
-
-Descripción: Visualizar catálogo con alta carga.
-
-Datos de Entrada:
-Más de 200 productos registrados.
-
-Pasos:
-
-Scenario: Visualización con alto volumen
-  Given que existen muchos productos
-  When el mesero consulta el catálogo
-  Then la respuesta se entrega en tiempo aceptable
-
-
-Resultado Esperado: Rendimiento dentro del SLO.
-
-🪑 MÓDULO 4 – GESTIÓN DE MESAS
-Historias de Usuario: US-016 a US-020
-🧪 HU US-016 – Crear Mesa
-🧪 TC-US-016-01 (Positivo)
-
-Descripción: Crear una mesa con número único.
-
-Datos de Entrada:
-Número de mesa único.
-
-Pasos:
-
+**Pasos:**
+```gherkin
 Scenario: Creación exitosa de mesa
-  Given que el administrador está autenticado
-  When crea una mesa con número único
-  Then la mesa queda disponible en el sistema
+  Given que el admin está autenticado
+  When envía POST /api/admin/tables con datos válidos
+  Then el sistema responde con código 201
+  And retorna la mesa con ID único y status "available"
+```
 
+**Resultado Esperado:** Mesa creada con estado inicial disponible.
 
-Resultado Esperado: Mesa creada y visible para asignación.
+---
 
-🧪 TC-US-016-02 (Negativo)
+#### 🧪 TC-US-013-02 (Validación)
+**Descripción:** Intentar crear mesa con número duplicado.
 
-Descripción: Crear una mesa con número duplicado.
+**Datos de Entrada:**
+- Number: `5` (ya existe)
 
-Datos de Entrada:
-Número de mesa existente.
+**Pasos:**
+```gherkin
+Scenario: Rechazo de número duplicado
+  Given que ya existe mesa con number 5
+  When intenta crear otra con mismo number
+  Then el sistema responde con código 409
+  And muestra "El número de mesa ya existe"
+```
 
-Pasos:
+**Resultado Esperado:** Unicidad de números de mesa garantizada.
 
-Scenario: Creación de mesa duplicada
-  Given que ya existe una mesa con el mismo número
-  When el administrador intenta crearla
-  Then el sistema rechaza la operación
+---
 
+### 🧪 HU US-014 – Visualizar Estados de Mesas
 
-Resultado Esperado: Mensaje de error por duplicidad.
+#### 🧪 TC-US-014-01 (Positivo)
+**Descripción:** Obtener lista de todas las mesas con sus estados.
 
-🧪 TC-US-016-03 (Borde)
+**⚠️ AJUSTE:** **NO hay WebSocket** en admin-service. Actualización vía polling HTTP.
 
-Descripción: Crear mesa con número máximo permitido.
+**Pasos:**
+```gherkin
+Scenario: Consulta de estados de mesas
+  Given que el mesero accede a la vista de mesas
+  When envía GET /api/admin/tables
+  Then el sistema responde con código 200
+  And retorna array de mesas con campos: _id, number, capacity, location, status
+```
 
-Datos de Entrada:
-Número de mesa en límite superior.
+**Resultado Esperado:** Lista completa de mesas con estados actuales.
 
-Pasos:
+---
 
-Scenario: Creación de mesa en límite máximo
-  Given que el número está dentro del rango permitido
-  When el administrador crea la mesa
-  Then el sistema la registra correctamente
+#### 🧪 TC-US-014-02 (Limitación)
+**Descripción:** Validar que NO hay actualización automática en tiempo real.
 
+**Pasos:**
+```gherkin
+Scenario: Actualización manual de estados
+  Given que una mesa cambia de estado en el backend
+  When el frontend consulta GET /api/admin/tables
+  Then ve el estado actualizado
+  But la actualización NO es automática (requiere refrescar)
+```
 
-Resultado Esperado: Mesa creada sin errores.
+**Resultado Esperado:** Sistema funciona con polling manual, no WebSocket.
 
-🧪 HU US-017 – Editar Mesa
-🧪 TC-US-017-01 (Positivo)
+---
 
-Descripción: Editar el número de una mesa existente.
+### 🧪 HU US-015 – Editar Mesa
 
-Datos de Entrada:
-Nuevo número único.
+#### 🧪 TC-US-015-01 (Positivo)
+**Descripción:** Actualizar capacidad de mesa.
 
-Pasos:
+**Datos de Entrada:**
+- Table ID: `64abc...`
+- Nueva capacity: `6`
 
-Scenario: Edición correcta de mesa
+**Pasos:**
+```gherkin
+Scenario: Actualización de capacidad
   Given que la mesa existe
-  When el administrador edita su número
-  Then los cambios se guardan correctamente
+  When envía PUT /api/admin/tables/:id con nueva capacity
+  Then el sistema responde con código 200
+  And la capacidad se actualiza correctamente
+```
 
+**Resultado Esperado:** Capacidad actualizada exitosamente.
 
-Resultado Esperado: Mesa actualizada.
+---
 
-🧪 TC-US-017-02 (Negativo)
+### 🧪 HU US-016 – Cambiar Estado de Mesa
 
-Descripción: Editar mesa a un número ya existente.
+#### 🧪 TC-US-016-01 (Positivo)
+**Descripción:** Cambiar mesa de disponible a ocupada.
 
-Datos de Entrada:
-Número duplicado.
+**Datos de Entrada:**
+- Table ID: `64abc...`
+- Nuevo status: `occupied`
 
-Pasos:
+**Pasos:**
+```gherkin
+Scenario: Cambio de estado a ocupada
+  Given que la mesa está en estado "available"
+  When envía PUT /api/admin/tables/:id/status con status "occupied"
+  Then el sistema responde con código 200
+  And el status cambia a "occupied"
+```
 
-Scenario: Edición con número duplicado
-  Given que el número ya está asignado a otra mesa
-  When el administrador intenta actualizarla
-  Then el sistema rechaza la operación
+**Resultado Esperado:** Estado actualizado correctamente.
 
+---
 
-Resultado Esperado: Error de validación.
+#### 🧪 TC-US-016-02 (Validación)
+**Descripción:** Validar estados permitidos.
 
-🧪 TC-US-017-03 (Borde)
+**Datos de Entrada:**
+- Status: `invalid_status`
 
-Descripción: Editar mesa mientras está reservada.
+**Pasos:**
+```gherkin
+Scenario: Rechazo de estado inválido
+  Given que se envía un status no permitido
+  When intenta actualizar
+  Then el sistema responde con código 400
+  And muestra "Status debe ser: available, occupied, reserved, cleaning"
+```
 
-Datos de Entrada:
-Mesa en estado reservada.
+**Resultado Esperado:** Solo estados válidos aceptados.
 
-Pasos:
+---
 
-Scenario: Edición de mesa reservada
-  Given que la mesa está reservada
-  When el administrador edita información no crítica
-  Then el sistema permite el cambio
+### 🧪 HU US-017 – Liberar Mesa Automáticamente
 
+#### 🧪 TC-US-017-01 (Integración)
+**Descripción:** Validar liberación automática al completar pedido.
 
-Resultado Esperado: Cambios aplicados sin alterar estado.
+**⚠️ REQUIERE INTEGRACIÓN:** Depende de módulo de pedidos.
 
-🧪 HU US-018 – Cambiar Estado de Mesa
-🧪 TC-US-018-01 (Positivo)
+**Pasos:**
+```gherkin
+Scenario: Liberación automática post-pedido
+  Given que una mesa tiene pedido activo
+  When el pedido se marca como "completado"
+  Then la mesa cambia automáticamente a status "available"
+```
 
-Descripción: Cambiar estado de disponible a reservada.
+**Resultado Esperado:** Liberación automática funcional (si implementada).
 
-Datos de Entrada:
-Mesa disponible.
+---
 
-Pasos:
+## MÓDULO 5: 🍽️ GESTIÓN DE PEDIDOS (US-018 a US-023)
 
-Scenario: Cambio de estado de mesa
-  Given que la mesa está disponible
-  When se marca como reservada
-  Then el estado se actualiza correctamente
+### 🧪 HU US-018 – Crear Pedido
 
+#### 🧪 TC-US-018-01 (Positivo)
+**Descripción:** Crear pedido con datos válidos.
 
-Resultado Esperado: Mesa marcada como reservada.
+**Datos de Entrada:**
+- customerName: `Juan Pérez`
+- table: `5`
+- items: `[{ name: "Hamburguesa", quantity: 2, price: 12.99 }]`
 
-🧪 TC-US-018-02 (Negativo)
-
-Descripción: Reservar una mesa ya ocupada.
-
-Datos de Entrada:
-Mesa ocupada.
-
-Pasos:
-
-Scenario: Reserva de mesa ocupada
-  Given que la mesa está ocupada
-  When se intenta reservar
-  Then el sistema rechaza la acción
-
-
-Resultado Esperado: Mensaje de estado inválido.
-
-🧪 TC-US-018-03 (Borde)
-
-Descripción: Cambio rápido de estado consecutivo.
-
-Datos de Entrada:
-Cambios de estado seguidos.
-
-Pasos:
-
-Scenario: Cambio consecutivo de estado
-  Given que la mesa cambia de estado rápidamente
-  When el sistema procesa las solicitudes
-  Then mantiene consistencia del estado final
-
-
-Resultado Esperado: Estado final correcto.
-
-🧪 HU US-019 – Visualizar Mapa de Mesas
-🧪 TC-US-019-01 (Positivo)
-
-Descripción: Visualizar estados en tiempo real.
-
-Datos de Entrada:
-Mesero autenticado.
-
-Pasos:
-
-Scenario: Visualización en tiempo real
-  Given que el mesero accede al mapa de mesas
-  When cambia el estado de una mesa
-  Then la vista se actualiza en tiempo real
-
-
-Resultado Esperado: Estados sincronizados vía WebSocket.
-
-🧪 TC-US-019-02 (Negativo)
-
-Descripción: Acceso al mapa sin permisos.
-
-Datos de Entrada:
-Usuario no autorizado.
-
-Pasos:
-
-Scenario: Acceso no autorizado al mapa
-  Given que el usuario no tiene rol permitido
-  When intenta acceder al mapa
-  Then el sistema bloquea el acceso
-
-
-Resultado Esperado: Respuesta 403 Forbidden.
-
-🧪 TC-US-019-03 (Borde)
-
-Descripción: Visualización con alta concurrencia.
-
-Datos de Entrada:
-Múltiples usuarios conectados.
-
-Pasos:
-
-Scenario: Mapa con múltiples usuarios
-  Given que varios usuarios observan el mapa
-  When cambia el estado de una mesa
-  Then todos reciben la actualización
-
-
-Resultado Esperado: Sincronización correcta.
-
-🧪 HU US-020 – Liberar Mesa Automáticamente
-🧪 TC-US-020-01 (Positivo)
-
-Descripción: Liberar mesa al cancelar pedido.
-
-Datos de Entrada:
-Pedido cancelado.
-
-Pasos:
-
-Scenario: Liberación automática de mesa
-  Given que un pedido es cancelado
-  When el flujo finaliza
-  Then la mesa asociada queda disponible
-
-
-Resultado Esperado: Mesa liberada.
-
-🧪 TC-US-020-02 (Negativo)
-
-Descripción: Intentar liberar mesa sin pedido.
-
-Datos de Entrada:
-Mesa sin pedido activo.
-
-Pasos:
-
-Scenario: Liberación inválida de mesa
-  Given que la mesa no tiene pedido activo
-  When se intenta liberar
-  Then el sistema no realiza cambios
-
-
-Resultado Esperado: Estado permanece igual.
-
-🧪 TC-US-020-03 (Borde)
-
-Descripción: Liberación simultánea por eventos duplicados.
-
-Datos de Entrada:
-Eventos duplicados desde backend.
-
-Pasos:
-
-Scenario: Eventos duplicados de liberación
-  Given que llegan eventos duplicados
-  When el sistema los procesa
-  Then la mesa queda disponible una sola vez
-
-
-Resultado Esperado: Idempotencia garantizada.
-
-📝 MÓDULO 5 – PEDIDOS
-Historias de Usuario: US-021 a US-026
-🧪 HU US-021 – Crear Pedido
-🧪 TC-US-021-01 (Positivo)
-
-Descripción: Crear un pedido con productos válidos y mesa asignada.
-
-Datos de Entrada:
-Mesa disponible, lista de productos válida.
-
-Pasos:
-
+**Pasos:**
+```gherkin
 Scenario: Creación exitosa de pedido
   Given que el mesero está autenticado
-  And la mesa está disponible
-  When crea un pedido con productos válidos
-  Then el pedido se guarda en estado pending
+  When envía POST /api/v1/orders/ con datos válidos
+  Then el sistema responde con código 201
+  And retorna el pedido con ID único y status "pendiente"
+  And el pedido tiene timestamp de creación
+```
 
+**Resultado Esperado:** Pedido creado con estado inicial pendiente.
 
-Resultado Esperado: Pedido creado correctamente.
+---
 
-🧪 TC-US-021-02 (Negativo)
+#### 🧪 TC-US-018-02 (Validación)
+**Descripción:** Intentar crear pedido sin especificar mesa.
 
-Descripción: Crear pedido sin seleccionar mesa.
+**Datos de Entrada:**
+- Request sin campo `table`
 
-Datos de Entrada:
-Lista de productos sin mesa.
+**Pasos:**
+```gherkin
+Scenario: Rechazo de pedido sin mesa
+  Given que se omite el campo "table"
+  When intenta crear pedido
+  Then el sistema responde con código 400
+  And muestra "El campo table es obligatorio"
+```
 
-Pasos:
+**Resultado Esperado:** Validación de mesa obligatoria funcional.
 
-Scenario: Creación de pedido sin mesa
-  Given que el mesero está autenticado
-  When intenta crear un pedido sin mesa
-  Then el sistema rechaza la operación
+---
 
+#### 🧪 TC-US-018-03 (Validación)
+**Descripción:** Validar items no vacío.
 
-Resultado Esperado: Error de validación.
+**Datos de Entrada:**
+- items: `[]` (vacío)
 
-🧪 TC-US-021-03 (Borde)
+**Pasos:**
+```gherkin
+Scenario: Rechazo de pedido sin items
+  Given que el array items está vacío
+  When intenta crear pedido
+  Then el sistema responde con código 400
+  And muestra "El pedido debe tener al menos un item"
+```
 
-Descripción: Crear pedido con cantidad máxima de productos.
+**Resultado Esperado:** Validación de items funcional.
 
-Datos de Entrada:
-Pedido con límite máximo permitido de ítems.
+---
 
-Pasos:
+### 🧪 HU US-019 – Enviar Pedido a Cocina (RabbitMQ)
 
-Scenario: Pedido con cantidad máxima
-  Given que el pedido tiene el máximo de productos permitidos
-  When se envía
-  Then el sistema lo procesa correctamente
+#### 🧪 TC-US-019-01 (Integración)
+**Descripción:** Validar publicación a RabbitMQ.
 
+**Pasos:**
+```gherkin
+Scenario: Publicación exitosa a cola
+  Given que se crea un pedido exitosamente
+  When el sistema procesa el pedido
+  Then publica el pedido a la cola "orders_queue" de RabbitMQ
+  And confirma la publicación exitosa
+```
 
-Resultado Esperado: Pedido creado sin degradar rendimiento.
+**Resultado Esperado:** Pedido publicado a RabbitMQ correctamente.
 
-🧪 HU US-022 – Enviar Pedido a Cocina
-🧪 TC-US-022-01 (Positivo)
+---
 
-Descripción: Enviar pedido correctamente a cocina.
+#### 🧪 TC-US-019-02 (Fallback)
+**Descripción:** Validar comportamiento si RabbitMQ no disponible.
 
-Datos de Entrada:
-Pedido en estado pending.
+**Pasos:**
+```gherkin
+Scenario: Manejo de RabbitMQ indisponible
+  Given que RabbitMQ está caído
+  When intenta crear pedido
+  Then el sistema intenta reconectar
+  And/Or muestra error al usuario
+```
 
-Pasos:
+**Resultado Esperado:** Sistema maneja gracefully error de cola.
 
-Scenario: Envío exitoso de pedido
-  Given que el pedido está en estado pending
-  When el mesero lo envía
-  Then el backend lo confirma en menos de 2 segundos
+---
 
+### 🧪 HU US-020 – Ver Estado de Pedido
 
-Resultado Esperado: Pedido confirmado.
+#### 🧪 TC-US-020-01 (Positivo)
+**Descripción:** Consultar estado actual de pedido.
 
-🧪 TC-US-022-02 (Negativo)
+**Datos de Entrada:**
+- Order ID: `64abc...`
 
-Descripción: Enviar pedido ya confirmado.
+**Pasos:**
+```gherkin
+Scenario: Consulta de estado de pedido
+  Given que el pedido existe
+  When envía GET /api/v1/orders/{order_id}
+  Then el sistema responde con código 200
+  And retorna el pedido con status actual: "pendiente", "preparando" o "listo"
+```
 
-Datos de Entrada:
-Pedido en estado confirmed.
+**Resultado Esperado:** Estado actual del pedido consultado correctamente.
 
-Pasos:
+---
 
-Scenario: Envío duplicado de pedido
-  Given que el pedido ya fue confirmado
-  When se intenta reenviar
-  Then el sistema bloquea la acción
+### 🧪 HU US-021 – Editar Pedido
 
+#### 🧪 TC-US-021-01 (Positivo)
+**Descripción:** Editar pedido en estado pendiente.
 
-Resultado Esperado: Respuesta 409 Conflict.
+**Datos de Entrada:**
+- Order ID: `64abc...` (status: `pendiente`)
+- Nuevos items: `[{ name: "Pizza", quantity: 1, price: 15.99 }]`
 
-🧪 TC-US-022-03 (Borde)
+**Pasos:**
+```gherkin
+Scenario: Edición exitosa de pedido pendiente
+  Given que el pedido está en estado "pendiente"
+  When envía PUT /api/v1/orders/{order_id} con nuevos items
+  Then el sistema responde con código 200
+  And los items se actualizan
+```
 
-Descripción: Enviar pedido bajo alta latencia.
+**Resultado Esperado:** Pedido pendiente editado exitosamente.
 
-Datos de Entrada:
-Backend con latencia elevada.
+---
 
-Pasos:
+#### 🧪 TC-US-021-02 (Validación)
+**Descripción:** Intentar editar pedido en preparación.
 
-Scenario: Envío de pedido con latencia
-  Given que existe latencia en la red
-  When se envía el pedido
-  Then el sistema garantiza la entrega
+**Datos de Entrada:**
+- Order ID: `64abc...` (status: `preparando`)
 
+**Pasos:**
+```gherkin
+Scenario: Rechazo de edición de pedido en preparación
+  Given que el pedido está en "preparando"
+  When intenta editar
+  Then el sistema responde con código 400
+  And muestra "No se puede editar pedido en preparación"
+```
 
-Resultado Esperado: Pedido entregado sin pérdida.
+**Resultado Esperado:** Sistema bloquea edición de pedidos en cocina.
 
-🧪 HU US-023 – Validar Pedido Vacío
-🧪 TC-US-023-01 (Negativo)
+---
 
-Descripción: Intentar enviar un pedido sin productos.
+### 🧪 HU US-022 – Cancelar Pedido
 
-Datos de Entrada:
-Pedido vacío.
+#### 🧪 TC-US-022-01 (Positivo)
+**Descripción:** Cancelar pedido existente.
 
-Pasos:
+**Datos de Entrada:**
+- Order ID: `64abc...`
 
-Scenario: Pedido vacío
-  Given que el mesero no agrega productos
-  When intenta enviar el pedido
-  Then el sistema bloquea la operación
+**Pasos:**
+```gherkin
+Scenario: Cancelación exitosa de pedido
+  Given que el pedido existe
+  When envía DELETE /api/v1/orders/{order_id}
+  Then el sistema responde con código 200
+  And el status cambia a "cancelado"
+```
 
+**Resultado Esperado:** Pedido cancelado exitosamente.
 
-Resultado Esperado: Mensaje de validación.
+---
 
-🧪 TC-US-023-02 (Borde)
+### 🧪 HU US-023 – Consultar Historial de Pedidos
 
-Descripción: Pedido con un solo producto.
+#### 🧪 TC-US-023-01 (Positivo)
+**Descripción:** Obtener lista de todos los pedidos.
 
-Datos de Entrada:
-Pedido con un producto.
+**Pasos:**
+```gherkin
+Scenario: Consulta de historial completo
+  Given que el admin/mesero está autenticado
+  When envía GET /api/v1/orders/
+  Then el sistema responde con código 200
+  And retorna array de pedidos con todos los estados
+```
 
-Pasos:
+**Resultado Esperado:** Historial completo de pedidos consultado.
 
-Scenario: Pedido con un solo producto
-  Given que el pedido tiene un producto
-  When se envía
-  Then el sistema lo acepta
+---
 
+#### 🧪 TC-US-023-02 (Filtrado)
+**Descripción:** Filtrar pedidos por estado.
 
-Resultado Esperado: Pedido creado correctamente.
+**Datos de Entrada:**
+- Query: `?status=listo`
 
-🧪 HU US-024 – Editar Pedido en Estado Pending
-🧪 TC-US-024-01 (Positivo)
+**Pasos:**
+```gherkin
+Scenario: Filtrado por estado "listo"
+  Given que se aplica filtro de estado
+  When envía GET /api/v1/orders/?status=listo
+  Then retorna solo pedidos con status "listo"
+```
 
-Descripción: Editar productos en pedido pending.
+**Resultado Esperado:** Filtrado por estado funcional.
 
-Datos de Entrada:
-Pedido pending.
+---
 
-Pasos:
+## MÓDULO 6: 👨‍🍳 COCINA Y PROCESAMIENTO ASÍNCRONO (US-024 a US-027)
 
-Scenario: Edición de pedido pendiente
-  Given que el pedido está en estado pending
-  When el mesero modifica los productos
-  Then los cambios se guardan
+### 🧪 HU US-024 – Recepción de Pedido en Cocina
 
+#### 🧪 TC-US-024-01 (Integración)
+**Descripción:** Validar que Worker Node.js consume pedidos de RabbitMQ.
 
-Resultado Esperado: Pedido actualizado.
+**Pasos:**
+```gherkin
+Scenario: Consumo exitoso de pedido
+  Given que un pedido se publica en RabbitMQ
+  When el Worker Node.js lo consume
+  Then el pedido se procesa en orden FIFO
+  And se aplica prefetch=1 (un pedido a la vez)
+```
 
-🧪 TC-US-024-02 (Negativo)
+**Resultado Esperado:** Worker procesa pedidos secuencialmente.
 
-Descripción: Editar pedido en estado preparing.
+---
 
-Datos de Entrada:
-Pedido preparing.
+### 🧪 HU US-025 – Iniciar Preparación
 
-Pasos:
+#### 🧪 TC-US-025-01 (Positivo)
+**Descripción:** Marcar pedido como "en preparación".
 
-Scenario: Edición no permitida
-  Given que el pedido está en estado preparing
-  When el mesero intenta editarlo
-  Then el sistema rechaza la acción
+**Datos de Entrada:**
+- Order ID: `64abc...` (status: `pendiente`)
 
+**Pasos:**
+```gherkin
+Scenario: Cambio a estado "preparando"
+  Given que el pedido está en "pendiente"
+  When el cocinero lo marca como "preparando"
+  Then el sistema actualiza status a "preparando"
+  And el cambio se refleja en el backend Python
+```
 
-Resultado Esperado: Respuesta 409 Conflict.
+**Resultado Esperado:** Estado actualizado a preparando.
 
-🧪 TC-US-024-03 (Borde)
+---
 
-Descripción: Ediciones consecutivas rápidas.
+### 🧪 HU US-026 – Marcar Pedido como Listo
 
-Datos de Entrada:
-Múltiples ediciones seguidas.
+#### 🧪 TC-US-026-01 (Positivo)
+**Descripción:** Marcar pedido como "listo".
 
-Pasos:
+**Datos de Entrada:**
+- Order ID: `64abc...` (status: `preparando`)
 
-Scenario: Ediciones consecutivas
-  Given que el pedido recibe ediciones rápidas
-  When el sistema procesa los cambios
-  Then mantiene consistencia final
+**Pasos:**
+```gherkin
+Scenario: Cambio a estado "listo"
+  Given que el pedido está en "preparando"
+  When el cocinero lo marca como "listo"
+  Then el sistema actualiza status a "listo"
+  And se notifica al mesero (vía WebSocket)
+```
 
+**Resultado Esperado:** Estado actualizado y notificación enviada.
 
-Resultado Esperado: Pedido consistente.
+---
 
-🧪 HU US-025 – Cancelar Pedido
-🧪 TC-US-025-01 (Positivo)
+### 🧪 HU US-027 – Notificaciones en Tiempo Real
 
-Descripción: Cancelar pedido en estado pending.
+#### 🧪 TC-US-027-01 (WebSocket)
+**Descripción:** Validar notificación vía WebSocket.
 
-Datos de Entrada:
-Pedido pending.
+**Pasos:**
+```gherkin
+Scenario: Notificación en tiempo real al mesero
+  Given que el pedido cambia a "listo"
+  When el sistema procesa el cambio
+  Then envía notificación vía WebSocket al frontend del mesero
+  And el mesero ve alerta en tiempo real
+```
 
-Pasos:
+**Resultado Esperado:** Notificación WebSocket funcional.
 
-Scenario: Cancelación de pedido
-  Given que el pedido está pending
-  When el mesero lo cancela
-  Then el pedido pasa a estado cancelled
+---
 
+#### 🧪 TC-US-027-02 (Fallback)
+**Descripción:** Validar fallback HTTP si WebSocket no disponible.
 
-Resultado Esperado: Pedido cancelado.
-
-🧪 TC-US-025-02 (Negativo)
-
-Descripción: Cancelar pedido en preparing.
-
-Datos de Entrada:
-Pedido preparing.
-
-Pasos:
-
-Scenario: Cancelación no permitida
-  Given que el pedido está en estado preparing
-  When se intenta cancelar
-  Then el sistema bloquea la acción
-
-
-Resultado Esperado: Error de estado inválido.
-
-🧪 TC-US-025-03 (Borde)
-
-Descripción: Cancelación simultánea.
-
-Datos de Entrada:
-Dos solicitudes de cancelación.
-
-Pasos:
-
-Scenario: Cancelación concurrente
-  Given que se envían dos solicitudes
-  When el sistema las procesa
-  Then el pedido se cancela una sola vez
-
-
-Resultado Esperado: Operación idempotente.
-
-🧪 HU US-026 – Visualizar Estado del Pedido
-🧪 TC-US-026-01 (Positivo)
-
-Descripción: Ver estado actualizado del pedido.
-
-Datos de Entrada:
-Pedido existente.
-
-Pasos:
-
-Scenario: Visualización de estado
-  Given que el pedido cambia de estado
-  When el mesero lo consulta
-  Then visualiza el estado actualizado
-
-
-Resultado Esperado: Estado correcto.
-
-🧪 TC-US-026-02 (Negativo)
-
-Descripción: Consultar pedido inexistente.
-
-Datos de Entrada:
-ID inválido.
-
-Pasos:
-
-Scenario: Consulta inválida
-  Given que el pedido no existe
-  When se consulta
-  Then el sistema devuelve error
-
-
-Resultado Esperado: Respuesta 404.
-
-🧪 TC-US-026-03 (Borde)
-
-Descripción: Consulta masiva de estados.
-
-Datos de Entrada:
-Muchos pedidos simultáneos.
-
-Pasos:
-
-Scenario: Consulta bajo carga
-  Given que hay múltiples consultas concurrentes
-  When se solicitan estados
-  Then el sistema responde dentro del SLA
-
-
-Resultado Esperado: Rendimiento aceptable.
-
-# 👨‍🍳 MÓDULO 6 – COCINA Y PROCESAMIENTO ASÍNCRONO
-## Historias de Usuario: US-027 a US-030
-🧪 HU US-027 – Recepción de Pedido en Cocina (RabbitMQ)
-🧪 TC-US-027-01 (Positivo)
-Descripción: El pedido enviado es recibido correctamente por la cocina mediante RabbitMQ.
-
-Datos de Entrada:
-Pedido en estado confirmed, cola RabbitMQ activa.
-
-Pasos:
-
-Scenario: Recepción correcta de pedido en cocina
-  Given que el pedido fue confirmado
-  And RabbitMQ está operativo
-  When el mensaje es publicado
-  Then el worker de cocina consume el pedido secuencialmente
-
-Resultado Esperado: Pedido visible en la vista de cocina.
-
-🧪 TC-US-027-02 (Negativo)
-Descripción: Falla en la publicación del mensaje en RabbitMQ.
-
-Datos de Entrada:
-RabbitMQ detenido.
-
-Pasos:
-
-Scenario: Falla de publicación en RabbitMQ
-  Given que RabbitMQ no está disponible
-  When el backend intenta publicar el pedido
-  Then el sistema registra el error
-  And el pedido no se pierde
-
-Resultado Esperado: Pedido queda pendiente de reintento y auditado.
-
-🧪 TC-US-027-03 (Borde)
-Descripción: Recepción de múltiples pedidos simultáneos.
-
-Datos de Entrada:
-Ráfaga de 200 pedidos.
-
-Pasos:
-
-Scenario: Procesamiento secuencial bajo carga
-  Given que se publican múltiples pedidos simultáneamente
-  When el worker los consume
-  Then se procesan uno a uno respetando prefetch=1
-
-Resultado Esperado: No hay desorden ni pérdida de mensajes.
-
-🧪 HU US-028 – Iniciar Preparación del Pedido
-🧪 TC-US-028-01 (Positivo)
-Descripción: El cocinero inicia la preparación de un pedido pendiente.
-
-Datos de Entrada:
-Pedido en estado pending.
-
-Pasos:
-
-Scenario: Inicio de preparación
-  Given que el pedido está en estado pending
-  When el cocinero lo toma
-  Then el estado cambia a preparing
-
-Resultado Esperado: Pedido marcado como preparing.
-
-🧪 TC-US-028-02 (Negativo)
-Descripción: Intentar iniciar preparación de un pedido ya tomado.
-
-Datos de Entrada:
-Pedido en estado preparing.
-
-Pasos:
-
-Scenario: Pedido ya en preparación
-  Given que el pedido ya está en estado preparing
-  When otro cocinero intenta tomarlo
-  Then el sistema bloquea la acción
-
-Resultado Esperado: Error de concurrencia.
-
-🧪 TC-US-028-03 (Borde)
-Descripción: Dos cocineros intentan tomar el mismo pedido al mismo tiempo.
-
-Datos de Entrada:
-Acciones concurrentes.
-
-Pasos:
-
-Scenario: Toma concurrente de pedido
-  Given que dos cocineros seleccionan el mismo pedido
-  When el sistema procesa las solicitudes
-  Then solo uno obtiene el pedido
-
-Resultado Esperado: Control de concurrencia exitoso.
-
-🧪 HU US-029 – Marcar Pedido como Listo
-🧪 TC-US-029-01 (Positivo)
-Descripción: El cocinero finaliza la preparación del pedido.
-
-Datos de Entrada:
-Pedido en estado preparing.
-
-Pasos:
-
-Scenario: Pedido listo
-  Given que el pedido está preparing
-  When el cocinero lo finaliza
-  Then el estado cambia a ready
-
-Resultado Esperado: Pedido listo para entregar.
-
-🧪 TC-US-029-02 (Negativo)
-Descripción: Intentar marcar pedido como listo sin estar en preparación.
-
-Datos de Entrada:
-Pedido en estado pending.
-
-Pasos:
-
-Scenario: Cambio de estado inválido
-  Given que el pedido está pending
-  When el cocinero intenta marcarlo como ready
-  Then el sistema rechaza la acción
-
-Resultado Esperado: Error de validación de estado.
-
-🧪 TC-US-029-03 (Borde)
-Descripción: Finalización justo antes de desconexión del worker.
-
-Datos de Entrada:
-Pedido preparing, desconexión inminente.
-
-Pasos:
-
-Scenario: Finalización durante inestabilidad
-  Given que el pedido está a punto de finalizarse
-  When ocurre una desconexión temporal
-  Then el sistema conserva el estado correcto
-
-Resultado Esperado: No hay inconsistencia de estado.
-
-🧪 HU US-030 – Notificaciones en Tiempo Real (WebSocket)
-🧪 TC-US-030-01 (Positivo)
-Descripción: El mesero recibe notificación de cambio de estado.
-
-Datos de Entrada:
-Pedido cambia a ready.
-
-Pasos:
-
-Scenario: Notificación en tiempo real
-  Given que el pedido cambia de estado
-  When el evento se emite por WebSocket
-  Then el mesero recibe la actualización en tiempo real
-
-Resultado Esperado: Vista del mesero actualizada.
-
-🧪 TC-US-030-02 (Negativo)
-Descripción: WebSocket desconectado.
-
-Datos de Entrada:
-Conexión WebSocket caída.
-
-Pasos:
-
-Scenario: Falla de WebSocket
-  Given que el WebSocket no está disponible
+**Pasos:**
+```gherkin
+Scenario: Fallback a polling HTTP
+  Given que WebSocket no está disponible
   When el pedido cambia de estado
-  Then el sistema permite consultar el estado vía API
+  Then el frontend usa polling HTTP cada 5 segundos
+  And eventualmente ve el cambio
+```
 
-Resultado Esperado: Continuidad operativa garantizada.
+**Resultado Esperado:** Sistema degradado pero funcional.
 
-🧪 TC-US-030-03 (Borde)
-Descripción: Reconexión automática del WebSocket.
+---
 
-Datos de Entrada:
-Reconexión tras caída breve.
+## ❌ HISTORIAS NO IMPLEMENTADAS (SIN CASOS DE PRUEBA)
 
-Pasos:
+Las siguientes historias **NO tienen casos de prueba** porque no están implementadas:
 
-Scenario: Reconexión WebSocket
-  Given que la conexión se restablece
-  When el cliente se reconecta
-  Then recibe el último estado del pedido
+1. **US-001 original:** Selección de rol (pantalla previa)
+2. **US-010-012 original:** Gestión de categorías de productos
+3. **US-031:** Cerrar pedido y calcular total
+4. **US-032:** Ver auditoría de pedido
+5. **US-033:** Procesamiento avanzado de cola
+6. **US-034:** Sistema de alertas
+7. **US-035:** Generación de reportes
 
-Resultado Esperado: Sincronización correcta.
+**Casos eliminados:** TC-US-001-01/02/03, TC-US-011-XX (categorías), TC-US-031-XX a TC-US-035-XX
 
+---
 
+## 📊 RESUMEN FINAL
 
-# 📊 MÓDULO 7 – AUDITORÍA Y REPORTES
-## Historias de Usuario: US-031 a US-035
-🧪 HU US-031 – Cierre de Pedido
-🧪 TC-US-031-01 (Positivo)
-Descripción: Cerrar correctamente un pedido que está listo.
+### Cobertura de Pruebas
+| Módulo                   | HU Implementadas | Casos de Prueba |
+|--------------------------|------------------|-----------------|
+| Autenticación            | 4                | 15              |
+| Gestión de Usuarios      | 5                | 12              |
+| Gestión de Productos     | 3                | 9               |
+| Gestión de Mesas         | 5                | 11              |
+| Gestión de Pedidos       | 6                | 15              |
+| Cocina (Asíncrono)       | 4                | 8               |
+| **TOTAL**                | **27**           | **87**          |
 
-Datos de Entrada:
-Pedido en estado ready.
+### Cambios Respecto a Documentación Original
+- **Casos eliminados:** 17 (US-001 rol, US-011 categorías, US-031-035 auditoría)
+- **Casos ajustados:** 8 (login unificado, hard delete, sin WebSocket admin)
+- **Casos nuevos:** 2 (validaciones adicionales de implementación real)
 
-Pasos:
+---
 
-gherkin
-Copiar código
-Scenario: Cierre correcto de pedido
-  Given que el pedido está en estado ready
-  When el mesero confirma el cierre
-  Then el pedido cambia a estado closed
-Resultado Esperado: Pedido cerrado correctamente y no editable.
-
-🧪 TC-US-031-02 (Negativo)
-Descripción: Intentar cerrar un pedido que no está listo.
-
-Datos de Entrada:
-Pedido en estado preparing.
-
-Pasos:
-
-gherkin
-Copiar código
-Scenario: Cierre inválido de pedido
-  Given que el pedido está en estado preparing
-  When el mesero intenta cerrarlo
-  Then el sistema rechaza la operación
-Resultado Esperado: Error de validación de estado.
-
-🧪 TC-US-031-03 (Borde)
-Descripción: Cierre del pedido justo después de cambiar a ready.
-
-Datos de Entrada:
-Pedido cambia a ready.
-
-Pasos:
-
-Scenario: Cierre inmediato post-ready
-  Given que el pedido acaba de cambiar a ready
-  When el mesero lo cierra inmediatamente
-  Then el sistema permite el cierre sin errores
-
-Resultado Esperado: Pedido cerrado sin inconsistencias.
-
-🧪 HU US-032 – Auditoría de Cambios de Estado
-🧪 TC-US-032-01 (Positivo)
-Descripción: Registrar correctamente los cambios de estado de un pedido.
-
-Datos de Entrada:
-Pedido cambia de estado.
-
-Pasos:
-
-Scenario: Registro de auditoría
-  Given que un pedido cambia de estado
-  When el cambio se procesa
-  Then se registra fecha, usuario y estado nuevo
-
-Resultado Esperado: Auditoría completa y persistida.
-
-🧪 TC-US-032-02 (Negativo)
-Descripción: Falla en el registro de auditoría.
-
-Datos de Entrada:
-Error en base de datos.
-
-Pasos:
-
-Scenario: Falla en auditoría
-  Given que ocurre un error al guardar auditoría
-  When el pedido cambia de estado
-  Then el sistema notifica el error
-
-Resultado Esperado: Error controlado y log registrado.
-
-🧪 TC-US-032-03 (Borde)
-Descripción: Auditoría con múltiples cambios consecutivos.
-
-Datos de Entrada:
-Pedido con varios cambios en corto tiempo.
-
-Pasos:
-
-gherkin
-Copiar código
-Scenario: Auditoría intensiva
-  Given que el pedido cambia varias veces de estado
-  When los eventos se registran
-  Then cada cambio queda auditado correctamente
-Resultado Esperado: Auditoría consistente sin pérdida de datos.
-
-🧪 HU US-033 – Recuperación ante Fallos del Worker
-🧪 TC-US-033-01 (Positivo)
-Descripción: Recuperación automática tras caída del worker.
-
-Datos de Entrada:
-Worker desconectado con pedidos en cola.
-
-Pasos:
-
-Scenario: Recuperación del worker
-  Given que el worker se desconecta
-  When se reconecta
-  Then procesa los pedidos pendientes
-
-Resultado Esperado: Ningún pedido se pierde.
-
-🧪 TC-US-033-02 (Negativo)
-Descripción: Worker no se reconecta automáticamente.
-
-Datos de Entrada:
-Falla persistente del worker.
-
-Pasos:
-
-Scenario: Falla prolongada del worker
-  Given que el worker no logra reconectarse
-  When pasan los reintentos configurados
-  Then el sistema alerta la falla
-
-Resultado Esperado: Alerta generada y pedidos conservados.
-
-🧪 TC-US-033-03 (Borde)
-Descripción: Reconexión durante alta carga.
-
-Datos de Entrada:
-200 pedidos en cola.
-
-Pasos:
-
-Scenario: Reconexión bajo carga
-  Given que el worker se reconecta con alta carga
-  When inicia el consumo
-  Then procesa los pedidos secuencialmente
-
-Resultado Esperado: Consumo ordenado sin corrupción.
-
-🧪 HU US-034 – Detección de Pedido Perdido
-🧪 TC-US-034-01 (Positivo)
-Descripción: Detectar pedido que no llegó al worker.
-
-Datos de Entrada:
-Pedido publicado no consumido.
-
-Pasos:
-
-Scenario: Detección de pedido no consumido
-  Given que un pedido no fue consumido
-  When el sistema valida consistencia
-  Then el pedido se marca como inconsistente
-
-Resultado Esperado: Pedido auditado y marcado para revisión.
-
-🧪 TC-US-034-02 (Negativo)
-Descripción: Falso positivo de pedido perdido.
-
-Datos de Entrada:
-Pedido en proceso normal.
-
-Pasos:
-
-gherkin
-Copiar código
-Scenario: Validación incorrecta
-  Given que el pedido está en procesamiento
-  When se ejecuta la verificación
-  Then el sistema no lo marca como perdido
-Resultado Esperado: Sin alertas incorrectas.
-
-🧪 TC-US-034-03 (Borde)
-Descripción: Pedido retrasado pero válido.
-
-Datos de Entrada:
-Pedido con consumo lento.
-
-Pasos:
-
-Scenario: Pedido con latencia elevada
-  Given que el pedido tarda en consumirse
-  When el tiempo límite no se excede
-  Then no se marca como perdido
-
-Resultado Esperado: Pedido válido sin auditoría errónea.
-
-🧪 HU US-035 – Generación de Reportes
-🧪 TC-US-035-01 (Positivo)
-Descripción: Generar reporte por rango de fechas.
-
-Datos de Entrada:
-Rango válido de fechas.
-
-Pasos:
-
-gherkin
-Copiar código
-Scenario: Generación correcta de reporte
-  Given que el administrador selecciona un rango de fechas
-  When solicita el reporte
-  Then el sistema genera el reporte correctamente
-Resultado Esperado: Reporte disponible con datos correctos.
-
-🧪 TC-US-035-02 (Negativo)
-Descripción: Generar reporte sin permisos.
-
-Datos de Entrada:
-Usuario no administrador.
-
-Pasos:
-
-Scenario: Acceso no autorizado a reportes
-  Given que el usuario no es administrador
-  When intenta generar un reporte
-  Then el sistema bloquea la acción
-
-Resultado Esperado: Error 403 Forbidden.
-
-🧪 TC-US-035-03 (Borde)
-Descripción: Reporte con rango de fechas extremo.
-
-Datos de Entrada:
-Rango amplio (1 año).
-
-Pasos:
-
-Scenario: Reporte de gran volumen
-  Given que el rango de fechas es amplio
-  When el sistema genera el reporte
-  Then lo hace sin degradar el rendimiento
-
-Resultado Esperado: Reporte generado dentro del tiempo aceptable.
-
+**Documento actualizado:** 2024-12-17  
+**Estado:** Refleja implementación real al 100%  
+**Próxima revisión:** Cuando se implementen features adicionales

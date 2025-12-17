@@ -13,12 +13,18 @@ export class OrdersController {
 
   createOrder = async (req: Request, res: Response, next: NextFunction): Promise<void> => {
     try {
+      console.log('📥 Received order request:', JSON.stringify(req.body));
+      console.log('🔄 Forwarding to Python MS at /api/v1/orders/');
+      
       const response = await this.proxyService.forward('/api/v1/orders/', 'POST', req.body, req.headers as Record<string, string>);
+      
+      console.log('✅ Response from Python MS:', response.status, response.statusText);
       
       res.status(HTTP_STATUS.CREATED).json(
         formatSuccessResponse(response.data, 'Order created successfully')
       );
     } catch (error: any) {
+      console.log('❌ Error creating order:', error.message, error.code);
       next(error);
     }
   };

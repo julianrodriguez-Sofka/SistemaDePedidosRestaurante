@@ -25,17 +25,34 @@ class OrderService:
             status="pendiente"
         )
         self.repository.add(order_msg)
-        publish_order(order_msg)
         
-        # Actualizar estado de mesa a "occupied"
-        try:
-            print(f"🔄 Actualizando mesa {order_in.table} a estado 'occupied'...")
-            await update_table_status(order_in.table, 'occupied', order_msg.id)
-            print(f"✅ Mesa {order_in.table} actualizada a 'occupied'")
-        except Exception as e:
-            print(f"❌ Error actualizando mesa {order_in.table}: {str(e)}")
+        # Publicar a RabbitMQ en background para no bloquear la respuesta
+        asyncio.create_task(self._publish_order_in_background(order_msg))
+        
+        # Actualizar mesa en background
+        asyncio.create_task(self._update_table_in_background(order_in.table, order_msg.id))
         
         return order_msg
+    
+    async def _publish_order_in_background(self, order_msg: OrderMessage):
+        """Publica el pedido a RabbitMQ en background sin bloquear la respuesta"""
+        try:
+            print(f"📤 Publicando pedido {order_msg.id} a RabbitMQ...")
+            # Ejecutar la función bloqueante en un thread pool
+            loop = asyncio.get_event_loop()
+            await loop.run_in_executor(None, publish_order, order_msg)
+            print(f"✅ Pedido {order_msg.id} publicado a RabbitMQ")
+        except Exception as e:
+            print(f"❌ Error publicando pedido {order_msg.id} a RabbitMQ: {str(e)}")
+    
+    async def _update_table_in_background(self, table: str, order_id: str):
+        """Actualiza el estado de la mesa en background sin bloquear la respuesta"""
+        try:
+            print(f"🔄 Actualizando mesa {table} a estado 'occupied'...")
+            await update_table_status(table, 'occupied', order_id)
+            print(f"✅ Mesa {table} actualizada a 'occupied'")
+        except Exception as e:
+            print(f"❌ Error actualizando mesa {table}: {str(e)}")
 
     def get_order(self, order_id: str) -> Optional[OrderMessage]:
         return self.repository.get(order_id)
@@ -83,12 +100,16 @@ class OrderService:
         # Publicar el pedido cancelado a RabbitMQ para notificar a cocina
         publish_order(cancelled_order)
         
-        # Actualizar mesa a disponible si el pedido fue cancelado
-        try:
-            print(f"🔄 Liberando mesa {order.table} por cancelación de pedido...")
-            await update_table_status(order.table, 'available', None)
-            print(f"✅ Mesa {order.table} liberada")
-        except Exception as e:
-            print(f"⚠️ Error liberando mesa {order.table}: {str(e)}")
+        # Liberar mesa en background (no bloquea la respuesta)
+        asyncio.create_task(self._release_table_in_background(order.table))
         
         return cancelled_order
+    
+    async def _release_table_in_background(self, table: str):
+        """Libera la mesa en background sin bloquear la respuesta"""
+        try:
+            print(f"🔄 Liberando mesa {table} por cancelación de pedido...")
+            await update_table_status(table, 'available', None)
+            print(f"✅ Mesa {table} liberada")
+        except Exception as e:
+            print(f"⚠️ Error liberando mesa {table}: {str(e)}")
