@@ -2,7 +2,7 @@ import { useState } from 'react';
 import type { FormEvent } from 'react';
 import axios from 'axios';
 
-const API_URL = 'http://localhost:4001/api';
+const API_URL = import.meta.env.VITE_ADMIN_API_URL || 'http://localhost:4001/api';
 
 export function LoginPage() {
   const [username, setUsername] = useState('');
