@@ -124,3 +124,23 @@ export async function updateOrderStatus(
 
   return data;
 }
+
+/**
+ * Cancel an order (waiter can cancel pending/preparing orders)
+ */
+export async function cancelOrder(orderId: string): Promise<ApiResponse<ApiOrder>> {
+  const response = await fetch(API_ENDPOINTS.DELETE_ORDER(orderId), {
+    method: 'DELETE',
+    headers: {
+      'Content-Type': 'application/json',
+    },
+  });
+
+  const data = await response.json();
+
+  if (!response.ok) {
+    throw new Error(data.error?.message || data.detail || 'Error al cancelar pedido');
+  }
+
+  return data;
+}

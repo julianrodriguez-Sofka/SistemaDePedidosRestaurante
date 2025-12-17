@@ -3,7 +3,7 @@ import { getKitchenOrders } from '../services/orderService';
 import type { ApiOrder } from '../types/order';
 import { useWebSocket } from './useWebSocket';
 
-export type ActiveOrderStatus = 'pending' | 'preparing' | 'ready' | 'completed';
+export type ActiveOrderStatus = 'pending' | 'preparing' | 'ready' | 'completed' | 'cancelled';
 
 export interface ActiveOrder {
   id: string;
@@ -31,6 +31,8 @@ const mapApiStatus = (status?: string): ActiveOrderStatus => {
       return 'ready';
     case 'completed':
       return 'completed';
+    case 'cancelled':
+      return 'cancelled';
     default:
       return 'pending';
   }
@@ -91,12 +93,13 @@ export const useActiveOrders = () => {
         const active = orders
           .map(mapApiOrderToActiveOrder)
           .sort((a, b) => {
-            // Sort by status priority: ready -> preparing -> pending
+            // Sort by status priority: ready -> preparing -> pending -> cancelled -> completed
             const statusPriority: Record<ActiveOrderStatus, number> = {
               ready: 0,
               preparing: 1,
               pending: 2,
-                completed: 3
+              cancelled: 3,
+              completed: 4
             };
             const priorityDiff = statusPriority[a.status] - statusPriority[b.status];
             if (priorityDiff !== 0) return priorityDiff;

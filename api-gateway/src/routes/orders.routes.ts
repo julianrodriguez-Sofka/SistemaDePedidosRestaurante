@@ -10,5 +10,6 @@ const controller = new OrdersController(proxyService);
 router.post('/', controller.createOrder);
 router.get('/:id', controller.getOrder);
 router.put('/:id', controller.updateOrder);
+router.delete('/:id', controller.deleteOrder);
 
 export default router;

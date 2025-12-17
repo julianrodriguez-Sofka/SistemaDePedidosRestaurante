@@ -31,3 +31,13 @@ def update_order_endpoint(order_id: str, order_in: OrderIn):
         raise HTTPException(status_code=404, detail="Order not found")
     except PermissionError:
         raise HTTPException(status_code=409, detail="No se puede editar una orden en preparación")
+
+@router.delete("/{order_id}")
+async def cancel_order_endpoint(order_id: str):
+    try:
+        result = await order_service.cancel_order(order_id)
+        return {"success": True, "message": "Pedido cancelado exitosamente", "order": result}
+    except ValueError:
+        raise HTTPException(status_code=404, detail="Order not found")
+    except PermissionError as e:
+        raise HTTPException(status_code=409, detail=str(e))

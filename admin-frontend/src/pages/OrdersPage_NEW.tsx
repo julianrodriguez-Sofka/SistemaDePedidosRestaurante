@@ -44,7 +44,7 @@ export function OrdersPage() {
       if (orders.length === 0) setLoading(true);
       setError(null);
       
-      const token = localStorage.getItem('adminToken');
+      const token = sessionStorage.getItem('adminToken');
       if (!token) {
         setError('No authentication token found');
         return;

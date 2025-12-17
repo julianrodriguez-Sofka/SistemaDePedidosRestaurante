@@ -10,5 +10,6 @@ const controller = new KitchenController(proxyService);
 router.get('/orders', controller.getOrders);
 router.put('/orders/:id', controller.updateOrder);
 router.patch('/orders/:id', controller.updateOrderStatus);
+router.delete('/orders/:id', controller.deleteOrder);
 
 export default router;

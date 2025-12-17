@@ -14,7 +14,7 @@ export function KitchenHeader({ currentDate = new Date().toLocaleDateString('en-
   const [chefName, setChefName] = useState<string>('');
 
   useEffect(() => {
-    const userStr = localStorage.getItem('user') || localStorage.getItem('adminUser');
+    const userStr = sessionStorage.getItem('user') || sessionStorage.getItem('adminUser');
     if (userStr) {
       try {
         const user = JSON.parse(userStr);

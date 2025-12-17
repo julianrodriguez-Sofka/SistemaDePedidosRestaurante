@@ -21,7 +21,7 @@ export function DashboardPage() {
 
   const loadStats = async () => {
     try {
-      const token = localStorage.getItem('adminToken');
+      const token = sessionStorage.getItem('adminToken');
       console.log('[Dashboard] Token:', token ? 'Present' : 'Missing');
       if (!token) {
         console.error('[Dashboard] No token found');

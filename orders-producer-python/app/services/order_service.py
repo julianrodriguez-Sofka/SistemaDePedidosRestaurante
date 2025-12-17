@@ -58,3 +58,37 @@ class OrderService:
         # Republish the updated order to notify kitchen
         publish_order(updated_order)
         return updated_order
+
+    async def cancel_order(self, order_id: str) -> OrderMessage:
+        """Cancela un pedido y notifica a cocina"""
+        order = self.repository.get(order_id)
+        if not order:
+            raise ValueError("Order not found")
+        
+        # Solo permitir cancelar si no está completado
+        if order.status == "completado":
+            raise PermissionError("No se puede cancelar un pedido ya completado")
+        
+        # Actualizar status a 'cancelled'
+        cancelled_order = OrderMessage(
+            id=order.id,
+            customerName=order.customerName,
+            table=order.table,
+            items=order.items,
+            createdAt=order.createdAt,
+            status="cancelled"
+        )
+        self.repository.update(order_id, cancelled_order)
+        
+        # Publicar el pedido cancelado a RabbitMQ para notificar a cocina
+        publish_order(cancelled_order)
+        
+        # Actualizar mesa a disponible si el pedido fue cancelado
+        try:
+            print(f"🔄 Liberando mesa {order.table} por cancelación de pedido...")
+            await update_table_status(order.table, 'available', None)
+            print(f"✅ Mesa {order.table} liberada")
+        except Exception as e:
+            print(f"⚠️ Error liberando mesa {order.table}: {str(e)}")
+        
+        return cancelled_order

@@ -8,7 +8,8 @@
     "build": "tsc",
     "start": "node dist/server.js",
     "test": "jest",
-    "seed": "ts-node src/scripts/seed.ts"
+    "seed": "ts-node src/scripts/seed.ts",
+    "seed:docker": "ts-node src/scripts/seed-docker.ts"
   },
   "dependencies": {
     "express": "^4.18.2",

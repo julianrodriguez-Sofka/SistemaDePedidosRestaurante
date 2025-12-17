@@ -5,11 +5,11 @@ export function LogoutButton() {
   const navigate = useNavigate();
 
   const handleLogout = () => {
-    // Limpiar todos los tokens y datos de usuario
-    localStorage.removeItem('authToken');
-    localStorage.removeItem('adminToken');
-    localStorage.removeItem('user');
-    localStorage.removeItem('adminUser');
+    // Limpiar todos los tokens y datos de usuario del sessionStorage
+    sessionStorage.removeItem('authToken');
+    sessionStorage.removeItem('adminToken');
+    sessionStorage.removeItem('user');
+    sessionStorage.removeItem('adminUser');
     
     // Redirigir a la página de selección de rol
     navigate('/');

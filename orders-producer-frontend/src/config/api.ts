@@ -11,4 +11,5 @@ export const API_ENDPOINTS = {
   KITCHEN_ORDERS: `${API_BASE_URL}/api/kitchen/orders`,
   UPDATE_ORDER: (id: string) => `${API_BASE_URL}/api/kitchen/orders/${id}`,
   UPDATE_ORDER_STATUS: (id: string) => `${API_BASE_URL}/api/kitchen/orders/${id}`,
+  DELETE_ORDER: (id: string) => `${API_BASE_URL}/api/kitchen/orders/${id}`, // Usar Node MS porque tiene MongoDB
 } as const;

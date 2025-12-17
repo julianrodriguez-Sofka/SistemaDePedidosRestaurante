@@ -28,9 +28,9 @@ export function ChefLoginPage() {
         return;
       }
 
-      // Guardar token y usuario en localStorage
-      localStorage.setItem('authToken', token);
-      localStorage.setItem('user', JSON.stringify(user));
+      // Guardar token y usuario en sessionStorage (independiente por pestaña)
+      sessionStorage.setItem('authToken', token);
+      sessionStorage.setItem('user', JSON.stringify(user));
 
       // Redirigir a la cocina
       navigate('/cocina');

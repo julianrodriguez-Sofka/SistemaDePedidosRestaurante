@@ -48,4 +48,17 @@ export class OrdersController {
       next(error);
     }
   };
+
+  deleteOrder = async (req: Request, res: Response, next: NextFunction): Promise<void> => {
+    try {
+      const { id } = req.params;
+      const response = await this.proxyService.forward(`/api/v1/orders/${id}`, 'DELETE', undefined, req.headers as Record<string, string>);
+      
+      res.status(HTTP_STATUS.OK).json(
+        formatSuccessResponse(response.data, 'Order cancelled successfully')
+      );
+    } catch (error: any) {
+      next(error);
+    }
+  };
 }

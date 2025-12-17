@@ -13,7 +13,7 @@ const api = axios.create({
 // Interceptor para agregar el token en cada petición
 api.interceptors.request.use(
   (config) => {
-    const token = localStorage.getItem('adminToken');
+    const token = sessionStorage.getItem('adminToken');
     console.log('[API] Making request to:', config.url);
     console.log('[API] Token present:', !!token);
     console.log('[API] Token value:', token ? token.substring(0, 50) + '...' : 'NO TOKEN');
@@ -21,7 +21,7 @@ api.interceptors.request.use(
       config.headers.Authorization = `Bearer ${token}`;
       console.log('[API] Authorization header set');
     } else {
-      console.warn('[API] NO TOKEN FOUND IN LOCALSTORAGE');
+      console.warn('[API] NO TOKEN FOUND IN SESSIONSTORAGE');
     }
     return config;
   },
@@ -42,12 +42,12 @@ api.interceptors.response.use(
     console.error('[API] Error details:', error.response?.data);
     if (error.response?.status === 401) {
       console.warn('[API] 401 Unauthorized - Clearing token and redirecting');
-      localStorage.removeItem('adminToken');
-      localStorage.removeItem('adminUser');
+      sessionStorage.removeItem('adminToken');
+      sessionStorage.removeItem('adminUser');
       window.location.href = '/';
     } else if (error.response?.status === 403) {
       console.error('[API] 403 Forbidden - Check user permissions');
-      console.error('[API] Current token:', localStorage.getItem('adminToken')?.substring(0, 50));
+      console.error('[API] Current token:', sessionStorage.getItem('adminToken')?.substring(0, 50));
     }
     return Promise.reject(error);
   }

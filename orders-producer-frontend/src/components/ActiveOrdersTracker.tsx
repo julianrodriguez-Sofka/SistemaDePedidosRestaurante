@@ -1,9 +1,9 @@
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
-import { Clock, Pencil, Eye } from 'lucide-react';
+import { Clock, Pencil, Eye, X } from 'lucide-react';
 import type { ActiveOrder } from '../hooks/useActiveOrders';
 
-type OrderStatusFilter = 'all' | 'pending' | 'preparing' | 'ready' | 'completed';
+type OrderStatusFilter = 'all' | 'pending' | 'preparing' | 'ready' | 'completed' | 'cancelled';
 
 const ORDER_STATUS_FILTERS: { value: OrderStatusFilter; label: string }[] = [
   { value: 'all', label: 'All' },
@@ -11,14 +11,16 @@ const ORDER_STATUS_FILTERS: { value: OrderStatusFilter; label: string }[] = [
   { value: 'preparing', label: 'Preparing' },
   { value: 'ready', label: 'Ready' },
   { value: 'completed', label: 'Completed' },
+  { value: 'cancelled', label: 'Cancelled' },
 ];
 
-const STATUS_CONFIG = {
+const STATUS_CONFIG: Record<string, { color: string; text: string }> = {
   ready: { color: 'bg-green-500 hover:bg-green-600', text: 'Ready' },
   preparing: { color: 'bg-blue-500 hover:bg-blue-600', text: 'Preparing' },
   pending: { color: 'bg-orange-500 hover:bg-orange-600', text: 'Pending' },
   completed: { color: 'bg-gray-500 hover:bg-gray-600', text: 'Completed' },
-} as const;
+  cancelled: { color: 'bg-red-500 hover:bg-red-600', text: 'Cancelled' },
+};
 
 interface ActiveOrdersTrackerProps {
   activeOrders: ActiveOrder[];
@@ -27,6 +29,7 @@ interface ActiveOrdersTrackerProps {
   onOrderStatusChange: (status: OrderStatusFilter) => void;
   onEditOrder: (order: ActiveOrder) => void;
   onViewOrder: (order: ActiveOrder) => void;
+  onCancelOrder: (order: ActiveOrder) => void;
 }
 
 export function ActiveOrdersTracker({
@@ -36,6 +39,7 @@ export function ActiveOrdersTracker({
   onOrderStatusChange,
   onEditOrder,
   onViewOrder,
+  onCancelOrder,
 }: ActiveOrdersTrackerProps) {
   return (
     <div className="bg-white border-b px-6 py-3 pt-9">
@@ -68,7 +72,8 @@ export function ActiveOrdersTracker({
           activeOrders
             .filter(order => orderStatus === 'all' || order.status === orderStatus)
             .map((order) => {
-              const { color, text } = STATUS_CONFIG[order.status];
+              const statusConfig = STATUS_CONFIG[order.status] || STATUS_CONFIG.pending;
+              const { color, text } = statusConfig;
               const isEditable = order.status === 'pending';
               return (
                 <div 
@@ -95,27 +100,40 @@ export function ActiveOrdersTracker({
                       <span className="font-medium">{order.itemCount}</span>
                       <span className="text-gray-400">items</span>
                     </div>
-                    {isEditable ? (
-                      <Button
-                        variant="ghost"
-                        size="sm"
-                        onClick={() => onEditOrder(order)}
-                        className="h-7 w-7 p-0 cursor-pointer"
-                        title="Edit order"
-                      >
-                        <Pencil className="h-3.5 w-3.5" />
-                      </Button>
-                    ) : (
-                      <Button
-                        variant="ghost"
-                        size="sm"
-                        onClick={() => onViewOrder(order)}
-                        className="h-7 w-7 p-0 cursor-pointer"
-                        title="View order details"
-                      >
-                        <Eye className="h-3.5 w-3.5" />
-                      </Button>
-                    )}
+                    <div className="flex items-center gap-1">
+                      {isEditable ? (
+                        <Button
+                          variant="ghost"
+                          size="sm"
+                          onClick={() => onEditOrder(order)}
+                          className="h-7 w-7 p-0 cursor-pointer"
+                          title="Edit order"
+                        >
+                          <Pencil className="h-3.5 w-3.5" />
+                        </Button>
+                      ) : (
+                        <Button
+                          variant="ghost"
+                          size="sm"
+                          onClick={() => onViewOrder(order)}
+                          className="h-7 w-7 p-0 cursor-pointer"
+                          title="View order details"
+                        >
+                          <Eye className="h-3.5 w-3.5" />
+                        </Button>
+                      )}
+                      {(order.status === 'pending' || order.status === 'preparing') && (
+                        <Button
+                          variant="ghost"
+                          size="sm"
+                          onClick={() => onCancelOrder(order)}
+                          className="h-7 w-7 p-0 cursor-pointer text-red-500 hover:text-red-700 hover:bg-red-50"
+                          title="Cancel order"
+                        >
+                          <X className="h-3.5 w-3.5" />
+                        </Button>
+                      )}
+                    </div>
                   </div>
                 </div>
               );

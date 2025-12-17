@@ -45,7 +45,7 @@ export function OrdersPage() {
       if (orders.length === 0) setLoading(true);
       setError(null);
       
-      const token = localStorage.getItem('adminToken');
+      const token = sessionStorage.getItem('adminToken');
       if (!token) {
         setError('No authentication token found');
         return;
@@ -162,7 +162,7 @@ export function OrdersPage() {
         </div>
 
         {/* Stats Cards */}
-        <div className="grid grid-cols-4 gap-4">
+        <div className="grid grid-cols-5 gap-4">
           <Card>
             <div className="text-center">
               <p className="text-sm text-gray-600">Pending</p>
@@ -192,6 +192,14 @@ export function OrdersPage() {
               <p className="text-sm text-gray-600">Completed</p>
               <p className="text-2xl font-bold text-gray-600">
                 {orders.filter((o) => o.status === 'completed').length}
+              </p>
+            </div>
+          </Card>
+          <Card>
+            <div className="text-center">
+              <p className="text-sm text-gray-600">Cancelled</p>
+              <p className="text-2xl font-bold text-red-600">
+                {orders.filter((o) => o.status === 'cancelled').length}
               </p>
             </div>
           </Card>

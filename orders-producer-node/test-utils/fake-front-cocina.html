@@ -4,16 +4,27 @@
     <meta charset="UTF-8" />
     <title>Cocina - Pedido en Curso</title>
     <style>
-        table { border-collapse: collapse; width: 80%; margin: 20px auto; }
+        body { font-family: Arial, sans-serif; }
+        table { border-collapse: collapse; width: 90%; margin: 20px auto; }
         th, td { border: 1px solid #ccc; padding: 8px; text-align: center; }
         th { background-color: #f2f2f2; }
+        .pending { background-color: #e3f2fd; }    /* azul claro */
         .preparing { background-color: #fff3cd; }  /* amarillo */
         .ready { background-color: #d4edda; }      /* verde */
+        .completed { background-color: #d1ecf1; }  /* azul */
+        .cancelled { background-color: #f8d7da; }  /* rojo */
         .waiting { text-align: center; font-style: italic; }
+        button { padding: 5px 10px; margin: 2px; cursor: pointer; font-size: 12px; border: none; border-radius: 3px; }
+        .btn-preparing { background-color: #ffc107; color: black; }
+        .btn-ready { background-color: #28a745; color: white; }
+        .btn-completed { background-color: #17a2b8; color: white; }
+        .btn-cancel { background-color: #dc3545; color: white; }
+        button:hover { opacity: 0.8; }
+        button:disabled { opacity: 0.5; cursor: not-allowed; }
     </style>
 </head>
 <body>
-    <h1 style="text-align:center;">Cocina - Pedido en Curso 🍽️</h1>
+    <h1 style="text-align:center;">Cocina - Gestión de Pedidos 🍽️</h1>
     <p style="text-align:center;">Estado de conexión: <span id="status">Desconectado</span></p>
 
     <table id="ordersTable">
@@ -24,11 +35,12 @@
                 <th>Cliente</th>
                 <th>Productos</th>
                 <th>Estado</th>
+                <th>Acciones</th>
             </tr>
         </thead>
         <tbody id="ordersBody">
             <tr class="waiting">
-                <td colspan="5">🕒 Esperando nuevos pedidos...</td>
+                <td colspan="6">🕒 Esperando nuevos pedidos...</td>
             </tr>
         </tbody>
     </table>
@@ -36,39 +48,43 @@
     <script>
         const statusEl = document.getElementById("status");
         const ordersBody = document.getElementById("ordersBody");
-        let currentOrder = null;
+        let orders = [];
 
         const ws = new WebSocket("ws://localhost:4000");
 
         ws.onopen = () => {
-            statusEl.textContent = "Conectado";
+            statusEl.textContent = "Conectado ✅";
             console.log("✅ Conectado al WebSocket de cocina");
         };
 
         ws.onmessage = (event) => {
             const msg = JSON.parse(event.data);
-            console.log("Mensaje recibido:", msg);
+            console.log("📨 Mensaje recibido:", msg);
 
             if (msg.type === "ORDER_NEW" && msg.order) {
-                currentOrder = msg.order;
+                orders.push(msg.order);
                 updateTable();
             }
 
-            if (msg.type === "ORDER_READY" && msg.id) {
-                if (currentOrder && currentOrder.id === msg.id) {
-                    currentOrder.status = "ready";
+            if (msg.type === "ORDER_STATUS_CHANGED" && msg.order) {
+                const idx = orders.findIndex(o => o.id === msg.order.id);
+                if (idx !== -1) {
+                    orders[idx] = msg.order;
                     updateTable();
                 }
             }
 
-            if (msg.type === "QUEUE_EMPTY") {
-                currentOrder = null;
-                ordersBody.innerHTML = '<tr class="waiting"><td colspan="5">🕒 Esperando nuevos pedidos...</td></tr>';
+            if (msg.type === "ORDER_UPDATED" && msg.order) {
+                const idx = orders.findIndex(o => o.id === msg.order.id);
+                if (idx !== -1) {
+                    orders[idx] = msg.order;
+                    updateTable();
+                }
             }
         };
 
         ws.onclose = () => {
-            statusEl.textContent = "Desconectado";
+            statusEl.textContent = "Desconectado ❌";
             console.log("WebSocket cerrado");
         };
 
@@ -76,35 +92,89 @@
             console.error("Error en WebSocket:", err);
         };
 
+        function getStatusLabel(status) {
+            const labels = {
+                'pending': '⏳ Pendiente',
+                'preparing': '👨‍🍳 Preparando',
+                'ready': '✅ Listo',
+                'completed': '🎉 Completado',
+                'cancelled': '❌ Cancelado'
+            };
+            return labels[status] || status;
+        }
+
+        async function changeStatus(orderId, newStatus) {
+            try {
+                const response = await fetch(`http://localhost:3002/kitchen/orders/${orderId}`, {
+                    method: 'PATCH',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ status: newStatus })
+                });
+
+                const result = await response.json();
+                
+                if (response.ok) {
+                    console.log(`✅ Estado cambiado a ${newStatus} para orden ${orderId}`);
+                } else {
+                    console.error("❌ Error:", result);
+                    alert(`Error: ${result.error || 'No se pudo cambiar el estado'}`);
+                }
+            } catch (error) {
+                console.error("❌ Error al cambiar estado:", error);
+                alert("Error al cambiar el estado");
+            }
+        }
+
         function updateTable() {
-            if (!currentOrder) {
-                ordersBody.innerHTML = '<tr class="waiting"><td colspan="5">🕒 Esperando nuevos pedidos...</td></tr>';
+            if (orders.length === 0) {
+                ordersBody.innerHTML = '<tr class="waiting"><td colspan="6">🕒 Esperando nuevos pedidos...</td></tr>';
                 return;
             }
 
-            const items = currentOrder.items.map(i => `${i.productName} x${i.quantity}`).join(", ");
-            const rowClass = currentOrder.status === "ready" ? "ready" : "preparing";
+            ordersBody.innerHTML = orders.map(order => {
+                const items = order.items.map(i => `${i.productName} x${i.quantity}`).join(", ");
+                const rowClass = order.status;
 
-            ordersBody.innerHTML = `
-                <tr class="${rowClass}">
-                    <td>${currentOrder.id}</td>
-                    <td>${currentOrder.table}</td>
-                    <td>${currentOrder.customerName}</td>
-                    <td>${items}</td>
-                    <td>${currentOrder.status === "ready" ? "✅ Listo" : "👨‍🍳 Preparando"}</td>
-                </tr>
-            `;
+                // Determinar qué botones mostrar según el estado actual
+                let buttons = '';
+                if (order.status === 'pending') {
+                    buttons = `
+                        <button class="btn-preparing" onclick="changeStatus('${order.id}', 'preparing')">👨‍🍳 Preparar</button>
+                        <button class="btn-cancel" onclick="changeStatus('${order.id}', 'cancelled')">❌ Cancelar</button>
+                    `;
+                } else if (order.status === 'preparing') {
+                    buttons = `
+                        <button class="btn-ready" onclick="changeStatus('${order.id}', 'ready')">✅ Listo</button>
+                        <button class="btn-cancel" onclick="changeStatus('${order.id}', 'cancelled')">❌ Cancelar</button>
+                    `;
+                } else if (order.status === 'ready') {
+                    buttons = `
+                        <button class="btn-completed" onclick="changeStatus('${order.id}', 'completed')">🎉 Completar</button>
+                        <button class="btn-cancel" onclick="changeStatus('${order.id}', 'cancelled')">❌ Cancelar</button>
+                    `;
+                } else {
+                    buttons = '<span style="color: #888;">Sin acciones disponibles</span>';
+                }
+
+                return `
+                    <tr class="${rowClass}">
+                        <td>${order.id}</td>
+                        <td>${order.table}</td>
+                        <td>${order.customerName}</td>
+                        <td>${items}</td>
+                        <td>${getStatusLabel(order.status)}</td>
+                        <td>${buttons}</td>
+                    </tr>
+                `;
+            }).join('');
         }
 
         // Cargar pedidos iniciales desde HTTP API
         fetch("http://localhost:3002/kitchen/orders")
             .then(res => res.json())
-            .then(orders => {
-                if (orders && orders.length > 0) {
-                    currentOrder = orders[0];
-                    updateTable();
-                }
-            })
+            .then(loadedOrders => {
+                if (loadedOrders && loadedOrders.length > 0) {
+                    orders = loadedOrders;
             .catch(err => console.error("Error cargando pedidos:", err));
     </script>
 </body>

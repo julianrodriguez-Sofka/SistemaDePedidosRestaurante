@@ -8,7 +8,7 @@ import { useOrderManagement } from '../hooks/useOrderManagement';
 import { useOrderSubmission } from '../hooks/useOrderSubmission';
 import { useActiveOrders } from '../hooks/useActiveOrders';
 import type { ActiveOrder } from '../hooks/useActiveOrders';
-import { updateOrder } from '../services/orderService';
+import { updateOrder, cancelOrder } from '../services/orderService';
 import type { Product, OrderPayload } from '../types/order';
 import { useWebSocket } from '@/hooks/useWebSocket';
 import { LogoutButton } from '../components/LogoutButton';
@@ -17,7 +17,7 @@ import axios from 'axios';
 
 const ADMIN_API_URL = import.meta.env.VITE_ADMIN_API_URL || 'http://localhost:4001/api';
 
-type OrderStatusFilter = 'all' | 'pending' | 'preparing' | 'ready' | 'completed';
+type OrderStatusFilter = 'all' | 'pending' | 'preparing' | 'ready' | 'completed' | 'cancelled';
 
 export function WaiterPage() {
   const [products, setProducts] = useState<Product[]>([]);
@@ -35,7 +35,7 @@ export function WaiterPage() {
   const [userName, setUserName] = useState<string>('');
   
   useEffect(() => {
-    const userStr = localStorage.getItem('user') || localStorage.getItem('adminUser');
+    const userStr = sessionStorage.getItem('user') || sessionStorage.getItem('adminUser');
     if (userStr) {
       try {
         const user = JSON.parse(userStr);
@@ -58,7 +58,7 @@ export function WaiterPage() {
     const loadProducts = async () => {
       try {
         console.log('[Waiter] 📦 Loading products from API...');
-        const token = localStorage.getItem('authToken') || localStorage.getItem('adminToken');
+        const token = sessionStorage.getItem('authToken') || sessionStorage.getItem('adminToken');
         const response = await axios.get(`${ADMIN_API_URL}/products`, {
           headers: token ? { Authorization: `Bearer ${token}` } : {}
         });
@@ -88,7 +88,7 @@ export function WaiterPage() {
     const loadTables = async () => {
       try {
         console.log('[Waiter] 🪑 Loading tables from API...');
-        const token = localStorage.getItem('authToken') || localStorage.getItem('adminToken');
+        const token = sessionStorage.getItem('authToken') || sessionStorage.getItem('adminToken');
         const response = await axios.get(`${ADMIN_API_URL}/tables`, {
           headers: token ? { Authorization: `Bearer ${token}` } : {}
         });
@@ -193,6 +193,17 @@ useEffect(() => {
     if (lastMessage.type === 'ORDER_STATUS_CHANGED' && lastMessage.order) {
       console.log('🔄 Order status changed, updating local state...');
       
+      // Mapear el status del backend al tipo ActiveOrderStatus
+      const mapStatus = (status: string): 'pending' | 'preparing' | 'ready' | 'completed' | 'cancelled' => {
+        switch (status) {
+          case 'preparing': return 'preparing';
+          case 'ready': return 'ready';
+          case 'completed': return 'completed';
+          case 'cancelled': return 'cancelled';
+          default: return 'pending';
+        }
+      };
+      
       // Actualizar el estado local directamente sin hacer HTTP request
       setActiveOrders(prevOrders => 
         prevOrders.map(order => {
@@ -200,7 +211,7 @@ useEffect(() => {
             // Mantener la estructura de ActiveOrder
             return {
               ...order,
-              status: lastMessage.order.status,
+              status: mapStatus(lastMessage.order.status),
               // Actualizar otros campos si es necesario
               customerName: lastMessage.order.customerName,
               table: lastMessage.order.table,
@@ -300,6 +311,24 @@ useEffect(() => {
     }
   };
 
+  const handleCancelOrder = async (order: ActiveOrder) => {
+    if (!confirm(`¿Estás seguro de cancelar el pedido ${order.id} de la mesa ${order.table}?`)) {
+      return;
+    }
+
+    try {
+      console.log(`🚫 Cancelando pedido ${order.fullId}...`);
+      await cancelOrder(order.fullId);
+      console.log(`✅ Pedido cancelado exitosamente`);
+      
+      // Refetch orders to update the list
+      await refetchOrders();
+    } catch (error) {
+      console.error('❌ Error al cancelar pedido:', error);
+      alert(error instanceof Error ? error.message : 'Error al cancelar el pedido');
+    }
+  };
+
   return (
     <div className="flex h-screen bg-gray-50">
       {/* Main Content */}
@@ -312,6 +341,7 @@ useEffect(() => {
           onOrderStatusChange={setOrderStatus}
           onEditOrder={handleEditOrder}
           onViewOrder={handleViewOrder}
+          onCancelOrder={handleCancelOrder}
         />
 
         {/* Menu Section */}

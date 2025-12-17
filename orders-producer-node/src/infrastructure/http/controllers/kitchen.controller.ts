@@ -179,3 +179,59 @@ export async function updateOrder(req: Request, res: Response, next: NextFunctio
     return next(err);
   }
 }
+
+export async function deleteOrder(req: Request, res: Response, next: NextFunction) {
+  try {
+    if (!repo) {
+      return res.status(500).json({ error: "Repository no inicializado" });
+    }
+
+    const { id } = req.params;
+
+    // Validar ID
+    if (!id) {
+      return res.status(400).json({ error: "ID de orden requerido" });
+    }
+
+    // Get existing order
+    const existingOrder = await repo.getById(id);
+    if (!existingOrder) {
+      return res.status(404).json({ error: "Orden no encontrada" });
+    }
+
+    // No permitir cancelar pedidos ya completados
+    if (existingOrder.status === 'completed') {
+      return res.status(409).json({ error: "No se puede cancelar un pedido ya completado" });
+    }
+
+    // Actualizar status a cancelled
+    const success = await repo.updateStatus(id, 'cancelled');
+    
+    if (!success) {
+      return res.status(404).json({ error: "No se pudo actualizar el estado" });
+    }
+
+    // Obtener el pedido actualizado
+    const cancelledOrder = await repo.getById(id);
+
+    if (cancelledOrder) {
+      console.log(`📢 Enviando notificación WebSocket para orden cancelada ${id}...`);
+      notifyClients({ 
+        type: "ORDER_STATUS_CHANGED", 
+        order: cancelledOrder 
+      });
+      console.log(`✅ Notificación enviada: Orden ${id} cancelada`);
+    }
+
+    return res.json({ 
+      success: true, 
+      id, 
+      status: 'cancelled',
+      message: "Pedido cancelado exitosamente",
+      order: cancelledOrder
+    });
+  } catch (err) {
+    console.error("❌ Error en deleteOrder:", err);
+    return next(err);
+  }
+}

@@ -30,9 +30,9 @@ export function LoginPage() {
         return;
       }
 
-      // Guardar en localStorage
-      localStorage.setItem('adminToken', token);
-      localStorage.setItem('adminUser', JSON.stringify(user));
+      // Guardar en sessionStorage (independiente por pestaña)
+      sessionStorage.setItem('adminToken', token);
+      sessionStorage.setItem('adminUser', JSON.stringify(user));
 
       // Redirigir al dashboard
       window.location.href = '/admin/dashboard';
