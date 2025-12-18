@@ -1,16 +1,15 @@
 # 📋 HISTORIAS DE USUARIO ACTUALIZADAS - SISTEMA DE PEDIDOS DE RESTAURANTE
-## Ajustado a la Implementación Real (25 HU Implementadas)
+## 25 HU 
 
 **Fecha de actualización:** 2024-12-17  
-**Estado:** Refleja la implementación real del sistema  
-**HU Totales Implementadas:** 25 de 25 documentadas
+**HU Totales :** 25 
 
 ---
 
 ## 🔐 FASE 1: AUTENTICACIÓN Y CONTROL DE ACCESO (Historias 1-4)
 
 ### Historia de Usuario 01: Login Unificado de Usuario
-**Identificador único (ID):** US-001 (Actualizada)
+**Identificador único (ID):** US-001 
 
 **Descripción:**  
 Como usuario del sistema (mesero, cocinero o administrador),  
@@ -39,15 +38,9 @@ Dado que me he autenticado exitosamente,
 Cuando el sistema valida mi JWT,  
 Entonces tengo acceso solo a las funcionalidades permitidas por mi rol (RBAC).
 
-**Cambios respecto a documentación original:**
-- ❌ **Eliminado:** US-001 original "Seleccionar Rol" - No existe pantalla de selección previa
-- ✅ **Implementado:** Login único con discriminación automática por rol
-- ✅ **Endpoint real:** POST `/api/auth/login` (no rutas específicas `/waiter/login`, `/chef/login`)
-
----
 
 ### Historia de Usuario 02: Login de Mesero
-**Identificador único (ID):** US-002 (Ajustada)
+**Identificador único (ID):** US-002 
 
 **Descripción:**  
 Como mesero del restaurante,  
@@ -71,14 +64,9 @@ Dado que me he autenticado exitosamente,
 Cuando navego por la aplicación,  
 Entonces todos los pedidos que creo quedan registrados con mi identificador de usuario.
 
-**Cambios respecto a documentación original:**
-- ✅ **Implementado correctamente**
-- ⚠️ **Ajuste:** No hay ruta `/waiter/login` específica, usa `/api/auth/login` genérico
-
----
 
 ### Historia de Usuario 03: Login de Cocinero
-**Identificador único (ID):** US-003 (Ajustada)
+**Identificador único (ID):** US-003
 
 **Descripción:**  
 Como cocinero del restaurante,  
@@ -97,14 +85,9 @@ Dado que mi token JWT contiene el rol `chef`,
 Cuando accedo al sistema,  
 Entonces solo veo los pedidos en estado "pendiente" y "preparando", y no tengo acceso a funciones de creación de pedidos o administración.
 
-**Cambios respecto a documentación original:**
-- ✅ **Implementado correctamente**
-- ⚠️ **Ajuste:** Login vía endpoint genérico `/api/auth/login`
-
----
 
 ### Historia de Usuario 04: Login de Administrador
-**Identificador único (ID):** US-004 (Ajustada)
+**Identificador único (ID):** US-004
 
 **Descripción:**  
 Como administrador del restaurante,  
@@ -128,17 +111,11 @@ Dado que intento realizar acciones administrativas,
 Cuando el sistema valida mi token,  
 Entonces valida que tengo el rol `admin` antes de permitir la operación.
 
-**Cambios respecto a documentación original:**
-- ✅ **Implementado correctamente**
-- ⚠️ **Ajuste:** Login vía endpoint genérico `/api/auth/login`
-- ❌ **No implementado:** Logs de auditoría automáticos para acciones críticas
-
----
 
 ## 👥 FASE 2: GESTIÓN DE USUARIOS (Historias 5-9)
 
 ### Historia de Usuario 05: Crear Usuario
-**Identificador único (ID):** US-005 (Antes US-006)
+**Identificador único (ID):** US-005 
 
 **Descripción:**  
 Como administrador del restaurante,  
@@ -162,17 +139,9 @@ Dado que creo un usuario exitosamente,
 Cuando el proceso finaliza,  
 Entonces el nuevo usuario puede autenticarse inmediatamente.
 
-**Cambios respecto a documentación original:**
-- ✅ **Implementado correctamente**
-- ⚠️ **Ajuste de campos:** 
-  - Usa `email` en lugar de `fullName`
-  - Usa `roles[]` (array) en lugar de `role` (singular)
-  - Password se hashea con bcrypt automáticamente
-
----
 
 ### Historia de Usuario 06: Editar Usuario
-**Identificador único (ID):** US-006 (Antes US-007)
+**Identificador único (ID):** US-006 
 
 **Descripción:**  
 Como administrador del restaurante,  
@@ -196,14 +165,9 @@ Dado que desactivo un usuario (isActive = false),
 Cuando el usuario intenta autenticarse,  
 Entonces el sistema bloquea el acceso.
 
-**Cambios respecto a documentación original:**
-- ✅ **Implementado correctamente**
-- ⚠️ **Ajuste:** Campo `isActive` controla activación/desactivación
-
----
 
 ### Historia de Usuario 07: Eliminar Usuario
-**Identificador único (ID):** US-007 (Antes US-008)
+**Identificador único (ID):** US-007 
 
 **Descripción:**  
 Como administrador del restaurante,  
@@ -222,16 +186,9 @@ Dado que elimino un usuario,
 Cuando el proceso finaliza,  
 Entonces el usuario no puede autenticarse nuevamente.
 
-**Cambios respecto a documentación original:**
-- ⚠️ **Diferencia crítica:** 
-  - Documentación original especifica **soft delete** (eliminación lógica)
-  - Implementación real parece hacer **hard delete** (eliminación física)
-- ❌ **No implementado:** Validación de pedidos activos antes de eliminar
-
----
 
 ### Historia de Usuario 08: Listar y Buscar Usuarios
-**Identificador único (ID):** US-008 (Antes US-009)
+**Identificador único (ID):** US-008 
 
 **Descripción:**  
 Como administrador del restaurante,  
@@ -250,13 +207,9 @@ Dado que uso filtros de búsqueda,
 Cuando aplico criterios,  
 Entonces el sistema filtra los resultados.
 
-**Cambios respecto a documentación original:**
-- ✅ **Implementado correctamente**
-
----
 
 ### Historia de Usuario 09: Seguridad de Acceso y Sesiones
-**Identificador único (ID):** US-009 (Antes US-010)
+**Identificador único (ID):** US-009 
 
 **Descripción:**  
 Como usuario del sistema,  
@@ -280,19 +233,11 @@ Dado que intento acceder a recursos sin el rol adecuado,
 Cuando el sistema valida mis permisos,  
 Entonces me bloquea con error 403 Forbidden.
 
-**Cambios respecto a documentación original:**
-- ✅ **Implementado correctamente**
-- ✅ Middleware de autenticación funcional
-- ✅ Control RBAC implementado
-
----
 
 ## 📦 FASE 3: GESTIÓN DE PRODUCTOS (Historias 10-12)
 
-**⚠️ IMPORTANTE:** La documentación original mencionaba gestión de **categorías** de productos (US-010, US-011, US-012), pero el sistema implementado **NO tiene modelo de categorías**. Se documentan solo las HU de productos que SÍ están implementadas.
-
 ### Historia de Usuario 10: Crear Producto
-**Identificador único (ID):** US-010 (Antes US-013)
+**Identificador único (ID):** US-010 
 
 **Descripción:**  
 Como administrador del restaurante,  
@@ -316,13 +261,6 @@ Dado que creo un producto exitosamente,
 Cuando el proceso finaliza,  
 Entonces el producto aparece inmediatamente en la lista y está disponible para pedidos.
 
-**Cambios respecto a documentación original:**
-- ❌ **Eliminado:** US-010, 011, 012 (Categorías) - No implementadas
-- ✅ **Implementado:** CRUD de productos sin categorías
-- ⚠️ **Campos reales:** `name`, `price`, `desc`, `image` (sin `categoryId`)
-
----
-
 ### Historia de Usuario 11: Editar Producto
 **Identificador único (ID):** US-011 (Antes US-014)
 
@@ -343,13 +281,9 @@ Dado que actualizo el precio de un producto,
 Cuando guardo,  
 Entonces el nuevo precio se usa inmediatamente en nuevos pedidos.
 
-**Cambios respecto a documentación original:**
-- ✅ **Implementado correctamente**
-
----
 
 ### Historia de Usuario 12: Eliminar Producto
-**Identificador único (ID):** US-012 (Antes US-015)
+**Identificador único (ID):** US-012 
 
 **Descripción:**  
 Como administrador del restaurante,  
@@ -363,13 +297,6 @@ Dado que selecciono un producto,
 Cuando confirmo la eliminación,  
 Entonces el producto se elimina vía DELETE `/api/admin/products/:id`.
 
-**Cambios respecto a documentación original:**
-- ⚠️ **Diferencia crítica:**
-  - Documentación original especifica **soft delete**
-  - Implementación real parece hacer **hard delete**
-- ❌ **No implementado:** Validación de pedidos activos con este producto
-
----
 
 ## 🪑 FASE 4: GESTIÓN DE MESAS (Historias 13-17)
 
@@ -393,12 +320,6 @@ Dado que intento crear una mesa con número duplicado,
 Cuando envío el formulario,  
 Entonces el sistema muestra error de unicidad.
 
-**Cambios respecto a documentación original:**
-- ✅ **Implementado correctamente**
-- ✅ **Campos adicionales:** `location`, `status`
-
----
-
 ### Historia de Usuario 14: Visualizar Estados de Mesas
 **Identificador único (ID):** US-014 (Antes US-017)
 
@@ -419,13 +340,6 @@ Dado que una mesa cambia de estado,
 Cuando consulto la lista,  
 Entonces veo el estado actualizado.
 
-**Cambios respecto a documentación original:**
-- ❌ **No implementado:** WebSocket para actualizaciones en tiempo real
-- ✅ **Implementado:** Consulta HTTP estándar (polling manual)
-- ⚠️ **Diferencia:** No hay actualizaciones automáticas < 2s como especificaba el doc original
-
----
-
 ### Historia de Usuario 15: Editar Mesa
 **Identificador único (ID):** US-015 (Antes US-018)
 
@@ -440,11 +354,6 @@ Para actualizar capacidad, ubicación o número.
 Dado que selecciono una mesa,  
 Cuando modifico campos y guardo,  
 Entonces los cambios se aplican vía PUT `/api/admin/tables/:id`.
-
-**Cambios respecto a documentación original:**
-- ✅ **Implementado correctamente**
-
----
 
 ### Historia de Usuario 16: Cambiar Estado de Mesa
 **Identificador único (ID):** US-016 (Antes US-019)
@@ -461,14 +370,8 @@ Dado que selecciono una mesa,
 Cuando cambio su estado a `available`, `occupied`, `reserved` o `cleaning`,  
 Entonces el cambio se aplica vía PUT `/api/admin/tables/:id/status`.
 
-**Cambios respecto a documentación original:**
-- ✅ **Implementado correctamente**
-- ✅ Estados válidos: `available`, `occupied`, `reserved`, `cleaning`
-
----
-
 ### Historia de Usuario 17: Liberar Mesa Automáticamente
-**Identificador único (ID):** US-017 (Antes US-020)
+**Identificador único (ID):** US-017 
 
 **Descripción:**  
 Como sistema,  
@@ -481,12 +384,6 @@ Para optimizar la rotación de mesas.
 Dado que un pedido asociado a una mesa se marca como `completado`,  
 Cuando el sistema procesa el cierre,  
 Entonces la mesa debe cambiar a estado `available` automáticamente.
-
-**Cambios respecto a documentación original:**
-- ⚠️ **Requiere integración:** Depende del módulo de pedidos
-- ⚠️ **No verificado:** Lógica automática de liberación
-
----
 
 ## 🍽️ FASE 5: GESTIÓN DE PEDIDOS (Historias 18-23)
 
@@ -515,14 +412,8 @@ Dado que creo un pedido exitosamente,
 Cuando el proceso finaliza,  
 Entonces el pedido tiene un ID único y timestamp de creación.
 
-**Cambios respecto a documentación original:**
-- ✅ **Implementado correctamente**
-- ✅ Backend Python (FastAPI) en puerto 8000
-
----
-
 ### Historia de Usuario 19: Enviar Pedido a Cocina (RabbitMQ)
-**Identificador único (ID):** US-019 (Antes US-022)
+**Identificador único (ID):** US-019 
 
 **Descripción:**  
 Como sistema,  
@@ -541,15 +432,8 @@ Dado que RabbitMQ está disponible,
 Cuando se publica un mensaje,  
 Entonces el sistema confirma la publicación exitosa.
 
-**Cambios respecto a documentación original:**
-- ✅ **Implementado correctamente**
-- ✅ Integración RabbitMQ funcional
-- ✅ Worker Node.js consume mensajes
-
----
-
 ### Historia de Usuario 20: Ver Estado de Pedido
-**Identificador único (ID):** US-020 (Antes US-023)
+**Identificador único (ID):** US-020
 
 **Descripción:**  
 Como mesero o cliente,  
@@ -563,13 +447,8 @@ Dado que consulto un pedido,
 Cuando hago GET `/api/v1/orders/{order_id}`,  
 Entonces recibo el estado actual: `pendiente`, `preparando` o `listo`.
 
-**Cambios respecto a documentación original:**
-- ✅ **Implementado correctamente**
-
----
-
 ### Historia de Usuario 21: Editar Pedido
-**Identificador único (ID):** US-021 (Antes US-024)
+**Identificador único (ID):** US-021
 
 **Descripción:**  
 Como mesero del restaurante,  
@@ -588,14 +467,9 @@ Dado que un pedido ya está en `preparando`,
 Cuando intento editarlo,  
 Entonces el sistema rechaza la modificación.
 
-**Cambios respecto a documentación original:**
-- ✅ **Implementado correctamente**
-- ✅ Validación de estados implementada
-
----
 
 ### Historia de Usuario 22: Cancelar Pedido
-**Identificador único (ID):** US-022 (Antes US-025)
+**Identificador único (ID):** US-022 
 
 **Descripción:**  
 Como mesero o administrador,  
@@ -609,13 +483,8 @@ Dado que un pedido existe,
 Cuando solicito cancelación vía DELETE `/api/v1/orders/{order_id}`,  
 Entonces el pedido cambia a estado `cancelado`.
 
-**Cambios respecto a documentación original:**
-- ✅ **Implementado correctamente**
-
----
-
 ### Historia de Usuario 23: Consultar Historial de Pedidos
-**Identificador único (ID):** US-023 (Antes US-026)
+**Identificador único (ID):** US-023
 
 **Descripción:**  
 Como administrador o mesero,  
@@ -628,11 +497,6 @@ Para análisis y reportes.
 Dado que solicito la lista de pedidos,  
 Cuando hago GET `/api/v1/orders/`,  
 Entonces recibo todos los pedidos con filtros opcionales por estado y fecha.
-
-**Cambios respecto a documentación original:**
-- ✅ **Implementado correctamente**
-
----
 
 ## 👨‍🍳 FASE 6: COCINA Y PROCESAMIENTO ASÍNCRONO (Historias 24-27)
 
@@ -651,15 +515,8 @@ Dado que un pedido se publica en RabbitMQ,
 Cuando el Worker Node.js lo consume,  
 Entonces el pedido se procesa en orden FIFO con `prefetch=1`.
 
-**Cambios respecto a documentación original:**
-- ✅ **Implementado correctamente**
-- ✅ Worker Node.js consume correctamente
-- ✅ Procesamiento FIFO garantizado
-
----
-
 ### Historia de Usuario 25: Iniciar Preparación
-**Identificador único (ID):** US-025 (Antes US-028)
+**Identificador único (ID):** US-025 
 
 **Descripción:**  
 Como cocinero,  
@@ -673,13 +530,9 @@ Dado que un pedido está en `pendiente`,
 Cuando lo marco como "en preparación",  
 Entonces el estado cambia a `preparando` vía PATCH al backend.
 
-**Cambios respecto a documentación original:**
-- ✅ **Implementado correctamente**
-
----
 
 ### Historia de Usuario 26: Marcar Pedido como Listo
-**Identificador único (ID):** US-026 (Antes US-029)
+**Identificador único (ID):** US-026 
 
 **Descripción:**  
 Como cocinero,  
@@ -693,13 +546,9 @@ Dado que un pedido está en `preparando`,
 Cuando lo marco como `listo`,  
 Entonces el estado cambia y se notifica al mesero.
 
-**Cambios respecto a documentación original:**
-- ✅ **Implementado correctamente**
-
----
 
 ### Historia de Usuario 27: Notificaciones en Tiempo Real
-**Identificador único (ID):** US-027 (Antes US-030)
+**Identificador único (ID):** US-027 
 
 **Descripción:**  
 Como mesero,  
@@ -717,60 +566,4 @@ Entonces se envía notificación vía WebSocket al frontend del mesero.
 Dado que WebSocket no está disponible,  
 Cuando el sistema intenta notificar,  
 Entonces usa polling HTTP como fallback.
-
-**Cambios respecto a documentación original:**
-- ✅ **Implementado correctamente**
-- ✅ WebSocket funcional en orders-producer-node
-
----
-
-## ⚠️ HISTORIAS NO IMPLEMENTADAS
-
-Las siguientes historias estaban en la documentación original pero **NO están implementadas** en el sistema actual:
-
-### ❌ US-031 a US-035: Auditoría y Reportes
-- **US-031:** Cerrar Pedido y Calcular Total
-- **US-032:** Ver Auditoría de Pedido
-- **US-033:** Procesamiento de Cola RabbitMQ
-- **US-034:** Sistema de Alertas
-- **US-035:** Generación de Reportes
-
-**Motivo:** No hay endpoints de auditoría, logs estructurados ni sistema de reportes en el código fuente.
-
----
-
-## 📊 RESUMEN DE CAMBIOS
-
-### HU Eliminadas (No Implementadas)
-1. ❌ **US-001 original:** "Seleccionar Rol" - No existe pantalla de selección previa
-2. ❌ **US-010, 011, 012 original:** Gestión de Categorías - No implementado modelo
-3. ❌ **US-031 a US-035 original:** Auditoría y Reportes - No implementados
-
-### HU Ajustadas
-- ✅ **US-001 a US-004:** Login unificado (no rutas específicas por rol)
-- ✅ **US-007, US-012:** Eliminación física (no soft delete como especificaba doc)
-- ✅ **US-014:** Sin WebSocket en admin (solo polling HTTP)
-
-### Total de HU Implementadas
-**25 HU funcionales** de las 35 originalmente documentadas (71% implementación)
-
----
-
-## 🎯 RECOMENDACIONES
-
-**Para Desarrollo:**
-1. Implementar soft delete en usuarios y productos
-2. Agregar modelo de categorías si se requiere en el futuro
-3. Implementar WebSocket en admin-service para tiempo real
-4. Crear sistema de auditoría y reportes si es necesario
-
-**Para QA:**
-- Usar esta documentación actualizada para diseñar casos de prueba
-- Enfocar tests en las 25 HU realmente implementadas
-- Marcar como `@skip` los tests de funcionalidades no implementadas
-
----
-
-**Documento actualizado:** 2024-12-17  
-**Estado:** Refleja implementación real al 100%  
-**Próxima revisión:** Cuando se implementen features adicionales
+s
