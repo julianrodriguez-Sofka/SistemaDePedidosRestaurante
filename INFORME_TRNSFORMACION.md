@@ -1,8 +1,5 @@
 # Informe AS-IS - Sistema de Pedidos de Restaurante
 
-**Fecha:** 17 de Diciembre, 2025  
-**Versión:** 1.0
-
 ---
 
 ## 1. Resumen Ejecutivo
