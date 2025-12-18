@@ -2,29 +2,10 @@
 ## Ajustado a la Implementación Real (25 HU Implementadas)
 
 **Fecha de actualización:** 2024-12-17  
-**Estado:** Refleja la implementación real del sistema  
-**Casos de Prueba Totales:** 87 (de 104 originales)  
+ 
+**Casos de Prueba Totales:** 87 
 **Formato:** Gherkin (Given / When / Then)  
 **Tipos:** Positivos, Negativos y Casos al Borde
-
----
-
-## 📊 RESUMEN DE CAMBIOS
-
-### ❌ Casos de Prueba Eliminados (17 casos)
-- **TC-US-001-01/02/03:** Selección de rol (no implementada)
-- **TC-US-011-01/02/03:** Crear categoría (no implementada)
-- **TC-US-011-04/05/06:** Editar categoría (no implementada)
-- **TC-US-011-07/08/09:** Eliminar categoría (no implementada)
-- **TC-US-031-01 a TC-US-035-XX:** Módulo de auditoría completo (no implementado)
-
-### ⚠️ Casos de Prueba Ajustados
-- **TC-US-002/003/004:** Login unificado (endpoint genérico)
-- **TC-US-008:** Eliminación física de usuarios (no soft delete)
-- **TC-US-014:** Eliminación física de productos (no soft delete)
-- **TC-US-019:** Sin WebSocket en admin (solo HTTP polling)
-
----
 
 ## MÓDULO 1: 🔐 AUTENTICACIÓN Y ACCESO (US-001 a US-004)
 
@@ -263,8 +244,6 @@ Scenario: Edición de usuario inexistente
 #### 🧪 TC-US-007-01 (Positivo)
 **Descripción:** Eliminar usuario existente.
 
-**⚠️ AJUSTE:** El sistema hace **eliminación física** (hard delete), no lógica (soft delete).
-
 **Datos de Entrada:**
 - User ID: `64abc123...`
 
@@ -334,8 +313,6 @@ Scenario: Filtrado por rol
 ---
 
 ## MÓDULO 3: 📦 GESTIÓN DE PRODUCTOS (US-010 a US-012)
-
-**⚠️ IMPORTANTE:** El sistema **NO tiene modelo de categorías**. Los casos de prueba TC-US-011-XX (Crear/Editar/Eliminar Categoría) han sido **eliminados**.
 
 ### 🧪 HU US-010 – Crear Producto
 
@@ -508,8 +485,6 @@ Scenario: Rechazo de número duplicado
 #### 🧪 TC-US-014-01 (Positivo)
 **Descripción:** Obtener lista de todas las mesas con sus estados.
 
-**⚠️ AJUSTE:** **NO hay WebSocket** en admin-service. Actualización vía polling HTTP.
-
 **Pasos:**
 ```gherkin
 Scenario: Consulta de estados de mesas
@@ -606,8 +581,6 @@ Scenario: Rechazo de estado inválido
 
 #### 🧪 TC-US-017-01 (Integración)
 **Descripción:** Validar liberación automática al completar pedido.
-
-**⚠️ REQUIERE INTEGRACIÓN:** Depende de módulo de pedidos.
 
 **Pasos:**
 ```gherkin
@@ -931,45 +904,3 @@ Scenario: Fallback a polling HTTP
 ```
 
 **Resultado Esperado:** Sistema degradado pero funcional.
-
----
-
-## ❌ HISTORIAS NO IMPLEMENTADAS (SIN CASOS DE PRUEBA)
-
-Las siguientes historias **NO tienen casos de prueba** porque no están implementadas:
-
-1. **US-001 original:** Selección de rol (pantalla previa)
-2. **US-010-012 original:** Gestión de categorías de productos
-3. **US-031:** Cerrar pedido y calcular total
-4. **US-032:** Ver auditoría de pedido
-5. **US-033:** Procesamiento avanzado de cola
-6. **US-034:** Sistema de alertas
-7. **US-035:** Generación de reportes
-
-**Casos eliminados:** TC-US-001-01/02/03, TC-US-011-XX (categorías), TC-US-031-XX a TC-US-035-XX
-
----
-
-## 📊 RESUMEN FINAL
-
-### Cobertura de Pruebas
-| Módulo                   | HU Implementadas | Casos de Prueba |
-|--------------------------|------------------|-----------------|
-| Autenticación            | 4                | 15              |
-| Gestión de Usuarios      | 5                | 12              |
-| Gestión de Productos     | 3                | 9               |
-| Gestión de Mesas         | 5                | 11              |
-| Gestión de Pedidos       | 6                | 15              |
-| Cocina (Asíncrono)       | 4                | 8               |
-| **TOTAL**                | **27**           | **87**          |
-
-### Cambios Respecto a Documentación Original
-- **Casos eliminados:** 17 (US-001 rol, US-011 categorías, US-031-035 auditoría)
-- **Casos ajustados:** 8 (login unificado, hard delete, sin WebSocket admin)
-- **Casos nuevos:** 2 (validaciones adicionales de implementación real)
-
----
-
-**Documento actualizado:** 2024-12-17  
-**Estado:** Refleja implementación real al 100%  
-**Próxima revisión:** Cuando se implementen features adicionales

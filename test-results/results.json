@@ -99,12 +99,12 @@
                       "workerIndex": 0,
                       "parallelIndex": 0,
                       "status": "passed",
-                      "duration": 173,
+                      "duration": 184,
                       "errors": [],
                       "stdout": [],
                       "stderr": [],
                       "retry": 0,
-                      "startTime": "2025-12-17T22:28:25.729Z",
+                      "startTime": "2025-12-18T01:06:08.937Z",
                       "annotations": [],
                       "attachments": [
                         {
@@ -139,12 +139,12 @@
                       "workerIndex": 0,
                       "parallelIndex": 0,
                       "status": "passed",
-                      "duration": 77,
+                      "duration": 80,
                       "errors": [],
                       "stdout": [],
                       "stderr": [],
                       "retry": 0,
-                      "startTime": "2025-12-17T22:28:26.029Z",
+                      "startTime": "2025-12-18T01:06:09.254Z",
                       "annotations": [],
                       "attachments": [
                         {
@@ -179,12 +179,12 @@
                       "workerIndex": 0,
                       "parallelIndex": 0,
                       "status": "passed",
-                      "duration": 1046,
+                      "duration": 141,
                       "errors": [],
                       "stdout": [],
                       "stderr": [],
                       "retry": 0,
-                      "startTime": "2025-12-17T22:28:26.176Z",
+                      "startTime": "2025-12-18T01:06:09.409Z",
                       "annotations": [],
                       "attachments": [
                         {
@@ -227,12 +227,12 @@
                       "workerIndex": 0,
                       "parallelIndex": 0,
                       "status": "passed",
-                      "duration": 96,
+                      "duration": 131,
                       "errors": [],
                       "stdout": [],
                       "stderr": [],
                       "retry": 0,
-                      "startTime": "2025-12-17T22:28:27.282Z",
+                      "startTime": "2025-12-18T01:06:09.655Z",
                       "annotations": [],
                       "attachments": [
                         {
@@ -267,12 +267,12 @@
                       "workerIndex": 0,
                       "parallelIndex": 0,
                       "status": "passed",
-                      "duration": 62,
+                      "duration": 97,
                       "errors": [],
                       "stdout": [],
                       "stderr": [],
                       "retry": 0,
-                      "startTime": "2025-12-17T22:28:27.440Z",
+                      "startTime": "2025-12-18T01:06:09.895Z",
                       "annotations": [],
                       "attachments": [
                         {
@@ -307,12 +307,12 @@
                       "workerIndex": 0,
                       "parallelIndex": 0,
                       "status": "passed",
-                      "duration": 55,
+                      "duration": 90,
                       "errors": [],
                       "stdout": [],
                       "stderr": [],
                       "retry": 0,
-                      "startTime": "2025-12-17T22:28:27.552Z",
+                      "startTime": "2025-12-18T01:06:10.086Z",
                       "annotations": [],
                       "attachments": [
                         {
@@ -364,12 +364,12 @@
                       "workerIndex": 0,
                       "parallelIndex": 0,
                       "status": "passed",
-                      "duration": 65,
+                      "duration": 144,
                       "errors": [],
                       "stdout": [],
                       "stderr": [],
                       "retry": 0,
-                      "startTime": "2025-12-17T22:28:27.672Z",
+                      "startTime": "2025-12-18T01:06:10.305Z",
                       "annotations": [],
                       "attachments": [
                         {
@@ -404,12 +404,12 @@
                       "workerIndex": 0,
                       "parallelIndex": 0,
                       "status": "passed",
-                      "duration": 67,
+                      "duration": 94,
                       "errors": [],
                       "stdout": [],
                       "stderr": [],
                       "retry": 0,
-                      "startTime": "2025-12-17T22:28:27.788Z",
+                      "startTime": "2025-12-18T01:06:10.528Z",
                       "annotations": [],
                       "attachments": [
                         {
@@ -452,12 +452,12 @@
                       "workerIndex": 0,
                       "parallelIndex": 0,
                       "status": "passed",
-                      "duration": 4095,
+                      "duration": 5699,
                       "errors": [],
                       "stdout": [],
                       "stderr": [],
                       "retry": 0,
-                      "startTime": "2025-12-17T22:28:27.909Z",
+                      "startTime": "2025-12-18T01:06:10.714Z",
                       "annotations": [],
                       "attachments": [
                         {
@@ -519,12 +519,12 @@
                       "workerIndex": 0,
                       "parallelIndex": 0,
                       "status": "passed",
-                      "duration": 317,
+                      "duration": 785,
                       "errors": [],
                       "stdout": [],
                       "stderr": [],
                       "retry": 0,
-                      "startTime": "2025-12-17T22:28:32.843Z",
+                      "startTime": "2025-12-18T01:06:17.555Z",
                       "annotations": [],
                       "attachments": [
                         {
@@ -559,12 +559,12 @@
                       "workerIndex": 0,
                       "parallelIndex": 0,
                       "status": "passed",
-                      "duration": 107,
+                      "duration": 76,
                       "errors": [],
                       "stdout": [],
                       "stderr": [],
                       "retry": 0,
-                      "startTime": "2025-12-17T22:28:33.291Z",
+                      "startTime": "2025-12-18T01:06:18.475Z",
                       "annotations": [],
                       "attachments": [
                         {
@@ -607,12 +607,12 @@
                       "workerIndex": 0,
                       "parallelIndex": 0,
                       "status": "passed",
-                      "duration": 325,
+                      "duration": 318,
                       "errors": [],
                       "stdout": [],
                       "stderr": [],
                       "retry": 0,
-                      "startTime": "2025-12-17T22:28:33.578Z",
+                      "startTime": "2025-12-18T01:06:18.639Z",
                       "annotations": [],
                       "attachments": [
                         {
@@ -647,12 +647,12 @@
                       "workerIndex": 0,
                       "parallelIndex": 0,
                       "status": "passed",
-                      "duration": 311,
+                      "duration": 328,
                       "errors": [],
                       "stdout": [],
                       "stderr": [],
                       "retry": 0,
-                      "startTime": "2025-12-17T22:28:34.008Z",
+                      "startTime": "2025-12-18T01:06:19.080Z",
                       "annotations": [],
                       "attachments": [
                         {
@@ -695,12 +695,12 @@
                       "workerIndex": 0,
                       "parallelIndex": 0,
                       "status": "passed",
-                      "duration": 330,
+                      "duration": 329,
                       "errors": [],
                       "stdout": [],
                       "stderr": [],
                       "retry": 0,
-                      "startTime": "2025-12-17T22:28:34.430Z",
+                      "startTime": "2025-12-18T01:06:19.669Z",
                       "annotations": [],
                       "attachments": [
                         {
@@ -735,12 +735,12 @@
                       "workerIndex": 0,
                       "parallelIndex": 0,
                       "status": "passed",
-                      "duration": 319,
+                      "duration": 328,
                       "errors": [],
                       "stdout": [],
                       "stderr": [],
                       "retry": 0,
-                      "startTime": "2025-12-17T22:28:34.880Z",
+                      "startTime": "2025-12-18T01:06:20.549Z",
                       "annotations": [],
                       "attachments": [
                         {
@@ -783,12 +783,12 @@
                       "workerIndex": 0,
                       "parallelIndex": 0,
                       "status": "passed",
-                      "duration": 356,
+                      "duration": 503,
                       "errors": [],
                       "stdout": [],
                       "stderr": [],
                       "retry": 0,
-                      "startTime": "2025-12-17T22:28:35.341Z",
+                      "startTime": "2025-12-18T01:06:21.100Z",
                       "annotations": [],
                       "attachments": [
                         {
@@ -823,16 +823,16 @@
                       "workerIndex": 0,
                       "parallelIndex": 0,
                       "status": "passed",
-                      "duration": 338,
+                      "duration": 351,
                       "errors": [],
                       "stdout": [
                         {
-                          "text": "📝 Log guardado: C:\\Users\\maria.gutierrezn\\Documents\\SistemaDePedidosRestaurante\\test-results\\logs\\TC-US-030-01_1766010516180.json\n"
+                          "text": "📝 Log guardado: C:\\Users\\maria.gutierrezn\\Documents\\SistemaDePedidosRestaurante\\test-results\\logs\\TC-US-030-01_1766019982336.json\n"
                         }
                       ],
                       "stderr": [],
                       "retry": 0,
-                      "startTime": "2025-12-17T22:28:35.836Z",
+                      "startTime": "2025-12-18T01:06:21.957Z",
                       "annotations": [],
                       "attachments": [
                         {
@@ -867,16 +867,16 @@
                       "workerIndex": 0,
                       "parallelIndex": 0,
                       "status": "passed",
-                      "duration": 325,
+                      "duration": 340,
                       "errors": [],
                       "stdout": [
                         {
-                          "text": "📝 Log guardado: C:\\Users\\maria.gutierrezn\\Documents\\SistemaDePedidosRestaurante\\test-results\\logs\\TC-US-030-03_1766010516677.json\n"
+                          "text": "📝 Log guardado: C:\\Users\\maria.gutierrezn\\Documents\\SistemaDePedidosRestaurante\\test-results\\logs\\TC-US-030-03_1766019982848.json\n"
                         }
                       ],
                       "stderr": [],
                       "retry": 0,
-                      "startTime": "2025-12-17T22:28:36.345Z",
+                      "startTime": "2025-12-18T01:06:22.498Z",
                       "annotations": [],
                       "attachments": [
                         {
@@ -919,16 +919,16 @@
                       "workerIndex": 0,
                       "parallelIndex": 0,
                       "status": "passed",
-                      "duration": 319,
+                      "duration": 631,
                       "errors": [],
                       "stdout": [
                         {
-                          "text": "📝 Log guardado: C:\\Users\\maria.gutierrezn\\Documents\\SistemaDePedidosRestaurante\\test-results\\logs\\TC-US-027-02_1766010517127.json\n"
+                          "text": "📝 Log guardado: C:\\Users\\maria.gutierrezn\\Documents\\SistemaDePedidosRestaurante\\test-results\\logs\\TC-US-027-02_1766019983652.json\n"
                         }
                       ],
                       "stderr": [],
                       "retry": 0,
-                      "startTime": "2025-12-17T22:28:36.802Z",
+                      "startTime": "2025-12-18T01:06:23.006Z",
                       "annotations": [],
                       "attachments": [
                         {
@@ -971,16 +971,16 @@
                       "workerIndex": 0,
                       "parallelIndex": 0,
                       "status": "passed",
-                      "duration": 1016,
+                      "duration": 1051,
                       "errors": [],
                       "stdout": [
                         {
-                          "text": "📝 Log guardado: C:\\Users\\maria.gutierrezn\\Documents\\SistemaDePedidosRestaurante\\test-results\\logs\\TC-US-028-03_1766010518291.json\n"
+                          "text": "📝 Log guardado: C:\\Users\\maria.gutierrezn\\Documents\\SistemaDePedidosRestaurante\\test-results\\logs\\TC-US-028-03_1766019985504.json\n"
                         }
                       ],
                       "stderr": [],
                       "retry": 0,
-                      "startTime": "2025-12-17T22:28:37.263Z",
+                      "startTime": "2025-12-18T01:06:24.452Z",
                       "annotations": [],
                       "attachments": [
                         {
@@ -1023,16 +1023,16 @@
                       "workerIndex": 0,
                       "parallelIndex": 0,
                       "status": "passed",
-                      "duration": 592,
+                      "duration": 1153,
                       "errors": [],
                       "stdout": [
                         {
-                          "text": "📝 Log guardado: C:\\Users\\maria.gutierrezn\\Documents\\SistemaDePedidosRestaurante\\test-results\\logs\\TC-US-029-03_1766010519089.json\n"
+                          "text": "📝 Log guardado: C:\\Users\\maria.gutierrezn\\Documents\\SistemaDePedidosRestaurante\\test-results\\logs\\TC-US-029-03_1766019988355.json\n"
                         }
                       ],
                       "stderr": [],
                       "retry": 0,
-                      "startTime": "2025-12-17T22:28:38.499Z",
+                      "startTime": "2025-12-18T01:06:27.186Z",
                       "annotations": [],
                       "attachments": [
                         {
@@ -1084,12 +1084,12 @@
                       "workerIndex": 0,
                       "parallelIndex": 0,
                       "status": "passed",
-                      "duration": 774,
+                      "duration": 245,
                       "errors": [],
                       "stdout": [],
                       "stderr": [],
                       "retry": 0,
-                      "startTime": "2025-12-17T22:28:39.248Z",
+                      "startTime": "2025-12-18T01:06:28.703Z",
                       "annotations": [],
                       "attachments": [
                         {
@@ -1132,12 +1132,12 @@
                       "workerIndex": 0,
                       "parallelIndex": 0,
                       "status": "passed",
-                      "duration": 390,
+                      "duration": 1766,
                       "errors": [],
                       "stdout": [],
                       "stderr": [],
                       "retry": 0,
-                      "startTime": "2025-12-17T22:28:40.285Z",
+                      "startTime": "2025-12-18T01:06:29.253Z",
                       "annotations": [],
                       "attachments": [
                         {
@@ -1180,12 +1180,12 @@
                       "workerIndex": 0,
                       "parallelIndex": 0,
                       "status": "passed",
-                      "duration": 1118,
+                      "duration": 462,
                       "errors": [],
                       "stdout": [],
                       "stderr": [],
                       "retry": 0,
-                      "startTime": "2025-12-17T22:28:40.848Z",
+                      "startTime": "2025-12-18T01:06:31.311Z",
                       "annotations": [],
                       "attachments": [
                         {
@@ -1228,16 +1228,16 @@
                       "workerIndex": 0,
                       "parallelIndex": 0,
                       "status": "passed",
-                      "duration": 135,
+                      "duration": 180,
                       "errors": [],
                       "stdout": [
                         {
-                          "text": "📋 Tiempo de respuesta para listado masivo: 6ms\n"
+                          "text": "📋 Tiempo de respuesta para listado masivo: 9ms\n"
                         }
                       ],
                       "stderr": [],
                       "retry": 0,
-                      "startTime": "2025-12-17T22:28:42.120Z",
+                      "startTime": "2025-12-18T01:06:32.111Z",
                       "annotations": [],
                       "attachments": [
                         {
@@ -1289,16 +1289,16 @@
                       "workerIndex": 0,
                       "parallelIndex": 0,
                       "status": "passed",
-                      "duration": 320,
+                      "duration": 370,
                       "errors": [],
                       "stdout": [
                         {
-                          "text": "📝 Log guardado: C:\\Users\\maria.gutierrezn\\Documents\\SistemaDePedidosRestaurante\\test-results\\logs\\TC-US-021-01_1766010522794.json\n"
+                          "text": "📝 Log guardado: C:\\Users\\maria.gutierrezn\\Documents\\SistemaDePedidosRestaurante\\test-results\\logs\\TC-US-021-01_1766019992947.json\n"
                         }
                       ],
                       "stderr": [],
                       "retry": 0,
-                      "startTime": "2025-12-17T22:28:42.466Z",
+                      "startTime": "2025-12-18T01:06:32.545Z",
                       "annotations": [],
                       "attachments": [
                         {
@@ -1333,16 +1333,16 @@
                       "workerIndex": 0,
                       "parallelIndex": 0,
                       "status": "passed",
-                      "duration": 317,
+                      "duration": 329,
                       "errors": [],
                       "stdout": [
                         {
-                          "text": "📝 Log guardado: C:\\Users\\maria.gutierrezn\\Documents\\SistemaDePedidosRestaurante\\test-results\\logs\\TC-US-021-02_1766010523289.json\n"
+                          "text": "📝 Log guardado: C:\\Users\\maria.gutierrezn\\Documents\\SistemaDePedidosRestaurante\\test-results\\logs\\TC-US-021-02_1766019993532.json\n"
                         }
                       ],
                       "stderr": [],
                       "retry": 0,
-                      "startTime": "2025-12-17T22:28:42.960Z",
+                      "startTime": "2025-12-18T01:06:33.181Z",
                       "annotations": [],
                       "attachments": [
                         {
@@ -1377,16 +1377,16 @@
                       "workerIndex": 0,
                       "parallelIndex": 0,
                       "status": "passed",
-                      "duration": 333,
+                      "duration": 369,
                       "errors": [],
                       "stdout": [
                         {
-                          "text": "📝 Log guardado: C:\\Users\\maria.gutierrezn\\Documents\\SistemaDePedidosRestaurante\\test-results\\logs\\TC-US-021-03_1766010523925.json\n"
+                          "text": "📝 Log guardado: C:\\Users\\maria.gutierrezn\\Documents\\SistemaDePedidosRestaurante\\test-results\\logs\\TC-US-021-03_1766019994310.json\n"
                         }
                       ],
                       "stderr": [],
                       "retry": 0,
-                      "startTime": "2025-12-17T22:28:43.583Z",
+                      "startTime": "2025-12-18T01:06:33.921Z",
                       "annotations": [],
                       "attachments": [
                         {
@@ -1429,12 +1429,12 @@
                       "workerIndex": 0,
                       "parallelIndex": 0,
                       "status": "passed",
-                      "duration": 337,
+                      "duration": 385,
                       "errors": [],
                       "stdout": [],
                       "stderr": [],
                       "retry": 0,
-                      "startTime": "2025-12-17T22:28:44.069Z",
+                      "startTime": "2025-12-18T01:06:34.498Z",
                       "annotations": [],
                       "attachments": [
                         {
@@ -1477,16 +1477,16 @@
                       "workerIndex": 0,
                       "parallelIndex": 0,
                       "status": "passed",
-                      "duration": 321,
+                      "duration": 354,
                       "errors": [],
                       "stdout": [
                         {
-                          "text": "📝 Log guardado: C:\\Users\\maria.gutierrezn\\Documents\\SistemaDePedidosRestaurante\\test-results\\logs\\TC-US-023-01_1766010524906.json\n"
+                          "text": "📝 Log guardado: C:\\Users\\maria.gutierrezn\\Documents\\SistemaDePedidosRestaurante\\test-results\\logs\\TC-US-023-01_1766019995509.json\n"
                         }
                       ],
                       "stderr": [],
                       "retry": 0,
-                      "startTime": "2025-12-17T22:28:44.577Z",
+                      "startTime": "2025-12-18T01:06:35.141Z",
                       "annotations": [],
                       "attachments": [
                         {
@@ -1521,16 +1521,16 @@
                       "workerIndex": 0,
                       "parallelIndex": 0,
                       "status": "passed",
-                      "duration": 314,
+                      "duration": 406,
                       "errors": [],
                       "stdout": [
                         {
-                          "text": "📝 Log guardado: C:\\Users\\maria.gutierrezn\\Documents\\SistemaDePedidosRestaurante\\test-results\\logs\\TC-US-023-02_1766010525419.json\n"
+                          "text": "📝 Log guardado: C:\\Users\\maria.gutierrezn\\Documents\\SistemaDePedidosRestaurante\\test-results\\logs\\TC-US-023-02_1766019996242.json\n"
                         }
                       ],
                       "stderr": [],
                       "retry": 0,
-                      "startTime": "2025-12-17T22:28:45.088Z",
+                      "startTime": "2025-12-18T01:06:35.797Z",
                       "annotations": [],
                       "attachments": [
                         {
@@ -1573,12 +1573,12 @@
                       "workerIndex": 0,
                       "parallelIndex": 0,
                       "status": "passed",
-                      "duration": 324,
+                      "duration": 557,
                       "errors": [],
                       "stdout": [],
                       "stderr": [],
                       "retry": 0,
-                      "startTime": "2025-12-17T22:28:45.602Z",
+                      "startTime": "2025-12-18T01:06:36.478Z",
                       "annotations": [],
                       "attachments": [
                         {
@@ -1621,12 +1621,12 @@
                       "workerIndex": 0,
                       "parallelIndex": 0,
                       "status": "passed",
-                      "duration": 127,
+                      "duration": 540,
                       "errors": [],
                       "stdout": [],
                       "stderr": [],
                       "retry": 0,
-                      "startTime": "2025-12-17T22:28:46.363Z",
+                      "startTime": "2025-12-18T01:06:37.457Z",
                       "annotations": [],
                       "attachments": [
                         {
@@ -1661,16 +1661,16 @@
                       "workerIndex": 0,
                       "parallelIndex": 0,
                       "status": "passed",
-                      "duration": 334,
+                      "duration": 455,
                       "errors": [],
                       "stdout": [
                         {
-                          "text": "📝 Log guardado: C:\\Users\\maria.gutierrezn\\Documents\\SistemaDePedidosRestaurante\\test-results\\logs\\TC-US-026-02_1766010527019.json\n"
+                          "text": "📝 Log guardado: C:\\Users\\maria.gutierrezn\\Documents\\SistemaDePedidosRestaurante\\test-results\\logs\\TC-US-026-02_1766019999159.json\n"
                         }
                       ],
                       "stderr": [],
                       "retry": 0,
-                      "startTime": "2025-12-17T22:28:46.677Z",
+                      "startTime": "2025-12-18T01:06:38.639Z",
                       "annotations": [],
                       "attachments": [
                         {
@@ -1705,16 +1705,16 @@
                       "workerIndex": 0,
                       "parallelIndex": 0,
                       "status": "passed",
-                      "duration": 481,
+                      "duration": 429,
                       "errors": [],
                       "stdout": [
                         {
-                          "text": "📝 Log guardado: C:\\Users\\maria.gutierrezn\\Documents\\SistemaDePedidosRestaurante\\test-results\\logs\\TC-US-026-03_1766010529239.json\n"
+                          "text": "📝 Log guardado: C:\\Users\\maria.gutierrezn\\Documents\\SistemaDePedidosRestaurante\\test-results\\logs\\TC-US-026-03_1766019999990.json\n"
                         }
                       ],
                       "stderr": [],
                       "retry": 0,
-                      "startTime": "2025-12-17T22:28:48.303Z",
+                      "startTime": "2025-12-18T01:06:39.531Z",
                       "annotations": [],
                       "attachments": [
                         {
@@ -1757,12 +1757,12 @@
                       "workerIndex": 0,
                       "parallelIndex": 0,
                       "status": "passed",
-                      "duration": 322,
+                      "duration": 386,
                       "errors": [],
                       "stdout": [],
                       "stderr": [],
                       "retry": 0,
-                      "startTime": "2025-12-17T22:28:49.788Z",
+                      "startTime": "2025-12-18T01:06:40.354Z",
                       "annotations": [],
                       "attachments": [
                         {
@@ -1797,16 +1797,16 @@
                       "workerIndex": 0,
                       "parallelIndex": 0,
                       "status": "passed",
-                      "duration": 481,
+                      "duration": 420,
                       "errors": [],
                       "stdout": [
                         {
-                          "text": "📝 Log guardado: C:\\Users\\maria.gutierrezn\\Documents\\SistemaDePedidosRestaurante\\test-results\\logs\\TC-US-022-03_1766010531151.json\n"
+                          "text": "📝 Log guardado: C:\\Users\\maria.gutierrezn\\Documents\\SistemaDePedidosRestaurante\\test-results\\logs\\TC-US-022-03_1766020001725.json\n"
                         }
                       ],
                       "stderr": [],
                       "retry": 0,
-                      "startTime": "2025-12-17T22:28:50.642Z",
+                      "startTime": "2025-12-18T01:06:41.275Z",
                       "annotations": [],
                       "attachments": [
                         {
@@ -1849,12 +1849,12 @@
                       "workerIndex": 0,
                       "parallelIndex": 0,
                       "status": "passed",
-                      "duration": 418,
+                      "duration": 322,
                       "errors": [],
                       "stdout": [],
                       "stderr": [],
                       "retry": 0,
-                      "startTime": "2025-12-17T22:28:51.627Z",
+                      "startTime": "2025-12-18T01:06:42.094Z",
                       "annotations": [],
                       "attachments": [
                         {
@@ -1889,16 +1889,16 @@
                       "workerIndex": 0,
                       "parallelIndex": 0,
                       "status": "passed",
-                      "duration": 328,
+                      "duration": 339,
                       "errors": [],
                       "stdout": [
                         {
-                          "text": "📝 Log guardado: C:\\Users\\maria.gutierrezn\\Documents\\SistemaDePedidosRestaurante\\test-results\\logs\\TC-US-024-02_1766010533064.json\n"
+                          "text": "📝 Log guardado: C:\\Users\\maria.gutierrezn\\Documents\\SistemaDePedidosRestaurante\\test-results\\logs\\TC-US-024-02_1766020003707.json\n"
                         }
                       ],
                       "stderr": [],
                       "retry": 0,
-                      "startTime": "2025-12-17T22:28:52.684Z",
+                      "startTime": "2025-12-18T01:06:43.290Z",
                       "annotations": [],
                       "attachments": [
                         {
@@ -1933,16 +1933,16 @@
                       "workerIndex": 0,
                       "parallelIndex": 0,
                       "status": "passed",
-                      "duration": 970,
+                      "duration": 339,
                       "errors": [],
                       "stdout": [
                         {
-                          "text": "📝 Log guardado: C:\\Users\\maria.gutierrezn\\Documents\\SistemaDePedidosRestaurante\\test-results\\logs\\TC-US-024-03_1766010534563.json\n"
+                          "text": "📝 Log guardado: C:\\Users\\maria.gutierrezn\\Documents\\SistemaDePedidosRestaurante\\test-results\\logs\\TC-US-024-03_1766020004422.json\n"
                         }
                       ],
                       "stderr": [],
                       "retry": 0,
-                      "startTime": "2025-12-17T22:28:53.575Z",
+                      "startTime": "2025-12-18T01:06:44.053Z",
                       "annotations": [],
                       "attachments": [
                         {
@@ -1985,12 +1985,12 @@
                       "workerIndex": 0,
                       "parallelIndex": 0,
                       "status": "passed",
-                      "duration": 411,
+                      "duration": 444,
                       "errors": [],
                       "stdout": [],
                       "stderr": [],
                       "retry": 0,
-                      "startTime": "2025-12-17T22:28:55.101Z",
+                      "startTime": "2025-12-18T01:06:44.838Z",
                       "annotations": [],
                       "attachments": [
                         {
@@ -2025,16 +2025,16 @@
                       "workerIndex": 0,
                       "parallelIndex": 0,
                       "status": "passed",
-                      "duration": 333,
+                      "duration": 439,
                       "errors": [],
                       "stdout": [
                         {
-                          "text": "📝 Log guardado: C:\\Users\\maria.gutierrezn\\Documents\\SistemaDePedidosRestaurante\\test-results\\logs\\TC-US-025-03_1766010536371.json\n"
+                          "text": "📝 Log guardado: C:\\Users\\maria.gutierrezn\\Documents\\SistemaDePedidosRestaurante\\test-results\\logs\\TC-US-025-03_1766020006047.json\n"
                         }
                       ],
                       "stderr": [],
                       "retry": 0,
-                      "startTime": "2025-12-17T22:28:56.016Z",
+                      "startTime": "2025-12-18T01:06:45.593Z",
                       "annotations": [],
                       "attachments": [
                         {
@@ -2086,12 +2086,12 @@
                       "workerIndex": 0,
                       "parallelIndex": 0,
                       "status": "passed",
-                      "duration": 442,
+                      "duration": 408,
                       "errors": [],
                       "stdout": [],
                       "stderr": [],
                       "retry": 0,
-                      "startTime": "2025-12-17T22:28:56.731Z",
+                      "startTime": "2025-12-18T01:06:46.934Z",
                       "annotations": [],
                       "attachments": [
                         {
@@ -2134,12 +2134,12 @@
                       "workerIndex": 0,
                       "parallelIndex": 0,
                       "status": "passed",
-                      "duration": 278,
+                      "duration": 297,
                       "errors": [],
                       "stdout": [],
                       "stderr": [],
                       "retry": 0,
-                      "startTime": "2025-12-17T22:28:57.584Z",
+                      "startTime": "2025-12-18T01:06:47.995Z",
                       "annotations": [],
                       "attachments": [
                         {
@@ -2182,12 +2182,12 @@
                       "workerIndex": 0,
                       "parallelIndex": 0,
                       "status": "passed",
-                      "duration": 225,
+                      "duration": 370,
                       "errors": [],
                       "stdout": [],
                       "stderr": [],
                       "retry": 0,
-                      "startTime": "2025-12-17T22:28:58.267Z",
+                      "startTime": "2025-12-18T01:06:48.870Z",
                       "annotations": [],
                       "attachments": [
                         {
@@ -2230,16 +2230,16 @@
                       "workerIndex": 0,
                       "parallelIndex": 0,
                       "status": "passed",
-                      "duration": 275,
+                      "duration": 286,
                       "errors": [],
                       "stdout": [
                         {
-                          "text": "⚡ Tiempo de respuesta: 15ms\n"
+                          "text": "⚡ Tiempo de respuesta: 7ms\n"
                         }
                       ],
                       "stderr": [],
                       "retry": 0,
-                      "startTime": "2025-12-17T22:28:58.910Z",
+                      "startTime": "2025-12-18T01:06:49.740Z",
                       "annotations": [],
                       "attachments": [
                         {
@@ -2274,12 +2274,12 @@
                       "workerIndex": 0,
                       "parallelIndex": 0,
                       "status": "passed",
-                      "duration": 892,
+                      "duration": 295,
                       "errors": [],
                       "stdout": [],
                       "stderr": [],
                       "retry": 0,
-                      "startTime": "2025-12-17T22:28:59.773Z",
+                      "startTime": "2025-12-18T01:06:50.524Z",
                       "annotations": [],
                       "attachments": [
                         {
@@ -2331,12 +2331,12 @@
                       "workerIndex": 0,
                       "parallelIndex": 0,
                       "status": "passed",
-                      "duration": 481,
+                      "duration": 264,
                       "errors": [],
                       "stdout": [],
                       "stderr": [],
                       "retry": 0,
-                      "startTime": "2025-12-17T22:29:01.124Z",
+                      "startTime": "2025-12-18T01:06:51.378Z",
                       "annotations": [],
                       "attachments": [
                         {
@@ -2371,12 +2371,12 @@
                       "workerIndex": 0,
                       "parallelIndex": 0,
                       "status": "passed",
-                      "duration": 443,
+                      "duration": 237,
                       "errors": [],
                       "stdout": [],
                       "stderr": [],
                       "retry": 0,
-                      "startTime": "2025-12-17T22:29:02.141Z",
+                      "startTime": "2025-12-18T01:06:51.969Z",
                       "annotations": [],
                       "attachments": [
                         {
@@ -2419,12 +2419,12 @@
                       "workerIndex": 0,
                       "parallelIndex": 0,
                       "status": "passed",
-                      "duration": 298,
+                      "duration": 262,
                       "errors": [],
                       "stdout": [],
                       "stderr": [],
                       "retry": 0,
-                      "startTime": "2025-12-17T22:29:02.996Z",
+                      "startTime": "2025-12-18T01:06:52.508Z",
                       "annotations": [],
                       "attachments": [
                         {
@@ -2467,12 +2467,12 @@
                       "workerIndex": 0,
                       "parallelIndex": 0,
                       "status": "passed",
-                      "duration": 353,
+                      "duration": 221,
                       "errors": [],
                       "stdout": [],
                       "stderr": [],
                       "retry": 0,
-                      "startTime": "2025-12-17T22:29:03.881Z",
+                      "startTime": "2025-12-18T01:06:53.325Z",
                       "annotations": [],
                       "attachments": [
                         {
@@ -2524,16 +2524,16 @@
                       "workerIndex": 0,
                       "parallelIndex": 0,
                       "status": "passed",
-                      "duration": 3718,
+                      "duration": 4969,
                       "errors": [],
                       "stdout": [
                         {
-                          "text": "📝 Log guardado: C:\\Users\\maria.gutierrezn\\Documents\\SistemaDePedidosRestaurante\\test-results\\logs\\SMOKE-01_1766010547572.json\n"
+                          "text": "📝 Log guardado: C:\\Users\\maria.gutierrezn\\Documents\\SistemaDePedidosRestaurante\\test-results\\logs\\SMOKE-01_1766020018058.json\n"
                         }
                       ],
                       "stderr": [],
                       "retry": 0,
-                      "startTime": "2025-12-17T22:29:04.846Z",
+                      "startTime": "2025-12-18T01:06:54.085Z",
                       "annotations": [],
                       "attachments": [
                         {
@@ -2578,16 +2578,16 @@
                       "workerIndex": 0,
                       "parallelIndex": 0,
                       "status": "passed",
-                      "duration": 3164,
+                      "duration": 5572,
                       "errors": [],
                       "stdout": [
                         {
-                          "text": "📝 Log guardado: C:\\Users\\maria.gutierrezn\\Documents\\SistemaDePedidosRestaurante\\test-results\\logs\\SMOKE-02_1766010551537.json\n"
+                          "text": "📝 Log guardado: C:\\Users\\maria.gutierrezn\\Documents\\SistemaDePedidosRestaurante\\test-results\\logs\\SMOKE-02_1766020024319.json\n"
                         }
                       ],
                       "stderr": [],
                       "retry": 0,
-                      "startTime": "2025-12-17T22:29:09.110Z",
+                      "startTime": "2025-12-18T01:07:02.407Z",
                       "annotations": [],
                       "attachments": [
                         {
@@ -2632,16 +2632,16 @@
                       "workerIndex": 0,
                       "parallelIndex": 0,
                       "status": "passed",
-                      "duration": 312,
+                      "duration": 633,
                       "errors": [],
                       "stdout": [
                         {
-                          "text": "📝 Log guardado: C:\\Users\\maria.gutierrezn\\Documents\\SistemaDePedidosRestaurante\\test-results\\logs\\SMOKE-03_1766010552914.json\n"
+                          "text": "📝 Log guardado: C:\\Users\\maria.gutierrezn\\Documents\\SistemaDePedidosRestaurante\\test-results\\logs\\SMOKE-03_1766020028422.json\n"
                         }
                       ],
                       "stderr": [],
                       "retry": 0,
-                      "startTime": "2025-12-17T22:29:12.856Z",
+                      "startTime": "2025-12-18T01:07:08.374Z",
                       "annotations": [],
                       "attachments": [
                         {
@@ -2676,16 +2676,16 @@
                       "workerIndex": 0,
                       "parallelIndex": 0,
                       "status": "passed",
-                      "duration": 209,
+                      "duration": 169,
                       "errors": [],
                       "stdout": [
                         {
-                          "text": "📝 Log guardado: C:\\Users\\maria.gutierrezn\\Documents\\SistemaDePedidosRestaurante\\test-results\\logs\\SMOKE-04_1766010553550.json\n"
+                          "text": "📝 Log guardado: C:\\Users\\maria.gutierrezn\\Documents\\SistemaDePedidosRestaurante\\test-results\\logs\\SMOKE-04_1766020029332.json\n"
                         }
                       ],
                       "stderr": [],
                       "retry": 0,
-                      "startTime": "2025-12-17T22:29:13.496Z",
+                      "startTime": "2025-12-18T01:07:09.288Z",
                       "annotations": [],
                       "attachments": [
                         {
@@ -2737,12 +2737,12 @@
                       "workerIndex": 0,
                       "parallelIndex": 0,
                       "status": "passed",
-                      "duration": 236,
+                      "duration": 509,
                       "errors": [],
                       "stdout": [],
                       "stderr": [],
                       "retry": 0,
-                      "startTime": "2025-12-17T22:29:14.426Z",
+                      "startTime": "2025-12-18T01:07:09.786Z",
                       "annotations": [],
                       "attachments": [
                         {
@@ -2785,12 +2785,12 @@
                       "workerIndex": 0,
                       "parallelIndex": 0,
                       "status": "passed",
-                      "duration": 306,
+                      "duration": 253,
                       "errors": [],
                       "stdout": [],
                       "stderr": [],
                       "retry": 0,
-                      "startTime": "2025-12-17T22:29:15.119Z",
+                      "startTime": "2025-12-18T01:07:10.836Z",
                       "annotations": [],
                       "attachments": [
                         {
@@ -2833,12 +2833,12 @@
                       "workerIndex": 0,
                       "parallelIndex": 0,
                       "status": "passed",
-                      "duration": 352,
+                      "duration": 231,
                       "errors": [],
                       "stdout": [],
                       "stderr": [],
                       "retry": 0,
-                      "startTime": "2025-12-17T22:29:15.957Z",
+                      "startTime": "2025-12-18T01:07:11.459Z",
                       "annotations": [],
                       "attachments": [
                         {
@@ -2890,16 +2890,16 @@
                       "workerIndex": 0,
                       "parallelIndex": 0,
                       "status": "passed",
-                      "duration": 62,
+                      "duration": 42,
                       "errors": [],
                       "stdout": [
                         {
-                          "text": "📝 Log guardado: C:\\Users\\maria.gutierrezn\\Documents\\SistemaDePedidosRestaurante\\test-results\\logs\\TC-US-016-01_1766010557022.json\n"
+                          "text": "📝 Log guardado: C:\\Users\\maria.gutierrezn\\Documents\\SistemaDePedidosRestaurante\\test-results\\logs\\TC-US-016-01_1766020032086.json\n"
                         }
                       ],
                       "stderr": [],
                       "retry": 0,
-                      "startTime": "2025-12-17T22:29:16.939Z",
+                      "startTime": "2025-12-18T01:07:12.033Z",
                       "annotations": [],
                       "attachments": [
                         {
@@ -2934,16 +2934,16 @@
                       "workerIndex": 0,
                       "parallelIndex": 0,
                       "status": "passed",
-                      "duration": 34,
+                      "duration": 39,
                       "errors": [],
                       "stdout": [
                         {
-                          "text": "📝 Log guardado: C:\\Users\\maria.gutierrezn\\Documents\\SistemaDePedidosRestaurante\\test-results\\logs\\TC-US-016-02_1766010558044.json\n"
+                          "text": "📝 Log guardado: C:\\Users\\maria.gutierrezn\\Documents\\SistemaDePedidosRestaurante\\test-results\\logs\\TC-US-016-02_1766020033006.json\n"
                         }
                       ],
                       "stderr": [],
                       "retry": 0,
-                      "startTime": "2025-12-17T22:29:17.975Z",
+                      "startTime": "2025-12-18T01:07:12.945Z",
                       "annotations": [],
                       "attachments": [
                         {
@@ -2978,16 +2978,16 @@
                       "workerIndex": 0,
                       "parallelIndex": 0,
                       "status": "passed",
-                      "duration": 41,
+                      "duration": 50,
                       "errors": [],
                       "stdout": [
                         {
-                          "text": "📝 Log guardado: C:\\Users\\maria.gutierrezn\\Documents\\SistemaDePedidosRestaurante\\test-results\\logs\\TC-US-016-03_1766010558695.json\n"
+                          "text": "📝 Log guardado: C:\\Users\\maria.gutierrezn\\Documents\\SistemaDePedidosRestaurante\\test-results\\logs\\TC-US-016-03_1766020033995.json\n"
                         }
                       ],
                       "stderr": [],
                       "retry": 0,
-                      "startTime": "2025-12-17T22:29:18.634Z",
+                      "startTime": "2025-12-18T01:07:13.878Z",
                       "annotations": [],
                       "attachments": [
                         {
@@ -3030,12 +3030,12 @@
                       "workerIndex": 0,
                       "parallelIndex": 0,
                       "status": "passed",
-                      "duration": 28,
+                      "duration": 69,
                       "errors": [],
                       "stdout": [],
                       "stderr": [],
                       "retry": 0,
-                      "startTime": "2025-12-17T22:29:19.358Z",
+                      "startTime": "2025-12-18T01:07:17.457Z",
                       "annotations": [],
                       "attachments": [
                         {
@@ -3078,12 +3078,12 @@
                       "workerIndex": 0,
                       "parallelIndex": 0,
                       "status": "passed",
-                      "duration": 43,
+                      "duration": 42,
                       "errors": [],
                       "stdout": [],
                       "stderr": [],
                       "retry": 0,
-                      "startTime": "2025-12-17T22:29:19.901Z",
+                      "startTime": "2025-12-18T01:07:19.327Z",
                       "annotations": [],
                       "attachments": [
                         {
@@ -3126,12 +3126,12 @@
                       "workerIndex": 0,
                       "parallelIndex": 0,
                       "status": "passed",
-                      "duration": 34,
+                      "duration": 63,
                       "errors": [],
                       "stdout": [],
                       "stderr": [],
                       "retry": 0,
-                      "startTime": "2025-12-17T22:29:20.884Z",
+                      "startTime": "2025-12-18T01:07:20.246Z",
                       "annotations": [],
                       "attachments": [
                         {
@@ -3166,16 +3166,16 @@
                       "workerIndex": 0,
                       "parallelIndex": 0,
                       "status": "passed",
-                      "duration": 191,
+                      "duration": 323,
                       "errors": [],
                       "stdout": [
                         {
-                          "text": "📝 Log guardado: C:\\Users\\maria.gutierrezn\\Documents\\SistemaDePedidosRestaurante\\test-results\\logs\\TC-US-020-02_1766010562304.json\n"
+                          "text": "📝 Log guardado: C:\\Users\\maria.gutierrezn\\Documents\\SistemaDePedidosRestaurante\\test-results\\logs\\TC-US-020-02_1766020041215.json\n"
                         }
                       ],
                       "stderr": [],
                       "retry": 0,
-                      "startTime": "2025-12-17T22:29:22.263Z",
+                      "startTime": "2025-12-18T01:07:21.123Z",
                       "annotations": [],
                       "attachments": [
                         {
@@ -3210,16 +3210,16 @@
                       "workerIndex": 0,
                       "parallelIndex": 0,
                       "status": "passed",
-                      "duration": 272,
+                      "duration": 570,
                       "errors": [],
                       "stdout": [
                         {
-                          "text": "📝 Log guardado: C:\\Users\\maria.gutierrezn\\Documents\\SistemaDePedidosRestaurante\\test-results\\logs\\TC-US-020-03_1766010562875.json\n"
+                          "text": "📝 Log guardado: C:\\Users\\maria.gutierrezn\\Documents\\SistemaDePedidosRestaurante\\test-results\\logs\\TC-US-020-03_1766020041987.json\n"
                         }
                       ],
                       "stderr": [],
                       "retry": 0,
-                      "startTime": "2025-12-17T22:29:22.816Z",
+                      "startTime": "2025-12-18T01:07:21.920Z",
                       "annotations": [],
                       "attachments": [
                         {
@@ -3262,16 +3262,16 @@
                       "workerIndex": 0,
                       "parallelIndex": 0,
                       "status": "passed",
-                      "duration": 263,
+                      "duration": 583,
                       "errors": [],
                       "stdout": [
                         {
-                          "text": "📝 Log guardado: C:\\Users\\maria.gutierrezn\\Documents\\SistemaDePedidosRestaurante\\test-results\\logs\\TC-US-017-02_1766010563833.json\n"
+                          "text": "📝 Log guardado: C:\\Users\\maria.gutierrezn\\Documents\\SistemaDePedidosRestaurante\\test-results\\logs\\TC-US-017-02_1766020043306.json\n"
                         }
                       ],
                       "stderr": [],
                       "retry": 0,
-                      "startTime": "2025-12-17T22:29:23.769Z",
+                      "startTime": "2025-12-18T01:07:23.187Z",
                       "annotations": [],
                       "attachments": [
                         {
@@ -3306,16 +3306,16 @@
                       "workerIndex": 0,
                       "parallelIndex": 0,
                       "status": "passed",
-                      "duration": 387,
+                      "duration": 320,
                       "errors": [],
                       "stdout": [
                         {
-                          "text": "📝 Log guardado: C:\\Users\\maria.gutierrezn\\Documents\\SistemaDePedidosRestaurante\\test-results\\logs\\TC-US-017-03_1766010564904.json\n"
+                          "text": "📝 Log guardado: C:\\Users\\maria.gutierrezn\\Documents\\SistemaDePedidosRestaurante\\test-results\\logs\\TC-US-017-03_1766020044800.json\n"
                         }
                       ],
                       "stderr": [],
                       "retry": 0,
-                      "startTime": "2025-12-17T22:29:24.809Z",
+                      "startTime": "2025-12-18T01:07:24.724Z",
                       "annotations": [],
                       "attachments": [
                         {
@@ -3358,16 +3358,16 @@
                       "workerIndex": 0,
                       "parallelIndex": 0,
                       "status": "passed",
-                      "duration": 326,
+                      "duration": 1280,
                       "errors": [],
                       "stdout": [
                         {
-                          "text": "📝 Log guardado: C:\\Users\\maria.gutierrezn\\Documents\\SistemaDePedidosRestaurante\\test-results\\logs\\TC-US-018-02_1766010565977.json\n"
+                          "text": "📝 Log guardado: C:\\Users\\maria.gutierrezn\\Documents\\SistemaDePedidosRestaurante\\test-results\\logs\\TC-US-018-02_1766020046763.json\n"
                         }
                       ],
                       "stderr": [],
                       "retry": 0,
-                      "startTime": "2025-12-17T22:29:25.909Z",
+                      "startTime": "2025-12-18T01:07:25.493Z",
                       "annotations": [],
                       "attachments": [
                         {
@@ -3402,16 +3402,16 @@
                       "workerIndex": 0,
                       "parallelIndex": 0,
                       "status": "passed",
-                      "duration": 2578,
+                      "duration": 1560,
                       "errors": [],
                       "stdout": [
                         {
-                          "text": "📝 Log guardado: C:\\Users\\maria.gutierrezn\\Documents\\SistemaDePedidosRestaurante\\test-results\\logs\\TC-US-018-03_1766010569165.json\n"
+                          "text": "📝 Log guardado: C:\\Users\\maria.gutierrezn\\Documents\\SistemaDePedidosRestaurante\\test-results\\logs\\TC-US-018-03_1766020049097.json\n"
                         }
                       ],
                       "stderr": [],
                       "retry": 0,
-                      "startTime": "2025-12-17T22:29:26.694Z",
+                      "startTime": "2025-12-18T01:07:28.473Z",
                       "annotations": [],
                       "attachments": [
                         {
@@ -3454,16 +3454,16 @@
                       "workerIndex": 0,
                       "parallelIndex": 0,
                       "status": "passed",
-                      "duration": 1410,
+                      "duration": 235,
                       "errors": [],
                       "stdout": [
                         {
-                          "text": "📝 Log guardado: C:\\Users\\maria.gutierrezn\\Documents\\SistemaDePedidosRestaurante\\test-results\\logs\\TC-US-019-01_1766010571314.json\n"
+                          "text": "📝 Log guardado: C:\\Users\\maria.gutierrezn\\Documents\\SistemaDePedidosRestaurante\\test-results\\logs\\TC-US-019-01_1766020051350.json\n"
                         }
                       ],
                       "stderr": [],
                       "retry": 0,
-                      "startTime": "2025-12-17T22:29:29.919Z",
+                      "startTime": "2025-12-18T01:07:31.278Z",
                       "annotations": [],
                       "attachments": [
                         {
@@ -3498,16 +3498,16 @@
                       "workerIndex": 0,
                       "parallelIndex": 0,
                       "status": "passed",
-                      "duration": 1782,
+                      "duration": 335,
                       "errors": [],
                       "stdout": [
                         {
-                          "text": "📝 Log guardado: C:\\Users\\maria.gutierrezn\\Documents\\SistemaDePedidosRestaurante\\test-results\\logs\\TC-US-019-02_1766010573408.json\n"
+                          "text": "📝 Log guardado: C:\\Users\\maria.gutierrezn\\Documents\\SistemaDePedidosRestaurante\\test-results\\logs\\TC-US-019-02_1766020051988.json\n"
                         }
                       ],
                       "stderr": [],
                       "retry": 0,
-                      "startTime": "2025-12-17T22:29:31.675Z",
+                      "startTime": "2025-12-18T01:07:31.942Z",
                       "annotations": [],
                       "attachments": [
                         {
@@ -3542,16 +3542,16 @@
                       "workerIndex": 0,
                       "parallelIndex": 0,
                       "status": "passed",
-                      "duration": 2221,
+                      "duration": 237,
                       "errors": [],
                       "stdout": [
                         {
-                          "text": "📝 Log guardado: C:\\Users\\maria.gutierrezn\\Documents\\SistemaDePedidosRestaurante\\test-results\\logs\\TC-US-019-03_1766010576541.json\n"
+                          "text": "📝 Log guardado: C:\\Users\\maria.gutierrezn\\Documents\\SistemaDePedidosRestaurante\\test-results\\logs\\TC-US-019-03_1766020052920.json\n"
                         }
                       ],
                       "stderr": [],
                       "retry": 0,
-                      "startTime": "2025-12-17T22:29:34.389Z",
+                      "startTime": "2025-12-18T01:07:32.719Z",
                       "annotations": [],
                       "attachments": [
                         {
@@ -3603,12 +3603,12 @@
                       "workerIndex": 0,
                       "parallelIndex": 0,
                       "status": "passed",
-                      "duration": 359,
+                      "duration": 299,
                       "errors": [],
                       "stdout": [],
                       "stderr": [],
                       "retry": 0,
-                      "startTime": "2025-12-17T22:29:37.029Z",
+                      "startTime": "2025-12-18T01:07:33.643Z",
                       "annotations": [],
                       "attachments": [
                         {
@@ -3643,12 +3643,12 @@
                       "workerIndex": 0,
                       "parallelIndex": 0,
                       "status": "passed",
-                      "duration": 893,
+                      "duration": 727,
                       "errors": [],
                       "stdout": [],
                       "stderr": [],
                       "retry": 0,
-                      "startTime": "2025-12-17T22:29:37.683Z",
+                      "startTime": "2025-12-18T01:07:34.772Z",
                       "annotations": [],
                       "attachments": [
                         {
@@ -3691,12 +3691,12 @@
                       "workerIndex": 0,
                       "parallelIndex": 0,
                       "status": "passed",
-                      "duration": 206,
+                      "duration": 291,
                       "errors": [],
                       "stdout": [],
                       "stderr": [],
                       "retry": 0,
-                      "startTime": "2025-12-17T22:29:38.847Z",
+                      "startTime": "2025-12-18T01:07:36.062Z",
                       "annotations": [],
                       "attachments": [
                         {
@@ -3739,12 +3739,12 @@
                       "workerIndex": 0,
                       "parallelIndex": 0,
                       "status": "passed",
-                      "duration": 286,
+                      "duration": 289,
                       "errors": [],
                       "stdout": [],
                       "stderr": [],
                       "retry": 0,
-                      "startTime": "2025-12-17T22:29:39.649Z",
+                      "startTime": "2025-12-18T01:07:37.008Z",
                       "annotations": [],
                       "attachments": [
                         {
@@ -3787,12 +3787,12 @@
                       "workerIndex": 0,
                       "parallelIndex": 0,
                       "status": "passed",
-                      "duration": 327,
+                      "duration": 283,
                       "errors": [],
                       "stdout": [],
                       "stderr": [],
                       "retry": 0,
-                      "startTime": "2025-12-17T22:29:40.460Z",
+                      "startTime": "2025-12-18T01:07:37.791Z",
                       "annotations": [],
                       "attachments": [
                         {
@@ -3827,12 +3827,12 @@
                       "workerIndex": 0,
                       "parallelIndex": 0,
                       "status": "passed",
-                      "duration": 338,
+                      "duration": 250,
                       "errors": [],
                       "stdout": [],
                       "stderr": [],
                       "retry": 0,
-                      "startTime": "2025-12-17T22:29:41.439Z",
+                      "startTime": "2025-12-18T01:07:38.636Z",
                       "annotations": [],
                       "attachments": [
                         {
@@ -3875,12 +3875,12 @@
                       "workerIndex": 0,
                       "parallelIndex": 0,
                       "status": "passed",
-                      "duration": 207,
+                      "duration": 254,
                       "errors": [],
                       "stdout": [],
                       "stderr": [],
                       "retry": 0,
-                      "startTime": "2025-12-17T22:29:42.318Z",
+                      "startTime": "2025-12-18T01:07:39.513Z",
                       "annotations": [],
                       "attachments": [
                         {
@@ -3915,16 +3915,16 @@
                       "workerIndex": 0,
                       "parallelIndex": 0,
                       "status": "passed",
-                      "duration": 897,
+                      "duration": 902,
                       "errors": [],
                       "stdout": [
                         {
-                          "text": "📝 Log guardado: C:\\Users\\maria.gutierrezn\\Documents\\SistemaDePedidosRestaurante\\test-results\\logs\\TC-US-005-05_1766010583759.json\n"
+                          "text": "📝 Log guardado: C:\\Users\\maria.gutierrezn\\Documents\\SistemaDePedidosRestaurante\\test-results\\logs\\TC-US-005-05_1766020060411.json\n"
                         }
                       ],
                       "stderr": [],
                       "retry": 0,
-                      "startTime": "2025-12-17T22:29:43.207Z",
+                      "startTime": "2025-12-18T01:07:40.185Z",
                       "annotations": [],
                       "attachments": [
                         {
@@ -3969,16 +3969,16 @@
                       "workerIndex": 0,
                       "parallelIndex": 0,
                       "status": "passed",
-                      "duration": 1629,
+                      "duration": 452,
                       "errors": [],
                       "stdout": [
                         {
-                          "text": "📝 Log guardado: C:\\Users\\maria.gutierrezn\\Documents\\SistemaDePedidosRestaurante\\test-results\\logs\\TC-US-005-06_1766010586051.json\n"
+                          "text": "📝 Log guardado: C:\\Users\\maria.gutierrezn\\Documents\\SistemaDePedidosRestaurante\\test-results\\logs\\TC-US-005-06_1766020061883.json\n"
                         }
                       ],
                       "stderr": [],
                       "retry": 0,
-                      "startTime": "2025-12-17T22:29:44.491Z",
+                      "startTime": "2025-12-18T01:07:41.712Z",
                       "annotations": [],
                       "attachments": [
                         {
@@ -4021,16 +4021,16 @@
                       "workerIndex": 0,
                       "parallelIndex": 0,
                       "status": "passed",
-                      "duration": 2579,
+                      "duration": 4074,
                       "errors": [],
                       "stdout": [
                         {
-                          "text": "📝 Log guardado: C:\\Users\\maria.gutierrezn\\Documents\\SistemaDePedidosRestaurante\\test-results\\logs\\TC-US-006-03_1766010588555.json\n"
+                          "text": "📝 Log guardado: C:\\Users\\maria.gutierrezn\\Documents\\SistemaDePedidosRestaurante\\test-results\\logs\\TC-US-006-03_1766020064852.json\n"
                         }
                       ],
                       "stderr": [],
                       "retry": 0,
-                      "startTime": "2025-12-17T22:29:46.558Z",
+                      "startTime": "2025-12-18T01:07:42.679Z",
                       "annotations": [],
                       "attachments": [
                         {
@@ -4083,16 +4083,16 @@
                       "workerIndex": 0,
                       "parallelIndex": 0,
                       "status": "passed",
-                      "duration": 4197,
+                      "duration": 5378,
                       "errors": [],
                       "stdout": [
                         {
-                          "text": "📝 Log guardado: C:\\Users\\maria.gutierrezn\\Documents\\SistemaDePedidosRestaurante\\test-results\\logs\\TC-US-007-02_1766010593429.json\n"
+                          "text": "📝 Log guardado: C:\\Users\\maria.gutierrezn\\Documents\\SistemaDePedidosRestaurante\\test-results\\logs\\TC-US-007-02_1766020072235.json\n"
                         }
                       ],
                       "stderr": [],
                       "retry": 0,
-                      "startTime": "2025-12-17T22:29:49.752Z",
+                      "startTime": "2025-12-18T01:07:47.979Z",
                       "annotations": [],
                       "attachments": [
                         {
@@ -4137,16 +4137,16 @@
                       "workerIndex": 0,
                       "parallelIndex": 0,
                       "status": "passed",
-                      "duration": 273,
+                      "duration": 411,
                       "errors": [],
                       "stdout": [
                         {
-                          "text": "📝 Log guardado: C:\\Users\\maria.gutierrezn\\Documents\\SistemaDePedidosRestaurante\\test-results\\logs\\TC-US-007-03_1766010594599.json\n"
+                          "text": "📝 Log guardado: C:\\Users\\maria.gutierrezn\\Documents\\SistemaDePedidosRestaurante\\test-results\\logs\\TC-US-007-03_1766020075290.json\n"
                         }
                       ],
                       "stderr": [],
                       "retry": 0,
-                      "startTime": "2025-12-17T22:29:54.561Z",
+                      "startTime": "2025-12-18T01:07:55.075Z",
                       "annotations": [],
                       "attachments": [
                         {
@@ -4189,16 +4189,16 @@
                       "workerIndex": 0,
                       "parallelIndex": 0,
                       "status": "passed",
-                      "duration": 360,
+                      "duration": 252,
                       "errors": [],
                       "stdout": [
                         {
-                          "text": "📝 Log guardado: C:\\Users\\maria.gutierrezn\\Documents\\SistemaDePedidosRestaurante\\test-results\\logs\\TC-US-008-02_1766010595679.json\n"
+                          "text": "📝 Log guardado: C:\\Users\\maria.gutierrezn\\Documents\\SistemaDePedidosRestaurante\\test-results\\logs\\TC-US-008-02_1766020076093.json\n"
                         }
                       ],
                       "stderr": [],
                       "retry": 0,
-                      "startTime": "2025-12-17T22:29:55.630Z",
+                      "startTime": "2025-12-18T01:07:56.036Z",
                       "annotations": [],
                       "attachments": [
                         {
@@ -4233,16 +4233,16 @@
                       "workerIndex": 0,
                       "parallelIndex": 0,
                       "status": "passed",
-                      "duration": 1054,
+                      "duration": 1772,
                       "errors": [],
                       "stdout": [
                         {
-                          "text": "📝 Log guardado: C:\\Users\\maria.gutierrezn\\Documents\\SistemaDePedidosRestaurante\\test-results\\logs\\TC-US-008-03_1766010597363.json\n"
+                          "text": "📝 Log guardado: C:\\Users\\maria.gutierrezn\\Documents\\SistemaDePedidosRestaurante\\test-results\\logs\\TC-US-008-03_1766020079610.json\n"
                         }
                       ],
                       "stderr": [],
                       "retry": 0,
-                      "startTime": "2025-12-17T22:29:56.497Z",
+                      "startTime": "2025-12-18T01:07:59.502Z",
                       "annotations": [],
                       "attachments": [
                         {
@@ -4285,16 +4285,16 @@
                       "workerIndex": 0,
                       "parallelIndex": 0,
                       "status": "passed",
-                      "duration": 182,
+                      "duration": 217,
                       "errors": [],
                       "stdout": [
                         {
-                          "text": "📝 Log guardado: C:\\Users\\maria.gutierrezn\\Documents\\SistemaDePedidosRestaurante\\test-results\\logs\\TC-US-009-03_1766010598318.json\n"
+                          "text": "📝 Log guardado: C:\\Users\\maria.gutierrezn\\Documents\\SistemaDePedidosRestaurante\\test-results\\logs\\TC-US-009-03_1766020082058.json\n"
                         }
                       ],
                       "stderr": [],
                       "retry": 0,
-                      "startTime": "2025-12-17T22:29:58.239Z",
+                      "startTime": "2025-12-18T01:08:01.941Z",
                       "annotations": [],
                       "attachments": [
                         {
@@ -4320,8 +4320,8 @@
   ],
   "errors": [],
   "stats": {
-    "startTime": "2025-12-17T22:28:22.513Z",
-    "duration": 97777.911,
+    "startTime": "2025-12-18T01:06:07.543Z",
+    "duration": 116626.281,
     "expected": 88,
     "skipped": 0,
     "unexpected": 0,

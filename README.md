@@ -1,49 +1,78 @@
 # Sistema de Pedidos de Restaurante – Arquitectura Distribuida
 
 ## 1. Descripción general
-Este proyecto, contenido en la carpeta raíz `sistemdepedidosrestaurante`, implementa un sistema distribuid gestión de pedidos para un restaurante de comidas rápidas.
+Este proyecto implementa un sistema distribuido de gestión de pedidos para un restaurante de comidas rápidas con arquitectura de microservicios.
+
 La solución está pensada para un escenario real de operación en sala, donde:
-- El **mesero** toma el pedido desde una tablet.
-- El pedido viaja a un **microservicio Python (FastAPI)** que lo valida y lo envía a **RabbitMQ**.
-- Un **microservicio Node.js** consume los mensajes de RabbitMQ, simula la preparación en cocina y expostado de los pedidos por **HTTP + WebSocket**.
-- La **cocina** visualiza los pedidos en tiempo real, con cambios de estado de **Pendiente → En preparacióListo**.
-Gran parte de los criterios funcionales y de calidad están documentados en `QA_REQUERIMIENTOS.md` (tos, casos E2E, seguridad, rendimiento, etc.).
+- El **mesero** toma el pedido desde una tablet/navegador.
+- El pedido viaja a través de un **API Gateway** que enruta las peticiones a los microservicios.
+- Un **microservicio Python (FastAPI)** valida el pedido y lo publica en **RabbitMQ**.
+- Un **microservicio Node.js** consume los mensajes de RabbitMQ, procesa los pedidos y notifica a cocina.
+- La **cocina** visualiza los pedidos en tiempo real con **WebSocket**, con cambios de estado de **Pendiente → En preparación → Listo**.
+- El **administrador** gestiona usuarios, productos y mesas desde un panel separado.
+
+Gran parte de los criterios funcionales y de calidad están documentados en `QA_REQUERIMIENTOS.md`, `TEST_CASE.md` y `TEST_PLAN.md`.
 ## 2. Arquitectura del sistema
-Componentes principales (según la documentación de QA y la implementación):
-1. **Frontend de Toma de Pedidos (Mesero)**
- - Tech: React + TypeScript + Vite.
- - Puerto por defecto: `5173`.
- - Permite seleccionar productos, cantidades, notas, nombre del cliente y mesa.
- - Envía el pedido al backend Python mediante HTTP.
-2. **Backend de Pedidos – Python**
- - Tech: FastAPI.
- - Puerto por defecto: `8000`.
- - Endpoint principal: `POST /api/v1/orders/`.
- - Valida la estructura del pedido, genera el `id` y `createdAt`, y publica un mensaje en RabbitMQ (cola `or
-ders.new`).
-3. **Backend de Cocina – Node.js**
- - Tech: Node.js + TypeScript (Express u otro framework ligero).
- - Puerto API HTTP: `3002`.
- - Exposición de pedidos vía `GET /kitchen/orders`.
- - Simula tiempos de preparación en función de los productos.
- - Mantiene en memoria la lista de pedidos y sus estados.
-4. **Servidor WebSocket**
- - Tech: Node.js (mismo proyecto `node-ms`).
- - Puerto WebSocket: `4000`.
- - Notifica eventos a la vista de cocina: `ORDER_NEW`, `ORDER_READY`, `QUEUE_EMPTY`.
-5. **RabbitMQ (Message Broker)**
- - Cola principal: `orders.new`.
- - Se usa como punto de integración entre el microservicio Python y el worker de Node.js.
-6. **(Opcional) Frontend de Cocina**
- - Tech: React/TypeScript o similar.
- - Escucha el WebSocket en el puerto `4000`.
- - Muestra cards de pedidos con estados, mesa, productos, notas y botones de acción.
+Componentes principales:
+
+1. **API Gateway (Express + TypeScript)**
+   - Puerto: `3000`
+   - Enruta todas las peticiones a los microservicios correspondientes
+   - Endpoints:
+     - `POST /api/orders` → Python MS
+     - `GET /api/kitchen/orders` → Node MS
+     - `PUT /api/kitchen/orders/:id` → Node MS
+
+2. **Frontend de Toma de Pedidos (Mesero)**
+   - Tech: React + TypeScript + Vite + Tailwind CSS
+   - Puerto: `5173`
+   - Permite seleccionar productos, cantidades, notas, nombre del cliente y mesa
+   - Envía pedidos al API Gateway
+
+3. **Frontend de Administración**
+   - Tech: React + TypeScript + Vite
+   - Puerto: `5174`
+   - Gestión de usuarios, productos, categorías y mesas
+   - Autenticación por roles (admin)
+
+4. **Microservicio de Pedidos (Python - FastAPI)**
+   - Puerto: `8000`
+   - Endpoint: `POST /api/v1/orders/`
+   - Valida pedidos con Pydantic
+   - Publica mensajes en RabbitMQ (cola `orders.new`)
+   - Actualiza estado de mesas mediante HTTP al admin-service
+
+5. **Microservicio de Cocina (Node.js + TypeScript)**
+   - Puerto API: `3002`
+   - Puerto WebSocket: `4000`
+   - Consume mensajes de RabbitMQ
+   - Gestiona estados de pedidos: pending → preparing → completed
+   - Notifica cambios en tiempo real vía WebSocket
+
+6. **Servicio de Administración (Node.js + TypeScript)**
+   - Puerto: `4001`
+   - API REST para:
+     - Autenticación JWT
+     - Gestión de usuarios
+     - Gestión de productos y categorías
+     - Gestión de mesas
+   - Base de datos: MongoDB
+
+7. **RabbitMQ (Message Broker)**
+   - Puerto AMQP: `5672`
+   - Puerto Management: `15672`
+   - Cola: `orders.new` (durable)
+   - Integración asíncrona entre Python MS y Node MS
+
+8. **MongoDB**
+   - Puerto: `27017`
+   - Almacena: usuarios, productos, categorías, mesas, pedidos históricos
 ## 3. Flujo funcional end-to-end
 1. El mesero abre el **frontend de pedidos** (`http://localhost:5173`).
 2. Selecciona productos (hamburguesas, papas, perros, refrescos), define cantidades y añade notas (ej.: “Sebolla”).
 3. Ingresa el **nombre del cliente** (opcional) y la **mesa**.
 4. Presiona **“Enviar pedido”**.
-5. El frontend realiza un `POST` a `http://localhost:8000/api/v1/orders/` con un JSON similar a:
+5. El frontend realiza un `POST` a `http://localhost:3000/api/orders` (API Gateway) con un JSON similar a:
  ```json
  {
  "customerName": "Juan Pérez",
@@ -75,16 +104,23 @@ ders.new`).
 8. El **frontend de cocina** (o panel de cocina en Node) se conecta al WebSocket (`ws://localhost:4000`) y: - Escucha los eventos.
  - Actualiza el listado de pedidos y estados en tiempo real.
 ## 4. Estructura del proyecto
-Una estructura típica del repositorio es:
 ```bash
-sistemdepedidosrestaurante/
-■■■ frontend/ # Frontend de toma de pedidos (React + TS + Vite)
-■■■ python-ms/ # Microservicio de pedidos (FastAPI)
-■■■ node-ms/ # Worker de cocina + API + WebSocket (Node.js)
-■■■ docker-compose.yml # Orquestación de contenedores
-■■■ QA_REQUERIMIENTOS.md # Documento de requerimientos y QA
+SistemaDePedidosRestaurante/
+├── api-gateway/              # API Gateway (Express + TypeScript)
+├── orders-producer-frontend/ # Frontend mesero (React + Vite)
+├── admin-frontend/          # Frontend admin (React + Vite)
+├── orders-producer-python/  # MS Pedidos (FastAPI + Python)
+├── orders-producer-node/    # MS Cocina (Node.js + TypeScript)
+├── admin-service/           # Servicio admin (Node.js + MongoDB)
+├── e2e-tests/              # Tests E2E con Playwright
+├── test-results/           # Resultados de tests y reportes HTML
+├── docker-compose.yml      # Orquestación de contenedores
+├── QA_REQUERIMIENTOS.md    # Requerimientos y QA
+├── TEST_CASE.md            # Casos de prueba detallados
+├── TEST_PLAN.md            # Plan de pruebas
+├── GUIA_RAPIDA.md          # Guía rápida de uso
+└── README.md               # Este archivo
 ```
-> Nota: Ajusta los nombres de carpeta si en tu repo real difieren de estos.
 ## 5. Tecnologías utilizadas
 - **Frontend**
  - React
@@ -100,12 +136,18 @@ sistemdepedidosrestaurante/
  - Docker
  - Docker Compose
 ## 6. Puertos por defecto
-- Frontend pedidos (mesero): `5173`
-- Backend Python: `8000`
-- Backend Node (API cocina): `3002`
-- WebSocket server: `4000`
-- RabbitMQ: `5672` (AMQP) / `15672` (panel web si está habilitado)
-> Verifica el archivo `docker-compose.yml` para confirmar los puertos exactos que estás publicando.
+- **API Gateway**: `3000` (punto de entrada principal)
+- **Frontend Mesero**: `5173`
+- **Frontend Admin**: `5174`
+- **Python MS (Pedidos)**: `8000`
+- **Node MS (Cocina - API)**: `3002`
+- **Node MS (Cocina - WebSocket)**: `4000`
+- **Admin Service**: `4001`
+- **MongoDB**: `27017`
+- **RabbitMQ AMQP**: `5672`
+- **RabbitMQ Management**: `15672` (usuario: admin, contraseña: admin)
+
+> Verifica el archivo `docker-compose.yml` para confirmar los puertos exactos.
 ## 7. Variables de entorno
 ### 7.1. Backend Python (`python-ms/.env`)
 Ejemplo de variables:
@@ -270,13 +312,36 @@ La vista de cocina debe suscribirse a estos eventos para actualizar la UI en tie
 - Actualización en tiempo real conectada al WebSocket.
 - El trabajador de cocina ve claramente el flujo de la cola.
 ## 12. QA, pruebas y calidad
-El archivo `QA_REQUERIMIENTOS.md` documenta:
-- Requerimientos funcionales por módulo (Frontend, Backend Python, Backend Node, RabbitMQ).
-- Casos de prueba E2E (flujo completo, múltiples pedidos, reconexión tras fallo).
-- Pruebas de seguridad (validación de entrada, CORS).
-- Pruebas de rendimiento (tiempos de carga y de procesamiento).
-- Checklist de aprobación antes de ir a producción.
-Se recomienda revisar ese archivo para entender en detalle todos los criterios de aceptación y casos de pru contemplados.
+
+### Documentación de QA
+- `QA_REQUERIMIENTOS.md`: Requerimientos funcionales y no funcionales
+- `TEST_CASE.md`: 26 casos de prueba detallados (autenticación, usuarios, productos)
+- `TEST_PLAN.md`: Plan de ejecución de pruebas
+- `e2e-tests/README.md`: Guía de tests automatizados
+
+### Tests E2E Automatizados (Playwright)
+El proyecto incluye 26 tests E2E automatizados que cubren:
+- ✅ Autenticación y selección de roles
+- ✅ Gestión de usuarios (CRUD completo)
+- ✅ Gestión de productos y categorías
+- ✅ Flujo completo de pedidos
+- ✅ Validaciones de seguridad (RBAC)
+- ✅ Performance (< 800ms carga, < 2000ms APIs)
+
+**Ejecutar tests:**
+```bash
+cd e2e-tests
+npm test              # Ejecutar todos los tests
+npm run test:headed   # Ver tests en navegador
+npm run report        # Ver reporte HTML interactivo
+```
+
+### Pruebas de integración
+- Validación de entrada (Pydantic en Python MS)
+- CORS configurado correctamente
+- Autenticación JWT
+- Manejo de errores y timeouts
+- Reconexión a RabbitMQ tras fallo
 ## 13. Problemas comunes y soluciones
 - **El frontend no puede llamar al backend Python**
  - Verifica que `VITE_API_URL` apunte al host correcto (en Docker, al nombre del servicio; en local, a `locahost:8000`).

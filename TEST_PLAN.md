@@ -1,11 +1,6 @@
 # 📋 PLAN DE PRUEBAS ACTUALIZADO - SISTEMA DE PEDIDOS DE RESTAURANTE
 
 
-**Fecha de actualización:** 2024-12-17   
-**Versión:** 2.0 (Actualizado)
-
----
-
 ## 🎯 OBJETIVOS DEL PLAN DE PRUEBAS
 
 ### Objetivos Generales
@@ -95,13 +90,6 @@
 
 ---
 
-### ❌ Módulos NO Implementados (Fuera de Alcance)
-
-#### ❌ Módulo 7: Auditoría y Reportes
-- **HU Eliminadas:** US-031 a US-035
-- **Motivo:** No implementado en código fuente
-- **Casos de Prueba Eliminados:** ~15 casos
-
 #### ❌ Funcionalidades Parciales No Soportadas
 1. **Selección de Rol Previa:** No existe pantalla de selección (US-001 original)
 2. **Categorías de Productos:** No hay modelo `Category` en MongoDB
@@ -137,9 +125,7 @@
 - **Herramientas:** Playwright 1.40.1
 - **Cobertura Objetivo:** ≥80% de flujos críticos
 - **Alcance:**
-  - **84/108 tests pasando (78%)** ✅
-  - **23 tests marcados como skip** (funcionalidades UI no implementadas)
-  - **1 test flaky** (rendimiento variable)
+  - **88/88 tests pasando (100%)** 
 - **Ubicación:** `/e2e-tests/tests/*.spec.ts`
 
 #### 4. Pruebas de Rendimiento
@@ -219,7 +205,7 @@
 - [ ] Documentación técnica actualizada (REFINED_BACKLOG_ACTUALIZADO.md, TEST_CASE_ACTUALIZADO.md)
 
 ### Criterios de Salida (Exit Criteria)
-- [ ] **≥80% de casos de prueba pasando** (actualmente 84/108 = 78% ✅)
+- [ ] **≥80% de casos de prueba pasando** (actualmente 88/88 = 100% ✅)
 - [ ] **100% de casos P0 (críticos) pasando**
 - [ ] **Cero defectos críticos abiertos**
 - [ ] **≤3 defectos mayores abiertos**
@@ -321,18 +307,9 @@ node seed-tables.js
 ## 📚 ANEXOS
 
 ### Documentos de Referencia
-1. **REFINED_BACKLOG.md** - 25 HU implementadas (versión real)
+1. **REFINED_BACKLOG.md** - 25 HU implementadas
 2. **TEST_CASE.md** - 87 casos de prueba ajustados
 3. **REPORTE_FINAL.md** - Estado final de pruebas E2E
 4. **COBERTURA_REAL.md** - Cobertura detallada por módulo
 5. **AUDIT_REPORT.md** - Análisis de concordancia 71% → 100%
 
-
-
-
----
-
-**Documento actualizado:** 2024-12-17  
-**Versión:** 2.0   
-**Próxima revisión:** Cuando se implementen features adicionales (categorías, auditoría, etc.)  
-**Estado:** APROBADO por QA, pendiente PO y Tech Lead

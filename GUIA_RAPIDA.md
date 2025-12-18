@@ -4,8 +4,13 @@
 
 ### 1. Levantar el Proyecto
 ```bash
-cd "f:\Proyecto Juanes\SistemaDePedidosRestaurante"
+cd SistemaDePedidosRestaurante
 docker-compose up -d
+```
+
+**Verificar que todos los servicios estén corriendo:**
+```bash
+docker ps
 ```
 
 ### 2. Acceder a las Interfaces
@@ -123,17 +128,25 @@ node seed-test-users.js
 
 ## 🛠️ Comandos Útiles
 
-### Ver logs de un servicio
+### Ver logs de servicios
 ```bash
-docker logs front
-docker logs admin-frontend
-docker logs admin-service
+docker logs front              # Frontend mesero
+docker logs admin-frontend     # Frontend admin
+docker logs api-gateway        # Gateway de APIs
+docker logs python-ms          # Servicio de pedidos (Python)
+docker logs node-ms            # Servicio de cocina (Node)
+docker logs admin-service      # Servicio de administración
+docker logs rabbitmq           # Cola de mensajes
+docker logs mongo              # Base de datos
 ```
 
 ### Reiniciar un servicio específico
 ```bash
 docker-compose restart front
 docker-compose restart admin-frontend
+docker-compose restart api-gateway
+docker-compose restart python-ms
+docker-compose restart node-ms
 ```
 
 ### Reconstruir contenedores
@@ -146,6 +159,28 @@ docker-compose up -d
 ### Ver servicios corriendo
 ```bash
 docker ps
+```
+
+### Verificar conectividad de servicios
+```bash
+# Probar creación de pedido
+curl -X POST http://localhost:3000/api/orders \
+  -H "Content-Type: application/json" \
+  -d '{"customerName":"Test","table":"1","items":[{"productName":"Pizza","quantity":1,"unitPrice":20000}]}'
+
+# Ver pedidos en cocina
+curl http://localhost:3000/api/kitchen/orders?status=pending
+
+# Verificar RabbitMQ
+docker exec rabbitmq rabbitmqctl list_queues
+```
+
+### Ejecutar tests E2E
+```bash
+cd e2e-tests
+npm test              # Ejecutar todos los tests
+npm run report        # Ver reporte HTML
+npm run test:headed   # Ver tests en navegador
 ```
 
 ---
@@ -184,43 +219,54 @@ docker ps
 ## 📊 Arquitectura
 
 ```
-┌─────────────────────────────────────────────────┐
-│          http://localhost:5173                  │
-│     orders-producer-frontend (Trabajadores)     │
-│                                                 │
-│  ┌──────────────┐      ┌──────────────┐        │
-│  │  ChefLogin   │      │ WaiterLogin  │        │
-│  │  (Naranja)   │      │   (Azul)     │        │
-│  └──────┬───────┘      └──────┬───────┘        │
-│         │                     │                 │
-│         ↓                     ↓                 │
-│   /cocina                /mesero                │
-└─────────────────────────────────────────────────┘
+```
+┌────────────────────────────────────────────────────────┐
+│           http://localhost:5173                        │
+│      orders-producer-frontend (Trabajadores)           │
+│  ┌────────────┐              ┌────────────┐            │
+│  │ ChefLogin  │              │WaiterLogin │            │
+│  │ (Naranja)  │              │  (Azul)    │            │
+│  └─────┬──────┘              └─────┬──────┘            │
+│        ↓                           ↓                   │
+│   /cocina                      /mesero                 │
+└────────────────────────────────────────────────────────┘
+                         │
+                         ↓ POST /api/orders
+┌────────────────────────────────────────────────────────┐
+│           http://localhost:3000                        │
+│              API Gateway (Express)                     │
+│  • POST /api/orders → python-ms                        │
+│  • GET  /api/kitchen/orders → node-ms                  │
+└───────────────┬────────────────────┬───────────────────┘
+                │                    │
+      ↓ Python MS                    ↓ Node MS
+┌─────────────────┐           ┌────────────────┐
+│ :8000           │           │ :3002          │
+│ FastAPI         │─RabbitMQ→ │ Express        │
+│ Create Orders   │           │ Kitchen Orders │
+└─────────────────┘           └────────────────┘
 
-┌─────────────────────────────────────────────────┐
-│          http://localhost:5174                  │
-│       admin-frontend (Administrador)            │
-│                                                 │
-│         ┌──────────────┐                        │
-│         │  AdminLogin  │                        │
-│         │   (Verde)    │                        │
-│         └──────┬───────┘                        │
-│                │                                │
-│                ↓                                │
-│         /admin/dashboard                        │
-└─────────────────────────────────────────────────┘
-
-                    ↓ API ↓
-
-┌─────────────────────────────────────────────────┐
-│          http://localhost:4001                  │
-│           admin-service (Backend)               │
-│                                                 │
-│  • POST /api/auth/login                         │
-│  • POST /api/users                              │
-│  • GET  /api/users                              │
-│  • Gestión de productos, mesas, config         │
-└─────────────────────────────────────────────────┘
+┌────────────────────────────────────────────────────────┐
+│           http://localhost:5174                        │
+│          admin-frontend (Administrador)                │
+│         ┌──────────────┐                               │
+│         │  AdminLogin  │                               │
+│         │   (Verde)    │                               │
+│         └──────┬───────┘                               │
+│                ↓                                       │
+│         /admin/dashboard                               │
+└────────────────────────────────────────────────────────┘
+                         │
+                         ↓ API
+┌────────────────────────────────────────────────────────┐
+│           http://localhost:4001                        │
+│            admin-service (Backend)                     │
+│  • POST /api/auth/login                                │
+│  • POST /api/users                                     │
+│  • GET  /api/users                                     │
+│  • Gestión de productos, mesas, config                │
+└────────────────────────────────────────────────────────┘
+```
 ```
 
 ---

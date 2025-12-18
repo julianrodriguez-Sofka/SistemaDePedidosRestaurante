@@ -10,7 +10,7 @@
     "test:auth": "playwright test tests/auth.spec.ts",
     "test:users": "playwright test tests/users.spec.ts",
     "test:products": "playwright test tests/products.spec.ts",
-    "report": "playwright show-report",
+    "report": "playwright show-report ../test-results/html-report",
     "install-browsers": "playwright install"
   },
   "devDependencies": {

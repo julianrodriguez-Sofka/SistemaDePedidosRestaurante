@@ -56,7 +56,7 @@ npm run test:debug
 npm run report
 ```
 
-El reporte se abre automáticamente en el navegador con:
+**Nota:** El reporte se genera en `../test-results/html-report/` y se abre automáticamente en el navegador con:
 - ✅ Tests pasados/fallidos
 - 📸 Screenshots de cada paso
 - 🎥 Videos de ejecución completa
@@ -120,7 +120,7 @@ Cada test genera un video completo de la ejecución que puedes ver en el reporte
 Edita `playwright.config.ts`:
 ```typescript
 use: {
-  baseURL: 'http://localhost:3000', // Cambia aquí
+  baseURL: 'http://localhost:5173', // Frontend mesero
 }
 ```
 
@@ -142,11 +142,14 @@ docker-compose up -d
 ```
 
 Verifica que estén corriendo:
-- ✅ Frontend: http://localhost:3000
-- ✅ Admin Frontend: http://localhost:3001
-- ✅ API Gateway: http://localhost:4000
-- ✅ Admin Service: http://localhost:3001/api
-- ✅ Python Service: http://localhost:5002
+- ✅ Frontend Mesero: http://localhost:5173
+- ✅ Admin Frontend: http://localhost:5174
+- ✅ API Gateway: http://localhost:3000
+- ✅ Admin Service: http://localhost:4001
+- ✅ Python Service: http://localhost:8000
+- ✅ Node Service (Cocina): http://localhost:3002
+- ✅ MongoDB: localhost:27017
+- ✅ RabbitMQ: http://localhost:15672 (admin/admin)
 
 ## 🐛 Debug de Tests
 
