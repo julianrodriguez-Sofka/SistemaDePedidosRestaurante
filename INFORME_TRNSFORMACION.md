@@ -39,6 +39,63 @@ El sistema está diseñado para digitalizar y optimizar la gestión de pedidos e
 - ✅ Visualización en tiempo real del estado de pedidos
 - ✅ Comunicación mediante microservicios y mensajería asíncrona
 
+### 2.4 Interfaz de Usuario AS-IS (Estado Inicial)
+
+A continuación se presentan las capturas de pantalla del sistema en su estado original, previo a las mejoras de autenticación y administración:
+
+#### 🖥️ **Pantalla 1: Selección de Rol (Sin Autenticación)**
+
+![Selección de Rol](./docs/images/as-is-role-selection.png)
+
+**Características AS-IS:**
+- ❌ Acceso sin credenciales (solo botones "I'm a Chef" / "I'm a Waiter")
+- ❌ Sin validación de identidad
+- ❌ Cualquiera puede acceder a cualquier rol
+- ❌ No hay registro de quién accede al sistema
+
+**URL:** `localhost:5173`
+
+---
+
+#### 🍽️ **Pantalla 2: Vista de Mesero (Sin Autenticación)**
+
+![Vista Mesero](./docs/images/as-is-waiter-view.png)
+
+**Características AS-IS:**
+- ✅ Catálogo de productos con imágenes (Hamburguesa, Papas fritas, Perro caliente, Refresco)
+- ✅ Formulario de creación de pedidos
+- ✅ Track Order con filtros por estado (All, Pending, Preparing, Ready, Completed)
+- ✅ Precios visibles ($10.500, $12.000, $8.000, $7.000)
+- ❌ Productos hardcodeados en el código
+- ❌ Sin posibilidad de editar catálogo dinámicamente
+- ❌ No se valida quién crea el pedido
+
+**URL:** `localhost:5173/mesero`
+
+---
+
+#### 👨‍🍳 **Pantalla 3: Vista de Cocina**
+
+![Vista Cocina](./docs/images/as-is-kitchen-view.png)
+
+**Características AS-IS:**
+- ✅ Dashboard con tabs por estado (All, New, Cooking, Ready, Completed, Cancelled)
+- ✅ Visualización de pedidos en tiempo real vía WebSocket
+- ✅ Información del pedido: Cliente, hora, mesa, items, total
+- ✅ Botón de acción "Order Completed"
+- ❌ Sin control de quién marca los pedidos como completados
+- ❌ No hay registro de tiempos de preparación por cocinero
+
+**URL:** `localhost:5173/cocina`
+
+**Pedido Ejemplo Visible:**
+- Cliente: Jose Mosquera
+- Pedido: #F21
+- Hora: 6:27 p.m.
+- Mesa: Table 1
+- Items: 1x Hamburguesa ($10.500)
+- Estado: ✅ Completed
+
 ---
 
 ## 3. Hallazgos AS-IS
